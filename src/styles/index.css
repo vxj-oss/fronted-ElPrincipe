@@ -1,0 +1,116 @@
+/* ── Fuente Inter desde Google Fonts (siempre primera línea) ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Variables CSS globales ── */
+:root {
+  --color-brand:    #1E3A8A;
+  --color-success:  #16a34a;
+  --color-warning:  #ea580c;
+  --color-danger:   #dc2626;
+  --sidebar-width:  260px;
+  --topbar-height:  64px;
+  --transition-ui:  150ms ease;
+}
+
+/* ── Reset base ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+/* ── Impresión / Exportar informe (window.print) ──
+   El layout usa contenedores con altura fija y overflow oculto para el
+   scroll interno de la app; sin este reset, al imprimir solo sale la
+   porción visible en pantalla (el resto del reporte queda recortado). */
+@media print {
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  #app-shell,
+  #app-shell-inner,
+  main {
+    height: auto !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  aside, header {
+    display: none !important;
+  }
+}
+
+/* ── Scrollbar personalizado ── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { @apply bg-slate-100 dark:bg-slate-900; }
+::-webkit-scrollbar-thumb { @apply bg-slate-300 dark:bg-slate-700 rounded; }
+::-webkit-scrollbar-thumb:hover { @apply bg-slate-400 dark:bg-slate-600; }
+
+/* ── Clases utilitarias de componentes ── */
+@layer components {
+  .btn-primary {
+    @apply bg-brand-900 text-white font-medium px-4 py-2 rounded
+           hover:bg-brand-800 transition-colors duration-150
+           focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2
+           dark:focus:ring-offset-slate-900
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply bg-white dark:bg-slate-800 text-brand-900 dark:text-brand-100 font-medium px-4 py-2 rounded 
+           border border-brand-900 dark:border-slate-700
+           hover:bg-brand-50 dark:hover:bg-slate-700 transition-colors duration-150
+           focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2
+           dark:focus:ring-offset-slate-900;
+  }
+
+  .btn-danger {
+    @apply bg-danger text-white font-medium px-4 py-2 rounded
+           hover:bg-danger-dark transition-colors duration-150;
+  }
+
+  .card {
+    @apply bg-white dark:bg-slate-900 rounded-lg border border-surface-border dark:border-slate-800 shadow-card p-4 transition-colors;
+  }
+
+  .input-base {
+    @apply w-full bg-white dark:bg-slate-800 border border-neutral-line dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-900 dark:text-slate-100
+           focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent
+           placeholder:text-neutral-light dark:placeholder:text-slate-500 transition-all duration-150;
+  }
+
+  .badge-success { @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-success-light dark:bg-emerald-950/60 text-success-dark dark:text-emerald-400; }
+  .badge-warning { @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-warning-light dark:bg-amber-950/60 text-warning-dark dark:text-amber-400; }
+  .badge-danger  { @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-danger-light dark:bg-rose-950/60 text-danger-dark dark:text-rose-400;  }
+  .badge-info    { @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-brand-100 dark:bg-brand-950/60 text-brand-800 dark:text-brand-100;    }
+  .badge-neutral { @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300;       }
+
+  .page-title {
+    @apply text-2xl font-semibold text-neutral-text dark:text-white tracking-tight;
+  }
+
+  .section-label {
+    @apply text-xs font-semibold uppercase tracking-widest text-neutral-muted dark:text-slate-400;
+  }
+}

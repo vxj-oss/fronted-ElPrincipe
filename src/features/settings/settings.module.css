@@ -1,0 +1,350 @@
+.page {
+  padding: 28px 32px;
+  min-height: calc(100vh - 64px);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 640px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 20px;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.cardTitle {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+.cardSub {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-bottom: 16px;
+}
+
+.ajustesList {
+  display: flex;
+  flex-direction: column;
+}
+
+.filaAjuste {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f5f9;
+  transition: border-color 150ms ease;
+}
+
+.filaAjuste:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.filaAjuste:first-child {
+  padding-top: 0;
+}
+
+.filaInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.filaLabel {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+.filaDesc {
+  font-size: 0.6875rem;
+  color: #94a3b8;
+  margin-top: 2px;
+  line-height: 1.5;
+}
+
+.filaControl {
+  flex-shrink: 0;
+}
+
+.btnPeligro {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 0.5rem;
+  border: 1px solid #fecaca;
+  background: transparent;
+  color: #b91c1c;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 150ms ease;
+}
+
+.btnPeligro:hover:not(:disabled) {
+  background: #fef2f2;
+}
+
+.btnPeligro:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btnSecondary,
+.btnWarning {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.btnSecondary {
+  background: #fff;
+  color: #374151;
+  border: 1px solid #e2e8f0;
+}
+
+.btnSecondary:hover:not(:disabled) {
+  background: #f8fafc;
+}
+
+.btnSecondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btnWarning {
+  background: #ea580c;
+  color: #fff;
+  border: none;
+}
+
+.btnWarning:hover:not(:disabled) {
+  background: #c2410c;
+}
+
+.btnWarning:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  width: 420px;
+  max-width: 95vw;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e2e8f0;
+  transition: border-color 150ms ease;
+}
+
+.modalTitle {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.modalClose {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 150ms;
+}
+
+.modalClose:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.modalBody {
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.confirmIconWrap {
+  flex-shrink: 0;
+}
+
+.confirmTexto {
+  font-size: 0.875rem;
+  color: #374151;
+  line-height: 1.6;
+  max-width: 320px;
+}
+
+.modalFooter {
+  padding: 14px 20px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  transition: border-color 150ms ease;
+}
+
+.toast {
+  position: fixed;
+  top: 80px;
+  right: 24px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  animation: slideIn 250ms ease;
+}
+
+.toastSuccess {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+}
+
+.toastError {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+:global(.dark) .cardTitle,
+:global([data-theme="dark"]) .cardTitle,
+:global(.dark) .filaLabel,
+:global([data-theme="dark"]) .filaLabel,
+:global(.dark) .modalTitle,
+:global([data-theme="dark"]) .modalTitle {
+  color: #f8fafc;
+}
+
+:global(.dark) .cardSub,
+:global([data-theme="dark"]) .cardSub,
+:global(.dark) .filaDesc,
+:global([data-theme="dark"]) .filaDesc,
+:global(.dark) .confirmTexto,
+:global([data-theme="dark"]) .confirmTexto {
+  color: #94a3b8;
+}
+
+:global(.dark) .card,
+:global([data-theme="dark"]) .card,
+:global(.dark) .modal,
+:global([data-theme="dark"]) .modal {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+
+:global(.dark) .filaAjuste,
+:global([data-theme="dark"]) .filaAjuste,
+:global(.dark) .modalHeader,
+:global([data-theme="dark"]) .modalHeader,
+:global(.dark) .modalFooter,
+:global([data-theme="dark"]) .modalFooter {
+  border-color: #1e293b;
+}
+
+:global(.dark) .btnPeligro,
+:global([data-theme="dark"]) .btnPeligro {
+  border-color: rgba(220, 38, 38, 0.3);
+  color: #f87171;
+}
+
+:global(.dark) .btnPeligro:hover:not(:disabled),
+:global([data-theme="dark"]) .btnPeligro:hover:not(:disabled) {
+  background: rgba(220, 38, 38, 0.15);
+}
+
+:global(.dark) .btnSecondary,
+:global([data-theme="dark"]) .btnSecondary {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global(.dark) .btnSecondary:hover:not(:disabled),
+:global([data-theme="dark"]) .btnSecondary:hover:not(:disabled) {
+  background: #334155;
+  border-color: #475569;
+}
+
+:global(.dark) .modalClose:hover,
+:global([data-theme="dark"]) .modalClose:hover {
+  background: #1e293b;
+  color: #f8fafc;
+}
+
+:global(.dark) .toastSuccess,
+:global([data-theme="dark"]) .toastSuccess {
+  background: rgba(22, 163, 74, 0.15);
+  border-color: rgba(22, 163, 74, 0.3);
+  color: #86efac;
+}
+
+:global(.dark) .toastError,
+:global([data-theme="dark"]) .toastError {
+  background: rgba(220, 38, 38, 0.15);
+  border-color: rgba(220, 38, 38, 0.3);
+  color: #fca5a5;
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 16px;
+  }
+}

@@ -1,0 +1,665 @@
+.page {
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.pageTitle {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.pageSub {
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin-top: 3px;
+}
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.kpiCard {
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  border-radius: 0.5rem;
+  padding: 14px 16px;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.kpiLabel {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 6px;
+}
+
+.kpiValue {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+
+.kpiNote {
+  font-size: 0.6875rem;
+  color: #94a3b8;
+}
+
+.bodyGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 16px;
+  align-items: start;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 20px;
+  min-width: 0;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.cardTitle {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+.cardSub {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.cardHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.cardHeaderRow .cardTitle {
+  margin-bottom: 2px;
+}
+
+.cardHeaderRow .cardSub {
+  margin-bottom: 0;
+}
+
+.iconRefresh {
+  color: #94a3b8;
+  margin-top: 3px;
+}
+
+.rightPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.reportesList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reporteItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.625rem;
+  background: #fff;
+  cursor: pointer;
+  transition: all 150ms ease;
+  outline: none;
+}
+
+.reporteItem:hover {
+  border-color: #bfdbfe;
+  background: #f8fafc;
+}
+
+.reporteItemActivo {
+  border-color: #1E3A8A !important;
+  background: #eff6ff !important;
+}
+
+.reporteIcono {
+  width: 40px;
+  height: 40px;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.reporteInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.reporteNombre {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.reporteDesc {
+  font-size: 0.72rem;
+  color: #64748b;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reporteAcciones {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.btnFormato {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 12px;
+  border-radius: 0.375rem;
+  border: 1px solid transparent;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 150ms ease;
+}
+
+.btnFormatoExcel {
+  background: #ecfdf5;
+  color: #047857;
+  border-color: #a7f3d0;
+}
+
+.btnFormatoExcel:hover {
+  background: #d1fae5;
+  border-color: #6ee7b7;
+}
+
+.btnFormatoPdf {
+  background: #fef2f2;
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+
+.btnFormatoPdf:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+.cfgGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.cfgLabel {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.cfgInput {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-family: inherit;
+  background: #fff;
+  color: #0f172a;
+  outline: none;
+  transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease, color 150ms ease;
+}
+
+.cfgInput:focus {
+  border-color: #1E3A8A;
+  box-shadow: 0 0 0 1px #1E3A8A;
+}
+
+.btnGenerar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #1E3A8A;
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.84rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.btnGenerar:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.btnGenerar:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.progresoWrap {
+  margin-top: 12px;
+}
+
+.progresoBar {
+  height: 5px;
+  background: #f1f5f9;
+  border-radius: 3px;
+  overflow: hidden;
+  transition: background-color 150ms ease;
+}
+
+.progresoFill {
+  height: 100%;
+  background: linear-gradient(90deg, #1E3A8A, #3b82f6);
+  border-radius: 3px;
+  transition: width 350ms ease;
+}
+
+.progresoTexto {
+  font-size: 0.6875rem;
+  color: #64748b;
+  margin-top: 6px;
+  text-align: center;
+}
+
+.histList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.histVacio {
+  font-size: 0.8125rem;
+  color: #94a3b8;
+  text-align: center;
+  padding: 24px 0;
+}
+
+.histItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid #f1f5f9;
+  border-radius: 0.5rem;
+  background: #f8fafc;
+  transition: all 150ms ease;
+}
+
+.histItem:hover {
+  background: #fff;
+  border-color: #e2e8f0;
+}
+
+.histIcono {
+  width: 32px;
+  height: 32px;
+  border-radius: 0.375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.histInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.histNombre {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.histMeta {
+  font-size: 0.6875rem;
+  color: #94a3b8;
+  margin-top: 1px;
+}
+
+.histPill {
+  font-size: 0.625rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 99px;
+  flex-shrink: 0;
+  letter-spacing: 0.03em;
+}
+
+.pillPdf {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.pillExcel {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.btnReDescargar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 0.375rem;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #64748b;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 150ms ease;
+  flex-shrink: 0;
+}
+
+.btnReDescargar:hover {
+  background: #f8fafc;
+  color: #1E3A8A;
+  border-color: #bfdbfe;
+}
+
+.toast {
+  position: fixed;
+  top: 80px;
+  right: 24px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  animation: slideIn 250ms ease;
+}
+
+.toastSuccess {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+}
+
+.toastError {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.estadoCentro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 12px;
+}
+
+.estadoTexto {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.errorIcon {
+  color: #dc2626;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #1E3A8A;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+:global(.dark) .pageTitle,
+:global([data-theme="dark"]) .pageTitle,
+:global(.dark) .kpiValue,
+:global([data-theme="dark"]) .kpiValue,
+:global(.dark) .cardTitle,
+:global([data-theme="dark"]) .cardTitle,
+:global(.dark) .reporteNombre,
+:global([data-theme="dark"]) .reporteNombre,
+:global(.dark) .histNombre,
+:global([data-theme="dark"]) .histNombre {
+  color: #f8fafc;
+}
+
+:global(.dark) .pageSub,
+:global([data-theme="dark"]) .pageSub,
+:global(.dark) .cardSub,
+:global([data-theme="dark"]) .cardSub,
+:global(.dark) .reporteDesc,
+:global([data-theme="dark"]) .reporteDesc,
+:global(.dark) .cfgLabel,
+:global([data-theme="dark"]) .cfgLabel,
+:global(.dark) .progresoTexto,
+:global([data-theme="dark"]) .progresoTexto,
+:global(.dark) .estadoTexto,
+:global([data-theme="dark"]) .estadoTexto,
+:global(.dark) .iconRefresh,
+:global([data-theme="dark"]) .iconRefresh {
+  color: #94a3b8;
+}
+
+:global(.dark) .kpiCard,
+:global([data-theme="dark"]) .kpiCard {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+
+:global(.dark) .card,
+:global([data-theme="dark"]) .card {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+
+:global(.dark) .reporteItem,
+:global([data-theme="dark"]) .reporteItem {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+
+:global(.dark) .reporteItem:hover,
+:global([data-theme="dark"]) .reporteItem:hover {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+:global(.dark) .reporteItemActivo,
+:global([data-theme="dark"]) .reporteItemActivo {
+  background: rgba(37, 99, 235, 0.15) !important;
+  border-color: #3b82f6 !important;
+}
+
+:global(.dark) .cfgInput,
+:global([data-theme="dark"]) .cfgInput {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global(.dark) .cfgInput:focus,
+:global([data-theme="dark"]) .cfgInput:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+:global(.dark) .btnGenerar,
+:global([data-theme="dark"]) .btnGenerar {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+:global(.dark) .btnGenerar:hover:not(:disabled),
+:global([data-theme="dark"]) .btnGenerar:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+:global(.dark) .progresoBar,
+:global([data-theme="dark"]) .progresoBar {
+  background: #1e293b;
+}
+
+:global(.dark) .histItem,
+:global([data-theme="dark"]) .histItem {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+
+:global(.dark) .histItem:hover,
+:global([data-theme="dark"]) .histItem:hover {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+:global(.dark) .btnReDescargar,
+:global([data-theme="dark"]) .btnReDescargar {
+  background: #1e293b;
+  border-color: #334155;
+  color: #94a3b8;
+}
+
+:global(.dark) .btnReDescargar:hover,
+:global([data-theme="dark"]) .btnReDescargar:hover {
+  background: #334155;
+  color: #60a5fa;
+  border-color: #3b82f6;
+}
+
+:global(.dark) .btnFormatoExcel,
+:global([data-theme="dark"]) .btnFormatoExcel,
+:global(.dark) .pillExcel,
+:global([data-theme="dark"]) .pillExcel {
+  background: rgba(4, 120, 87, 0.2);
+  color: #34d399;
+  border-color: rgba(4, 120, 87, 0.35);
+}
+
+:global(.dark) .btnFormatoExcel:hover,
+:global([data-theme="dark"]) .btnFormatoExcel:hover {
+  background: rgba(4, 120, 87, 0.3);
+}
+
+:global(.dark) .btnFormatoPdf,
+:global([data-theme="dark"]) .btnFormatoPdf,
+:global(.dark) .pillPdf,
+:global([data-theme="dark"]) .pillPdf {
+  background: rgba(220, 38, 38, 0.2);
+  color: #f87171;
+  border-color: rgba(220, 38, 38, 0.35);
+}
+
+:global(.dark) .btnFormatoPdf:hover,
+:global([data-theme="dark"]) .btnFormatoPdf:hover {
+  background: rgba(220, 38, 38, 0.3);
+}
+
+:global(.dark) .toastSuccess,
+:global([data-theme="dark"]) .toastSuccess {
+  background: rgba(22, 163, 74, 0.15);
+  border-color: rgba(22, 163, 74, 0.3);
+  color: #86efac;
+}
+
+:global(.dark) .toastError,
+:global([data-theme="dark"]) .toastError {
+  background: rgba(220, 38, 38, 0.15);
+  border-color: rgba(220, 38, 38, 0.3);
+  color: #fca5a5;
+}
+
+:global(.dark) .spinner,
+:global([data-theme="dark"]) .spinner {
+  border-color: #1e293b;
+  border-top-color: #3b82f6;
+}
+
+@media (max-width: 1100px) {
+  .bodyGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .kpiGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 16px;
+  }
+  .kpiGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .reporteItem {
+    flex-wrap: wrap;
+  }
+  .reporteAcciones {
+    flex-direction: row;
+    width: 100%;
+    margin-left: 54px;
+  }
+}

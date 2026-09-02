@@ -1,0 +1,600 @@
+.page {
+  padding: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pageTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.pageSub {
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #1e3a8a;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.btnPrimary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.kpiCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 20px;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  transition: transform 150ms ease, box-shadow 150ms ease, background-color 150ms ease, border-color 150ms ease;
+}
+
+.kpiCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.kpiHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.kpiSigla {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.kpiBadgeEstado {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  text-transform: capitalize;
+}
+
+.kpiValor {
+  font-size: 2.25rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.kpiNombre {
+  font-size: 0.8125rem;
+  color: #64748b;
+  line-height: 1.4;
+  min-height: 38px;
+}
+
+.kpiBarBg {
+  width: 100%;
+  height: 6px;
+  background: #f1f5f9;
+  border-radius: 9999px;
+  overflow: hidden;
+  transition: background-color 150ms ease;
+}
+
+.kpiBarFill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.kpiFooterRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+  border-top: 1px solid #f1f5f9;
+  transition: border-color 150ms ease;
+}
+
+.kpiMetaText {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.btnVerDetalle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 150ms ease;
+}
+
+.btnVerDetalle:hover {
+  opacity: 0.75;
+}
+
+.tablaResumenSection {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 20px;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05);
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.tablaHeader {
+  margin-bottom: 16px;
+}
+
+.seccionTitulo {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.datosTabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  text-align: left;
+}
+
+.datosTabla th {
+  background: #f8fafc;
+  padding: 10px 14px;
+  font-weight: 600;
+  color: #475569;
+  border-bottom: 1px solid #e2e8f0;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.datosTabla td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #1e293b;
+  vertical-align: middle;
+  transition: border-color 150ms ease;
+}
+
+.datosTabla tr:last-child td {
+  border-bottom: none;
+}
+
+.estadoBadge {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  text-align: center;
+}
+
+.btnSecundarioSmall {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.375rem;
+  color: #334155;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.btnSecundarioSmall:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.detalleWrapper {
+  padding: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #64748b;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: fit-content;
+  padding: 4px 0;
+  transition: color 150ms ease;
+}
+
+.backBtn:hover {
+  color: #0f172a;
+}
+
+.detalleMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.detalleMetaRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.indNumBadge {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #64748b;
+  background: #f1f5f9;
+  border-radius: 4px;
+  padding: 2px 6px;
+  transition: background-color 150ms ease;
+}
+
+.detalleTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.detalleSub {
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.exportBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #334155;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.exportBtn:hover {
+  background: #f8fafc;
+}
+
+@media print {
+  .backBtn,
+  .exportBtn {
+    display: none !important;
+  }
+}
+
+.datosGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.resultadoGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr) minmax(0, 1.2fr);
+  gap: 16px;
+}
+
+.resultadoCard {
+  border-radius: 0.5rem;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.resLabel {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.resValor {
+  font-size: 2.25rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.resUnidad {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.interpCard,
+.estadoCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 16px;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.interpTexto {
+  font-size: 0.8125rem;
+  color: #334155;
+  line-height: 1.55;
+}
+
+.estadoBadgeCenter {
+  display: flex;
+  margin-bottom: 12px;
+}
+
+.umbralList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.umbralRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.umbralNombre {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.umbralDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+}
+
+.dashGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.bottomGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.conclusionCard {
+  border-radius: 0.5rem;
+  padding: 16px;
+}
+
+.conclusionTitulo {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.conclusionTexto {
+  font-size: 0.8125rem;
+  line-height: 1.55;
+}
+
+.tablaSubtitulo {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 8px;
+}
+
+.estadoCentro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 12px;
+}
+
+.estadoTexto {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.errorIcon {
+  color: #dc2626;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #1e3a8a;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+:global(.dark) .pageTitle,
+:global([data-theme="dark"]) .pageTitle,
+:global(.dark) .detalleTitle,
+:global([data-theme="dark"]) .detalleTitle,
+:global(.dark) .seccionTitulo,
+:global([data-theme="dark"]) .seccionTitulo,
+:global(.dark) .datosTabla td,
+:global([data-theme="dark"]) .datosTabla td,
+:global(.dark) .interpTexto,
+:global([data-theme="dark"]) .interpTexto,
+:global(.dark) .tablaSubtitulo,
+:global([data-theme="dark"]) .tablaSubtitulo {
+  color: #f8fafc;
+}
+
+:global(.dark) .pageSub,
+:global([data-theme="dark"]) .pageSub,
+:global(.dark) .detalleSub,
+:global([data-theme="dark"]) .detalleSub,
+:global(.dark) .kpiNombre,
+:global([data-theme="dark"]) .kpiNombre,
+:global(.dark) .kpiMetaText,
+:global([data-theme="dark"]) .kpiMetaText,
+:global(.dark) .resLabel,
+:global([data-theme="dark"]) .resLabel,
+:global(.dark) .resUnidad,
+:global([data-theme="dark"]) .resUnidad,
+:global(.dark) .umbralRow,
+:global([data-theme="dark"]) .umbralRow,
+:global(.dark) .estadoTexto,
+:global([data-theme="dark"]) .estadoTexto {
+  color: #94a3b8;
+}
+
+:global(.dark) .kpiCard,
+:global([data-theme="dark"]) .kpiCard,
+:global(.dark) .tablaResumenSection,
+:global([data-theme="dark"]) .tablaResumenSection,
+:global(.dark) .interpCard,
+:global([data-theme="dark"]) .interpCard,
+:global(.dark) .estadoCard,
+:global([data-theme="dark"]) .estadoCard {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+
+:global(.dark) .kpiBarBg,
+:global([data-theme="dark"]) .kpiBarBg,
+:global(.dark) .indNumBadge,
+:global([data-theme="dark"]) .indNumBadge {
+  background: #1e293b;
+}
+
+:global(.dark) .datosTabla th,
+:global([data-theme="dark"]) .datosTabla th {
+  background: #1e293b;
+  color: #94a3b8;
+  border-color: #334155;
+}
+
+:global(.dark) .datosTabla td,
+:global([data-theme="dark"]) .datosTabla td,
+:global(.dark) .kpiFooterRow,
+:global([data-theme="dark"]) .kpiFooterRow {
+  border-color: #1e293b;
+}
+
+:global(.dark) .datosTabla tr:hover td,
+:global([data-theme="dark"]) .datosTabla tr:hover td {
+  background: #1e293b80;
+}
+
+:global(.dark) .btnPrimary,
+:global([data-theme="dark"]) .btnPrimary {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+:global(.dark) .btnPrimary:hover:not(:disabled),
+:global([data-theme="dark"]) .btnPrimary:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+:global(.dark) .btnSecundarioSmall,
+:global([data-theme="dark"]) .btnSecundarioSmall,
+:global(.dark) .exportBtn,
+:global([data-theme="dark"]) .exportBtn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global(.dark) .btnSecundarioSmall:hover,
+:global([data-theme="dark"]) .btnSecundarioSmall:hover,
+:global(.dark) .exportBtn:hover,
+:global([data-theme="dark"]) .exportBtn:hover {
+  background: #334155;
+  border-color: #475569;
+}
+
+:global(.dark) .backBtn:hover,
+:global([data-theme="dark"]) .backBtn:hover {
+  color: #f8fafc;
+}
+
+:global(.dark) .spinner,
+:global([data-theme="dark"]) .spinner {
+  border-color: #1e293b;
+  border-top-color: #3b82f6;
+}
+
+@media (max-width: 1024px) {
+  .kpiGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .datosGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .resultadoGrid,
+  .dashGrid,
+  .bottomGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
