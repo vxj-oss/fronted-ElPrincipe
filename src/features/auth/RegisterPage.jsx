@@ -22,6 +22,9 @@ export default function RegisterPage() {
       </div>
 
       <div className={styles.formPanel}>
+        <h1 className={styles.mobileTitle}>
+          EP <span className={styles.mobileTitleAccent}>Agent</span>
+        </h1>
         <div className={styles.formCard}>
           <h2 className={styles.formTitle}>Crear Cuenta</h2>
           <p className={styles.formSubtitle}>Ingresa tus datos para registrarte</p>

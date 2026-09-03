@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { useLogin } from './useLogin';
 import Button from '../../components/ui/Button';
+import logo from '../../assets/logo.png';
 import styles from './auth.module.css';
 
 export default function LoginPage() {
@@ -24,6 +25,10 @@ export default function LoginPage() {
 
       {/* Panel del formulario */}
       <div className={styles.formPanel}>
+        <h1 className={styles.mobileTitle}>
+          EP <span className={styles.mobileTitleAccent}>Agent</span>
+        </h1>
+        <img src={logo} alt="EL PRÍNCIPE" className={styles.mobileLogo} />
         <div className={styles.formCard}>
           <h2 className={styles.formTitle}>Iniciar Sesión</h2>
           <p className={styles.formSubtitle}>Ingresa tus credenciales para continuar</p>
