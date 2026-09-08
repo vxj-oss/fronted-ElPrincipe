@@ -14,6 +14,7 @@ import { useCommercialTerms } from './useCommercialTerms';
 import { EMPRESA } from '../../constants/appConstants';
 import { formatearFecha } from './commercialTermsService';
 import { usePagination } from '../../hooks/usePagination';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 import Pagination from '../../components/ui/Pagination';
 import styles from './commercialTerms.module.css';
 
@@ -63,7 +64,9 @@ function DetallePanel({ condicion, onCerrar, onEditar }) {
   if (!condicion) return null;
 
   return (
-    <aside className={styles.detallePanel} aria-label="Detalle de condición comercial">
+    <>
+    <div className="rt-backdrop" onClick={onCerrar} aria-hidden="true" />
+    <aside className={`${styles.detallePanel} rt-drawer`} aria-label="Detalle de condición comercial">
       <div className={styles.detallePanelHeader}>
         <h2 className={styles.detalleTitulo}>Política Comercial</h2>
         <button onClick={onCerrar} className={styles.btnIcono} aria-label="Cerrar">
@@ -141,6 +144,7 @@ function DetallePanel({ condicion, onCerrar, onEditar }) {
         </button>
       </div>
     </aside>
+    </>
   );
 }
 
@@ -314,6 +318,8 @@ export default function CommercialTermsPage() {
     cerrarDetalle,
   } = useCommercialTerms();
 
+  const esMovilVertical = useMediaQuery('(max-width: 768px)');
+
   const {
     itemsPagina: condicionesPagina,
     pagina,
@@ -323,7 +329,7 @@ export default function CommercialTermsPage() {
     irAPagina,
     paginaAnterior,
     paginaSiguiente,
-  } = usePagination(condicionesFiltradas, 7);
+  } = usePagination(condicionesFiltradas, esMovilVertical ? 2 : 7);
 
   if (cargando) {
     return (
@@ -390,7 +396,7 @@ export default function CommercialTermsPage() {
           </select>
         </div>
 
-        <section className={styles.tableCard} aria-label="Lista de condiciones comerciales">
+        <section className={`${styles.tableCard} rt-flat`} aria-label="Lista de condiciones comerciales">
           {condicionesFiltradas.length === 0 ? (
             <div className={styles.emptyState}>
               <FileText size={36} className={styles.emptyIcon} aria-hidden="true" />
@@ -401,7 +407,7 @@ export default function CommercialTermsPage() {
               </button>
             </div>
           ) : (
-            <table className={styles.table}>
+            <table className={`${styles.table} responsive-table`}>
               <thead>
                 <tr>
                   <th>Cliente</th>
@@ -418,22 +424,23 @@ export default function CommercialTermsPage() {
                   <tr
                     key={c.id}
                     onClick={() => verDetalle(c)}
+                    data-rownav=""
                     className={condicionDetalle?.id === c.id ? styles.rowActiva : ''}
                     style={{ cursor: 'pointer' }}
                   >
-                    <td>
+                    <td data-label="Cliente" data-primary>
                       <span className={styles.condNombre}>{c.cliente}</span>
                     </td>
-                    <td><PillTipo tipo={c.tipo} /></td>
-                    <td>{c.plazo}</td>
-                    <td style={{ fontWeight: 600, color: c.descuento > 0 ? '#15803d' : '#94a3b8' }}>
+                    <td data-label="Tipo de Condición"><PillTipo tipo={c.tipo} /></td>
+                    <td data-label="Plazo Pactado">{c.plazo}</td>
+                    <td data-label="Descuento" style={{ fontWeight: 600, color: c.descuento > 0 ? '#15803d' : '#94a3b8' }}>
                       {c.descuento > 0 ? `${c.descuento}%` : '0%'}
                     </td>
-                    <td className={styles.tdSecundario}>
+                    <td data-label="Límite Crédito" className={styles.tdSecundario}>
                       {c.limiteCredito > 0 ? `${EMPRESA.MONEDA_SIMBOLO} ${c.limiteCredito.toLocaleString('es-PE', { minimumFractionDigits: 2 })}` : '—'}
                     </td>
-                    <td className={styles.tdSecundario}>{formatearFecha(c.fechaRegistro)}</td>
-                    <td onClick={(e) => e.stopPropagation()}>
+                    <td data-label="Fecha de Registro" className={styles.tdSecundario}>{formatearFecha(c.fechaRegistro)}</td>
+                    <td data-label="Acciones" onClick={(e) => e.stopPropagation()}>
                       <div className={styles.acciones}>
                         <button
                           onClick={() => abrirEditar(c)}

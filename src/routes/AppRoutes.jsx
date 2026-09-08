@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { puede } from '../utils/permissions';
 import Spinner from '../components/ui/Spinner';
 
 // Layouts
@@ -23,6 +24,7 @@ import ReportsPage from '../features/reports/ReportsPage';
 import HistoryPage from '../features/history/HistoryPage';
 import ProfilePage from '../features/profile/ProfilePage';
 import SettingsPage from '../features/settings/SettingsPage';
+import UsersPage from '../features/users/UsersPage';
 
 function PrivateRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
@@ -36,6 +38,11 @@ function PrivateRoute({ children }) {
   }
 
   return isAuthenticated ? children : <Navigate to="/login" replace />;
+}
+
+function RoleRoute({ cap, children }) {
+  const { user } = useAuth();
+  return puede(user?.rol, cap) ? children : <Navigate to="/dashboard" replace />;
 }
 
 function PublicRoute({ children }) {
@@ -95,7 +102,22 @@ export default function AppRoutes() {
           <Route path="/condiciones" element={<CommercialTermsPage />} />
           <Route path="/indicadores" element={<IndicatorsPage />} />
           <Route path="/reportes" element={<ReportsPage />} />
-          <Route path="/historial" element={<HistoryPage />} />
+          <Route
+            path="/historial"
+            element={
+              <RoleRoute cap="historial.ver">
+                <HistoryPage />
+              </RoleRoute>
+            }
+          />
+          <Route
+            path="/usuarios"
+            element={
+              <RoleRoute cap="usuarios.ver">
+                <UsersPage />
+              </RoleRoute>
+            }
+          />
           <Route path="/perfil" element={<ProfilePage />} />
           <Route path="/configuracion" element={<SettingsPage />} />
         </Route>

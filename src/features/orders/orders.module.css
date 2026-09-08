@@ -885,6 +885,14 @@
   color: #b91c1c;
 }
 
+.toastWarning {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #c2410c;
+  max-width: 340px;
+  align-items: flex-start;
+}
+
 @keyframes slideIn {
   from {
     transform: translateY(-8px);
@@ -1255,6 +1263,13 @@
   color: #fca5a5;
 }
 
+:global(.dark) .toastWarning,
+:global([data-theme="dark"]) .toastWarning {
+  background: rgba(234, 88, 12, 0.15);
+  border-color: rgba(234, 88, 12, 0.35);
+  color: #fdba74;
+}
+
 :global(.dark) .spinner,
 :global([data-theme="dark"]) .spinner {
   border-color: #1e293b;
@@ -1281,6 +1296,7 @@
   }
   .mainArea {
     padding: 16px;
+    overflow-x: hidden;
   }
   .detallePanel {
     width: 100%;
@@ -1293,9 +1309,30 @@
   .toolbar {
     flex-direction: column;
     align-items: stretch;
+    width: 100%;
   }
   .searchWrap {
     max-width: 100%;
+  }
+  .filterSelect {
+    width: 100%;
+    min-width: 0;
+  }
+  .table tr:hover td {
+    background: transparent;
+  }
+  .table tr.rowConError::before,
+  :global(.dark) .table tr.rowConError::before,
+  :global([data-theme='dark']) .table tr.rowConError::before {
+    background: #dc2626;
+  }
+  .clienteNombre {
+    font-size: 0.9375rem;
+  }
+  .table td[data-label^='Total'] {
+    font-weight: 700;
+    color: #1E3A8A;
+    font-size: 0.875rem;
   }
   .modalBody {
     grid-template-columns: minmax(0, 1fr);

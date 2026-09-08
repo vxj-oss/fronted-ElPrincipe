@@ -214,9 +214,16 @@ export function useCustomers() {
   const handleEliminar = useCallback(async () => {
     if (!confirmDelete) return;
     try {
-      await eliminarCliente(confirmDelete);
-      setClientes((prev) => prev.filter((c) => c.id !== confirmDelete));
-      setToastMsg({ tipo: 'success', texto: 'Cliente eliminado de la cartera.' });
+      const res = await eliminarCliente(confirmDelete);
+      if (res?.soft_delete) {
+        setClientes((prev) =>
+          prev.map((c) => (c.id === confirmDelete ? { ...c, activo: false, estado: 'Inactivo' } : c)),
+        );
+        setToastMsg({ tipo: 'warning', texto: res.message || 'Cliente marcado como inactivo.' });
+      } else {
+        setClientes((prev) => prev.filter((c) => c.id !== confirmDelete));
+        setToastMsg({ tipo: 'success', texto: 'Cliente eliminado de la cartera.' });
+      }
       if (clienteDetalle?.id === confirmDelete) setClienteDetalle(null);
     } catch (err) {
       setToastMsg({ tipo: 'error', texto: err?.message || 'No se pudo eliminar el cliente.' });

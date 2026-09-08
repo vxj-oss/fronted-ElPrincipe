@@ -12,7 +12,7 @@ export function formatearDesde(fechaISO) {
   return new Date(fechaISO).toLocaleDateString('es-PE', {
     month: 'long',
     year: 'numeric',
-  });F
+  });
 }
 
 export function formatearUltimoAcceso(fechaISO) {
@@ -53,6 +53,7 @@ export function validarPerfil(datos) {
 
 export function validarPassword(datos) {
   const errs = {};
+  if (!datos.actual) errs.actual = 'Ingresa tu contraseña actual.';
   if (!datos.nueva) {
     errs.nueva = 'La nueva contraseña es requerida.';
   } else {
@@ -153,15 +154,23 @@ export async function fetchStats() {
 }
 
 export async function fetchActividad(usuarioId) {
-  const url = usuarioId
-    ? `${BASE_URL}/history/?usuario_id=${usuarioId}&limit=5`
-    : `${BASE_URL}/history/?limit=5`;
+  const params = new URLSearchParams({ por_pagina: '5' });
+  if (usuarioId) params.append('usuario_id', String(usuarioId));
 
-  const res = await fetch(url, { headers: getAuthHeaders(), credentials: 'include' });
+  const res = await fetch(`${BASE_URL}/history/?${params.toString()}`, {
+    headers: getAuthHeaders(),
+    credentials: 'include',
+  });
   if (!res.ok) return [];
 
-  const raw = await res.json();
-  return raw.map((item) => {
+  const data = await res.json().catch(() => null);
+  const lista = Array.isArray(data)
+    ? data
+    : Array.isArray(data?.items)
+      ? data.items
+      : [];
+
+  return lista.map((item) => {
     let icono = 'clipboard-list';
     let colorBg = '#eff6ff';
     let colorIc = '#1d4ed8';
@@ -215,20 +224,21 @@ export async function actualizarPerfil(datos) {
 }
 
 export async function cambiarPassword(datos) {
-  const payload = {
-    password: datos.nueva,
-  };
-
-  const res = await fetch(`${BASE_URL}/users/me`, {
+  const res = await fetch(`${BASE_URL}/users/me/password`, {
     method: 'PUT',
     headers: getAuthHeaders(),
-    body: JSON.stringify(payload),
+    body: JSON.stringify({ actual: datos.actual, nueva: datos.nueva }),
     credentials: 'include',
   });
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.detail || 'Error al cambiar la contraseña');
+    const detalle = typeof err.detail === 'string'
+      ? err.detail
+      : Array.isArray(err.detail)
+        ? err.detail.map((e) => e.msg).join(', ')
+        : 'Error al cambiar la contraseña';
+    throw new Error(detalle);
   }
 
   return { ok: true };

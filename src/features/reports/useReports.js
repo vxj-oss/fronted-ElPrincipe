@@ -4,6 +4,7 @@ import {
   descargarReporteDesdeBackend,
   REPORTES_CATALOGO,
 } from './reportsService';
+import { mesActualLima } from '../../utils/fechas';
 
 export function useReports() {
   const [historial, setHistorial] = useState([]);
@@ -27,7 +28,7 @@ export function useReports() {
   }, [toastMsg]);
 
   const kpis = useMemo(() => {
-    const mesActual = new Date().toISOString().slice(0, 7);
+    const mesActual = mesActualLima();
     const delMes = historial.filter((h) => h.fecha.startsWith(mesActual));
     const ultimo = historial[0] ?? null;
     return {

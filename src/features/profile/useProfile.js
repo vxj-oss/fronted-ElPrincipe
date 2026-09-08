@@ -184,7 +184,8 @@ export function useProfile() {
       setFormPasswordErrors({});
       setToastMsg({ tipo: 'success', texto: 'Contraseña actualizada correctamente.' });
     } catch (err) {
-      setFormPasswordErrors({ nueva: err.message });
+      const campo = /actual/i.test(err.message) ? 'actual' : 'nueva';
+      setFormPasswordErrors({ [campo]: err.message });
     } finally {
       setGuardandoPassword(false);
     }

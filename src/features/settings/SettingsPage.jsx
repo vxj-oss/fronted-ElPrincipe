@@ -1,5 +1,7 @@
 import { AlertTriangle, CheckCircle, AlertCircle, X } from 'lucide-react'
 import { useSettings } from './useSettings'
+import MetaComercialCard from './MetaComercialCard'
+import CategoriasCard from './CategoriasCard'
 import styles from './settings.module.css'
 
 function Toast({ toast }) {
@@ -69,6 +71,9 @@ export default function SettingsPage() {
       <Toast toast={toastMsg} />
 
       <div className={styles.content} role="main">
+        <MetaComercialCard />
+        <CategoriasCard />
+
         <div className={styles.card}>
           <h3 className={styles.cardTitle}>Datos y preferencias</h3>
           <p className={styles.cardSub}>Operaciones disponibles sobre tu cuenta y tus datos en el sistema</p>

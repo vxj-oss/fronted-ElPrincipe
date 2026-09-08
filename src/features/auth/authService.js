@@ -13,7 +13,7 @@ export const authService = {
   },
 
   async register(userData) {
-    return await apiRequest('/users/', {
+    return await apiRequest('/auth/register', {
       method: 'POST',
       body: JSON.stringify(userData),
     });

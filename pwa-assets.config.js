@@ -7,7 +7,7 @@ export default defineConfig({
   preset: {
     ...minimal2023Preset,
     background: '#0f172a',
-    padding: 0.18,
+    padding: 0,
   },
-  images: ['public/favicon.svg'],
+  images: ['src/assets/logo.png'],
 })

@@ -62,13 +62,14 @@ export function generarInterpretacion(sigla, valor, datos, umbral) {
   if (sigla === 'NTDC') {
     const pct = valor.toFixed(1);
     const noEfectivas = Math.max(0, datos.TDCT - datos.TDCE);
+    const corregidas = datos.decisionesCorregidas || 0;
     if (umbral.nivel === 'bueno') {
-      return `El <strong>${pct}%</strong> de las decisiones comerciales tomadas resultaron efectivas (≥75%). Solo ${noEfectivas} decisiones requirieron ajustes posteriores.`;
+      return `El <strong>${pct}%</strong> de las decisiones comerciales registradas resultaron efectivas (≥75%). ${corregidas} decisiones requirieron ajustes posteriores y ${noEfectivas} siguen pendientes de corrección.`;
     }
     if (umbral.nivel === 'regular') {
-      return `El <strong>${pct}%</strong> de las decisiones comerciales fueron efectivas. El indicador se ubica en rango regular (50%–74%).`;
+      return `El <strong>${pct}%</strong> de las decisiones comerciales registradas fueron efectivas. El indicador se ubica en rango regular (50%–74%). ${noEfectivas} decisiones siguen con incidencias sin resolver.`;
     }
-    return `Solo el <strong>${pct}%</strong> de las decisiones comerciales resultaron efectivas (&lt;50%). Se recomienda soporte con el Agente Comercial IA.`;
+    return `Solo el <strong>${pct}%</strong> de las decisiones comerciales registradas resultaron efectivas (&lt;50%). ${noEfectivas} decisiones mantienen incidencias sin corregir. Se recomienda soporte con el Agente Comercial IA.`;
   }
 
   return '';
@@ -82,7 +83,8 @@ export function generarConclusion(sigla, valor, datos, umbral) {
     return `El PFCC de <strong>${valor.toFixed(2)}%</strong> refleja un estado <strong>${umbral.label}</strong> en negociación comercial. Total evaluado: ${datos.TCCD} condiciones con ${datos.TCCF} falla(s).`;
   }
   if (sigla === 'NTDC') {
-    return `El NTDC de <strong>${valor.toFixed(2)}%</strong> indica una efectividad <strong>${umbral.label}</strong> en toma de decisiones. Decisiones efectivas: ${datos.TDCE} de un total de ${datos.TDCT}.`;
+    const corregidas = datos.decisionesCorregidas || 0;
+    return `El NTDC de <strong>${valor.toFixed(2)}%</strong> indica una efectividad <strong>${umbral.label}</strong> en toma de decisiones. Decisiones efectivas: ${datos.TDCE} de un total de ${datos.TDCT} (${corregidas} corregidas tras una incidencia inicial).`;
   }
   return '';
 }
@@ -237,11 +239,13 @@ export async function fetchResumenIndicadores() {
       datos: {
         TDCE: latest.total_decisiones_efectivas || 0,
         TDCT: latest.total_decisiones_evaluadas || 0,
+        decisionesCorregidas: latest.total_decisiones_corregidas || 0,
         desgloseTDCE: [
-          { tipo: 'Decisiones efectivas tomadas', cantidad: latest.total_decisiones_efectivas || 0 },
+          { tipo: 'Decisiones efectivas', cantidad: latest.total_decisiones_efectivas || 0 },
         ],
         desgloseTDCT: [
-          { label: 'Decisiones evaluadas', valor: latest.total_decisiones_evaluadas || 0, unidad: 'dec.' },
+          { label: 'Decisiones registradas', valor: latest.total_decisiones_evaluadas || 0, unidad: 'dec.' },
+          { label: 'Corregidas tras incidencia', valor: latest.total_decisiones_corregidas || 0, unidad: 'dec.' },
         ],
         tablaErrores: tablaErroresNTDC,
         periodoCalculo: fechaCalcLima,

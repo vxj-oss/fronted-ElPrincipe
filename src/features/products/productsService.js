@@ -20,7 +20,7 @@ function normalizeProductFromBackend(prod) {
     unidad: prod.unidad_medida,
     rotacion: prod.nivel_rotacion,
     descripcion: prod.descripcion || '',
-    activo: true,
+    activo: prod.activo !== false,
   };
 }
 
@@ -39,8 +39,11 @@ function transformProductToBackend(data) {
   };
 }
 
-export async function fetchProductos(categoryId = null) {
-  const query = categoryId ? `?category_id=${categoryId}` : '';
+export async function fetchProductos(categoryId = null, incluirInactivos = false) {
+  const params = new URLSearchParams();
+  if (categoryId) params.append('category_id', categoryId);
+  if (incluirInactivos) params.append('incluir_inactivos', 'true');
+  const query = params.toString() ? `?${params.toString()}` : '';
   const data = await apiRequest(`/products/${query}`);
   return data.map(normalizeProductFromBackend);
 }
@@ -74,6 +77,53 @@ export async function eliminarProducto(id) {
   });
 }
 
+export async function reactivarProducto(id) {
+  const response = await apiRequest(`/products/${id}/reactivar`, {
+    method: 'PATCH',
+  });
+  return normalizeProductFromBackend(response);
+}
+
 export async function fetchCategorias() {
   return await apiRequest('/categories/');
+}
+
+export async function crearCategoria({ nombre, descripcion }) {
+  return await apiRequest('/categories/', {
+    method: 'POST',
+    body: JSON.stringify({
+      nombre: nombre.trim(),
+      descripcion: descripcion?.trim() || null,
+    }),
+  });
+}
+
+export async function actualizarCategoria(id, { nombre, descripcion }) {
+  return await apiRequest(`/categories/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      nombre: nombre.trim(),
+      descripcion: descripcion?.trim() || null,
+    }),
+  });
+}
+
+export async function eliminarCategoria(id) {
+  return await apiRequest(`/categories/${id}`, {
+    method: 'DELETE',
+  });
+}
+
+export async function fetchMovimientosStock(productId, limit = 50) {
+  const data = await apiRequest(`/products/${productId}/movimientos?limit=${limit}`);
+  return (data || []).map((m) => ({
+    id: m.id,
+    pedidoId: m.pedido_id,
+    tipo: m.tipo,
+    cantidad: m.cantidad,
+    stockAnterior: m.stock_anterior,
+    stockNuevo: m.stock_nuevo,
+    motivo: m.motivo || '',
+    fecha: m.creado_en,
+  }));
 }

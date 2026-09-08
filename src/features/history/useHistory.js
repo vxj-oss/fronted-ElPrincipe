@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
   fetchEventos,
-  fetchEvento,
   fetchEstadisticas,
   ACCIONES,
   MODULOS,
   CONFIG_ACCION,
 } from './historyService';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 
 const RANGOS = [
   { value: '', label: 'Todo el tiempo' },
@@ -16,8 +16,11 @@ const RANGOS = [
 ];
 
 const POR_PAGINA = 7;
+const POR_PAGINA_MOVIL = 2;
 
 export function useHistory() {
+  const esMovilVertical = useMediaQuery('(max-width: 768px)');
+  const porPagina = esMovilVertical ? POR_PAGINA_MOVIL : POR_PAGINA;
   const [eventos, setEventos] = useState([]);
   const [stats, setStats] = useState(null);
   const [cargando, setCargando] = useState(true);
@@ -29,9 +32,18 @@ export function useHistory() {
   const [totalPaginas, setTotalPaginas] = useState(1);
 
   const [busqueda, setBusqueda] = useState('');
+  const [busquedaDebounced, setBusquedaDebounced] = useState('');
   const [filtroAccion, setFiltroAccion] = useState('');
   const [filtroModulo, setFiltroModulo] = useState('');
   const [filtroRango, setFiltroRango] = useState('');
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setBusquedaDebounced(busqueda);
+      setPagina(1);
+    }, 350);
+    return () => clearTimeout(t);
+  }, [busqueda]);
 
   const [eventoDetalle, setEventoDetalle] = useState(null);
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -50,9 +62,9 @@ export function useHistory() {
       accion: filtroAccion,
       modulo: filtroModulo,
       rango: filtroRango,
-      busqueda,
+      busqueda: busquedaDebounced,
       pagina,
-      porPagina: POR_PAGINA,
+      porPagina,
     })
       .then((res) => {
         if (!cancelled) {
@@ -71,14 +83,13 @@ export function useHistory() {
     return () => {
       cancelled = true;
     };
-  }, [busqueda, filtroAccion, filtroModulo, filtroRango, pagina]);
+  }, [busquedaDebounced, filtroAccion, filtroModulo, filtroRango, pagina, porPagina]);
 
   const resetPagina = useCallback(() => setPagina(1), []);
 
   const handleBusqueda = useCallback((v) => {
     setBusqueda(v);
-    resetPagina();
-  }, [resetPagina]);
+  }, []);
 
   const handleFiltroAccion = useCallback((v) => {
     setFiltroAccion(v);
@@ -95,17 +106,10 @@ export function useHistory() {
     resetPagina();
   }, [resetPagina]);
 
-  const verDetalle = useCallback(async (id) => {
-    setCargandoDet(true);
+  const verDetalle = useCallback((evento) => {
+    setCargandoDet(false);
     setModalAbierto(true);
-    try {
-      const evento = await fetchEvento(id);
-      setEventoDetalle(evento);
-    } catch {
-      setEventoDetalle(null);
-    } finally {
-      setCargandoDet(false);
-    }
+    setEventoDetalle(evento || null);
   }, []);
 
   const cerrarDetalle = useCallback(() => {
@@ -166,7 +170,7 @@ export function useHistory() {
     pagina,
     totalItems,
     totalPaginas,
-    POR_PAGINA,
+    POR_PAGINA: porPagina,
     busqueda,
     filtroAccion,
     filtroModulo,

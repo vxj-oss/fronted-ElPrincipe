@@ -1,3 +1,5 @@
+import { fechaHoyLima } from '../../utils/fechas';
+
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
 function getAuthHeaders() {
@@ -64,7 +66,7 @@ export async function exportarDatosUsuario() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `mis-datos-${new Date().toISOString().split('T')[0]}.json`;
+  a.download = `mis-datos-${fechaHoyLima()}.json`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);

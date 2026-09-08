@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&display=swap');
+
 /* ── Layout principal de Login ─────────────────────────────────────────────── */
 .wrapper {
   display: flex;
@@ -164,10 +166,76 @@
   }
 }
 
-/* Responsive */
 @media (min-width: 768px) {
   .branding {
     display: flex;
+  }
+}
+
+.mobileTitle {
+  display: none;
+}
+
+.mobileTitleAccent {
+  color: #7ee0ff;
+}
+
+.mobileLogo {
+  display: none;
+}
+
+@media (max-width: 767px) and (orientation: portrait) {
+  .formPanel {
+    flex-direction: column;
+    background:
+      radial-gradient(circle at 18% 15%, rgba(126, 20, 255, 0.4), transparent 50%),
+      radial-gradient(circle at 85% 5%, rgba(71, 191, 255, 0.35), transparent 55%),
+      linear-gradient(160deg, #0f2557 0%, #1e3a8a 55%, #142a63 100%);
+  }
+
+  .mobileTitle {
+    display: block;
+    text-align: center;
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    margin-bottom: 0.875rem;
+    color: #ffffff;
+    animation: mobileTitlePulse 2.6s ease-in-out infinite;
+  }
+
+  @keyframes mobileTitlePulse {
+    0%, 100% {
+      transform: scale(1);
+      text-shadow:
+        0 0 10px rgba(126, 224, 255, 0.55),
+        0 0 22px rgba(126, 224, 255, 0.3),
+        0 4px 10px rgba(0, 0, 0, 0.35);
+    }
+    50% {
+      transform: scale(1.045);
+      text-shadow:
+        0 0 20px rgba(126, 224, 255, 0.95),
+        0 0 42px rgba(126, 224, 255, 0.6),
+        0 4px 10px rgba(0, 0, 0, 0.35);
+    }
+  }
+
+  .mobileLogo {
+    display: block;
+    width: 108px;
+    height: 108px;
+    object-fit: cover;
+    border-radius: 1.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35), 0 0 0 3px rgba(255, 255, 255, 0.15);
+  }
+
+  /* La tarjeta usaba margin: auto, que en flex-column absorbe todo el
+     espacio libre y la aleja del logo/título. La fijamos al flujo normal. */
+  .formCard {
+    margin: 0;
   }
 }
 

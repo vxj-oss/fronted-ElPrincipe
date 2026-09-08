@@ -68,7 +68,7 @@ export default function NTDCIndicator({ onVolver }) {
             sigla="TDCT"
             nombre="Total de decisiones comerciales tomadas"
             valor={datos.TDCT}
-            desc="Total de decisiones registradas en el periodo"
+            desc="Toda orden registrada en el periodo (excepto las canceladas) cuenta como una decisión comercial"
             desglose={datos.desgloseTDCT.map((d) => ({ label: d.label, valor: `${d.valor}${d.unidad ? ' ' + d.unidad : ''}` }))}
           />
         </div>

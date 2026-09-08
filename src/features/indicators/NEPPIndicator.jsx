@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { ChevronLeft, Download, AlertCircle } from 'lucide-react';
 import { useIndicadorDetalle } from './useIndicators';
 import { usePagination } from '../../hooks/usePagination';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 import Pagination from '../../components/ui/Pagination';
 import styles from './indicators.module.css';
 
@@ -58,15 +59,16 @@ export function DatoCard({ sigla, nombre, valor, desc, desglose = [] }) {
 }
 
 export function TablaErrores({ filas = [], columnas = [], claves = [] }) {
+  const esMovilVertical = useMediaQuery('(max-width: 768px)');
   const {
     itemsPagina, pagina, totalPaginas, totalItems, porPagina,
     irAPagina, paginaAnterior, paginaSiguiente,
-  } = usePagination(filas, 7);
+  } = usePagination(filas, esMovilVertical ? 2 : 7);
 
   return (
     <div>
       <div style={{ overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8125rem' }}>
+        <table className="responsive-table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8125rem' }}>
           <thead>
             <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
               {columnas.map((c) => (
@@ -86,8 +88,8 @@ export function TablaErrores({ filas = [], columnas = [], claves = [] }) {
             ) : (
               itemsPagina.map((f, i) => (
                 <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                  {claves.map((k) => (
-                    <td key={k} style={{ padding: '8px 10px', color: '#0f172a' }}>
+                  {claves.map((k, ci) => (
+                    <td key={k} data-label={columnas[ci]} data-primary={ci === 0 ? '' : undefined} style={{ padding: '8px 10px', color: '#0f172a' }}>
                       {k === 'error' || k === 'resultado' ? (
                         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 4, background: '#fef2f2', color: '#b91c1c', fontSize: '0.75rem', fontWeight: 500, border: '1px solid #fecaca' }}>
                           <AlertCircle size={11} aria-hidden="true" />

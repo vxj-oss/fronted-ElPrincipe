@@ -1395,6 +1395,7 @@
   }
   .mainArea {
     padding: 16px;
+    overflow-x: hidden;
   }
   .detallePanel {
     width: 100%;
@@ -1407,9 +1408,21 @@
   .toolbar {
     flex-direction: column;
     align-items: stretch;
+    width: 100%;
   }
   .searchWrap {
     max-width: 100%;
+  }
+  .filterSelect {
+    width: 100%;
+    min-width: 0;
+  }
+  .table tr:hover td {
+    background: transparent;
+  }
+  .condNombre {
+    font-size: 0.9375rem;
+    font-weight: 600;
   }
   .modalBody {
     grid-template-columns: minmax(0, 1fr);

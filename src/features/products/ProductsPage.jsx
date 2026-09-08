@@ -1,14 +1,22 @@
-﻿import {
+﻿import { useEffect, useState } from 'react'
+import {
   Plus, Search, Pencil, Trash2, AlertCircle,
-  CheckCircle, Package,
+  CheckCircle, Package, AlertTriangle, RotateCcw,
 } from 'lucide-react'
 import { useProducts, estadoStock } from './useProducts'
 import { usePagination } from '../../hooks/usePagination'
+import { useMediaQuery } from '../../hooks/useMediaQuery'
+import { useAuth } from '../../context/AuthContext'
+import { puede } from '../../utils/permissions'
 import Pagination from '../../components/ui/Pagination'
 import ProductForm from './ProductForm'
+import MovimientosStock from './MovimientosStock'
 import styles from './products.module.css'
 
 function PillStock({ producto }) {
+  if (!producto.activo) {
+    return <span className={`${styles.pill} ${styles.pillInactivo}`}>Inactivo</span>
+  }
   const estado = estadoStock(producto)
   const clases = {
     critico: styles.pillCritico,
@@ -33,10 +41,17 @@ function KPICard({ label, value, note, colorValue }) {
 
 function Toast({ toast }) {
   if (!toast) return null
-  const esError = toast.tipo === 'error'
+  const clase = {
+    error: styles.toastError,
+    warning: styles.toastWarning,
+  }[toast.tipo] || styles.toastSuccess
+  const Icono = {
+    error: AlertCircle,
+    warning: AlertTriangle,
+  }[toast.tipo] || CheckCircle
   return (
-    <div className={`${styles.toast} ${esError ? styles.toastError : styles.toastSuccess}`} role="status">
-      {esError ? <AlertCircle size={14} aria-hidden="true" /> : <CheckCircle size={14} aria-hidden="true" />}
+    <div className={`${styles.toast} ${clase}`} role="status">
+      <Icono size={14} aria-hidden="true" />
       {toast.texto}
     </div>
   )
@@ -47,6 +62,12 @@ function ProductModal({
   categorias, UNIDADES, NIVELES_ROTACION,
   onClose, onChange, onGuardar,
 }) {
+  const [tab, setTab] = useState('datos')
+
+  useEffect(() => {
+    if (abierto) setTab('datos')
+  }, [abierto, editandoId])
+
   if (!abierto) return null
 
   return (
@@ -59,18 +80,41 @@ function ProductModal({
           <button onClick={onClose} className={styles.modalClose} aria-label="Cerrar">×</button>
         </div>
 
-        <ProductForm
-          form={form}
-          formErrors={formErrors}
-          guardando={guardando}
-          editandoId={editandoId}
-          categorias={categorias}
-          UNIDADES={UNIDADES}
-          NIVELES_ROTACION={NIVELES_ROTACION}
-          onChange={onChange}
-          onGuardar={onGuardar}
-          onCancelar={onClose}
-        />
+        {editandoId && (
+          <div className={styles.modalTabs}>
+            <button
+              type="button"
+              className={`${styles.modalTab} ${tab === 'datos' ? styles.modalTabActivo : ''}`}
+              onClick={() => setTab('datos')}
+            >
+              Datos
+            </button>
+            <button
+              type="button"
+              className={`${styles.modalTab} ${tab === 'historial' ? styles.modalTabActivo : ''}`}
+              onClick={() => setTab('historial')}
+            >
+              Historial de stock
+            </button>
+          </div>
+        )}
+
+        {tab === 'historial' && editandoId ? (
+          <MovimientosStock productoId={editandoId} />
+        ) : (
+          <ProductForm
+            form={form}
+            formErrors={formErrors}
+            guardando={guardando}
+            editandoId={editandoId}
+            categorias={categorias}
+            UNIDADES={UNIDADES}
+            NIVELES_ROTACION={NIVELES_ROTACION}
+            onChange={onChange}
+            onGuardar={onGuardar}
+            onCancelar={onClose}
+          />
+        )}
       </div>
     </div>
   )
@@ -89,7 +133,8 @@ function ConfirmDeleteModal({ productoId, productos, onConfirm, onCancel }) {
         <div className={styles.confirmBody}>
           <AlertCircle size={32} className={styles.confirmIcon} aria-hidden="true" />
           <p className={styles.confirmText}>
-            ¿Eliminar <strong>{producto?.nombre}</strong> del catálogo? Esta acción no se puede deshacer.
+            ¿Eliminar <strong>{producto?.nombre}</strong> del catálogo? Si el producto tiene
+            historial de pedidos o movimientos de stock, se marcará como inactivo en lugar de borrarse.
           </p>
         </div>
         <div className={styles.modalFooter}>
@@ -102,8 +147,11 @@ function ConfirmDeleteModal({ productoId, productos, onConfirm, onCancel }) {
 }
 
 export default function ProductsPage() {
+  const { user } = useAuth()
+  const puedeEditar = puede(user?.rol, 'productos.escribir')
   const {
     productosFiltrados,
+    productosBajoStock,
     categorias,
     kpis,
     cargando,
@@ -130,8 +178,11 @@ export default function ProductsPage() {
     handleGuardar,
     pedirConfirmarEliminar,
     handleEliminar,
+    handleReactivar,
     cancelarEliminar,
   } = useProducts()
+
+  const esMovilVertical = useMediaQuery('(max-width: 768px)')
 
   const {
     itemsPagina: productosPagina,
@@ -142,7 +193,7 @@ export default function ProductsPage() {
     irAPagina,
     paginaAnterior,
     paginaSiguiente,
-  } = usePagination(productosFiltrados, 7)
+  } = usePagination(productosFiltrados, esMovilVertical ? 2 : 7)
 
   if (cargando) {
     return (
@@ -171,10 +222,12 @@ export default function ProductsPage() {
           <h1 className={styles.pageTitle}>Productos</h1>
           <p className={styles.pageSub}>Catálogo de productos de limpieza — EL PRÍNCIPE</p>
         </div>
-        <button onClick={abrirCrear} className={styles.btnPrimary}>
-          <Plus size={15} aria-hidden="true" />
-          Nuevo producto
-        </button>
+        {puedeEditar && (
+          <button onClick={abrirCrear} className={styles.btnPrimary}>
+            <Plus size={15} aria-hidden="true" />
+            Nuevo producto
+          </button>
+        )}
       </header>
 
       <section className={styles.kpiGrid} aria-label="Resumen del catálogo">
@@ -226,19 +279,32 @@ export default function ProductsPage() {
         </select>
       </div>
 
-      <section className={styles.tableCard} aria-label="Lista de productos">
+      {productosBajoStock.length > 0 && (
+        <div className={styles.insightStock} role="status">
+          <AlertTriangle size={16} aria-hidden="true" className={styles.insightStockIcon} />
+          <span>
+            <strong>{productosBajoStock.length}</strong> producto{productosBajoStock.length !== 1 ? 's' : ''} por debajo del stock mínimo:{' '}
+            {productosBajoStock.slice(0, 3).map((p) => p.nombre).join(', ')}
+            {productosBajoStock.length > 3 ? ` y ${productosBajoStock.length - 3} más` : ''}. Se recomienda reponer.
+          </span>
+        </div>
+      )}
+
+      <section className={`${styles.tableCard} rt-flat`} aria-label="Lista de productos">
         {productosFiltrados.length === 0 ? (
           <div className={styles.emptyState}>
             <Package size={36} className={styles.emptyIcon} aria-hidden="true" />
             <p className={styles.emptyTitle}>Sin productos</p>
             <p className={styles.emptySub}>No hay productos que coincidan con los filtros aplicados.</p>
-            <button onClick={abrirCrear} className={styles.btnPrimary}>
-              <Plus size={14} aria-hidden="true" />
-              Agregar primer producto
-            </button>
+            {puedeEditar && (
+              <button onClick={abrirCrear} className={styles.btnPrimary}>
+                <Plus size={14} aria-hidden="true" />
+                Agregar primer producto
+              </button>
+            )}
           </div>
         ) : (
-          <table className={styles.table}>
+          <table className={`${styles.table} responsive-table`}>
             <thead>
               <tr>
                 <th>Producto</th>
@@ -254,40 +320,55 @@ export default function ProductsPage() {
             </thead>
             <tbody>
               {productosPagina.map(p => (
-                <tr key={p.id}>
-                  <td>
+                <tr key={p.id} data-estado={estadoStock(p)}>
+                  <td data-label="Producto" data-primary>
                     <span className={styles.productoNombre}>{p.nombre}</span>
                     <span className={styles.productoCodigo}>{p.codigo}</span>
                   </td>
-                  <td>{p.categoria}</td>
-                  <td>S/ {p.precio.toFixed(2)}</td>
-                  <td>S/ {p.costo.toFixed(2)}</td>
-                  <td>
+                  <td data-label="Categoría">{p.categoria}</td>
+                  <td data-label="Precio S/">S/ {p.precio.toFixed(2)}</td>
+                  <td data-label="Costo S/">S/ {p.costo.toFixed(2)}</td>
+                  <td data-label="Stock">
                     <strong>{p.stock}</strong>
                     <span className={styles.unidadLabel}> {p.unidad}</span>
                   </td>
-                  <td className={styles.tdMuted}>{p.minimo}</td>
-                  <td>{p.rotacion}</td>
-                  <td><PillStock producto={p} /></td>
-                  <td>
-                    <div className={styles.acciones}>
-                      <button
-                        onClick={() => abrirEditar(p)}
-                        className={styles.btnIcono}
-                        aria-label={`Editar ${p.nombre}`}
-                        title="Editar"
-                      >
-                        <Pencil size={14} aria-hidden="true" />
-                      </button>
-                      <button
-                        onClick={() => pedirConfirmarEliminar(p.id)}
-                        className={`${styles.btnIcono} ${styles.btnIconoDanger}`}
-                        aria-label={`Eliminar ${p.nombre}`}
-                        title="Eliminar"
-                      >
-                        <Trash2 size={14} aria-hidden="true" />
-                      </button>
-                    </div>
+                  <td data-label="Mín." className={styles.tdMuted}>{p.minimo}</td>
+                  <td data-label="Rotación">{p.rotacion}</td>
+                  <td data-label="Estado"><PillStock producto={p} /></td>
+                  <td data-label="Acciones">
+                    {!puedeEditar ? (
+                      <span className={styles.tdMuted}>—</span>
+                    ) : p.activo ? (
+                      <div className={styles.acciones}>
+                        <button
+                          onClick={() => abrirEditar(p)}
+                          className={styles.btnIcono}
+                          aria-label={`Editar ${p.nombre}`}
+                          title="Editar"
+                        >
+                          <Pencil size={14} aria-hidden="true" />
+                        </button>
+                        <button
+                          onClick={() => pedirConfirmarEliminar(p.id)}
+                          className={`${styles.btnIcono} ${styles.btnIconoDanger}`}
+                          aria-label={`Eliminar ${p.nombre}`}
+                          title="Eliminar / desactivar"
+                        >
+                          <Trash2 size={14} aria-hidden="true" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className={styles.acciones}>
+                        <button
+                          onClick={() => handleReactivar(p.id)}
+                          className={styles.btnIcono}
+                          aria-label={`Reactivar ${p.nombre}`}
+                          title="Reactivar"
+                        >
+                          <RotateCcw size={14} aria-hidden="true" />
+                        </button>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}

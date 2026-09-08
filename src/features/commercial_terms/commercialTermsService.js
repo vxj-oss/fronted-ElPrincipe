@@ -1,13 +1,13 @@
 import { apiRequest } from '../../utils/api';
 import { TIPOS_CONDICION_COMERCIAL, FORMAS_PAGO } from '../../constants/appConstants';
+import { fechaHoyLima, fechaLimaDeISO } from '../../utils/fechas';
 
 export const TIPOS_CONDICION = TIPOS_CONDICION_COMERCIAL;
 export const PLAZOS_PAGO = FORMAS_PAGO;
 
 export function formatearFecha(fechaISO) {
   if (!fechaISO) return '—';
-  const soloFecha = fechaISO.includes('T') ? fechaISO.split('T')[0] : fechaISO;
-  const [y, m, d] = soloFecha.split('-');
+  const [y, m, d] = fechaLimaDeISO(fechaISO).split('-');
   if (!y || !m || !d) return fechaISO;
   return `${d}/${m}/${y}`;
 }
@@ -28,7 +28,7 @@ function normalizeTerm(t) {
     diasPlazo: t.dias_plazo_pactados || 0,
     descuento: parseFloat(t.porcentaje_descuento || 0),
     limiteCredito: parseFloat(t.limite_credito_asignado || 0),
-    fechaRegistro: t.fecha_registro ? t.fecha_registro.split('T')[0] : new Date().toISOString().split('T')[0],
+    fechaRegistro: t.fecha_registro ? fechaLimaDeISO(t.fecha_registro) : fechaHoyLima(),
   };
 }
 

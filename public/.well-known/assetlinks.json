@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "pe.com.elprincipe.app",
+      "sha256_cert_fingerprints": [
+        "4B:8B:C3:E4:CC:E5:98:0D:76:58:C0:9C:41:77:9B:A8:1D:54:42:E6:D3:B6:9D:21:39:32:B0:1B:23:1A:BE:E5"
+      ]
+    }
+  }
+]

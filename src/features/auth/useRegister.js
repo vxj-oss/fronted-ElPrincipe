@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from './authService';
-import { ROLES_USUARIO } from '../../constants/appConstants';
 import { validarPasswordComplejidad } from '../../utils/passwordValidation';
 
 export function useRegister() {
@@ -11,7 +10,6 @@ export function useRegister() {
         email: '',
         password: '',
         confirmPassword: '',
-        rol: ROLES_USUARIO.ASESOR,
     });
     const [fieldErrors, setFieldErrors] = useState({});
     const [loading, setLoading] = useState(false);
@@ -63,9 +61,8 @@ export function useRegister() {
             await authService.register({
                 nombre_completo: formData.nombre_completo.trim(),
                 nombre_usuario: formData.nombre_usuario.trim(),
-                email: formData.email.trim().toLowerCase(),
+                correo: formData.email.trim().toLowerCase(),
                 password: formData.password,
-                rol: formData.rol,
             });
 
             navigate('/login');

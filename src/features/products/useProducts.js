@@ -5,6 +5,7 @@ import {
   crearProducto,
   actualizarProducto,
   eliminarProducto,
+  reactivarProducto,
   UNIDADES,
   NIVELES_ROTACION,
 } from './productsService'
@@ -68,7 +69,7 @@ export function useProducts() {
     async function loadData() {
       try {
         const [prodList, catList] = await Promise.all([
-          fetchProductos(),
+          fetchProductos(null, true),
           fetchCategorias(),
         ])
         setProductos(prodList)
@@ -102,11 +103,16 @@ export function useProducts() {
     const lista = productosFiltrados
     return {
       total: lista.length,
-      criticos: lista.filter(p => estadoStock(p) === 'critico').length,
-      activos: lista.length,
-      valorInventario: lista.reduce((acc, p) => acc + (p.costo * p.stock), 0),
+      criticos: lista.filter(p => p.activo && estadoStock(p) === 'critico').length,
+      activos: lista.filter(p => p.activo).length,
+      valorInventario: lista.reduce((acc, p) => acc + (p.activo ? p.costo * p.stock : 0), 0),
     }
   }, [productosFiltrados])
+
+  const productosBajoStock = useMemo(
+    () => productos.filter(p => p.activo && estadoStock(p) !== 'ok'),
+    [productos],
+  )
 
   const abrirCrear = useCallback(() => {
     setEditandoId(null)
@@ -211,9 +217,14 @@ export function useProducts() {
   const handleEliminar = useCallback(async () => {
     if (!confirmDelete) return
     try {
-      await eliminarProducto(confirmDelete)
-      setProductos(prev => prev.filter(p => p.id !== confirmDelete))
-      setToastMsg({ tipo: 'success', texto: 'Producto eliminado del sistema.' })
+      const res = await eliminarProducto(confirmDelete)
+      if (res?.soft_delete) {
+        setProductos(prev => prev.map(p => p.id === confirmDelete ? { ...p, activo: false } : p))
+        setToastMsg({ tipo: 'warning', texto: res.message || 'Producto marcado como inactivo.' })
+      } else {
+        setProductos(prev => prev.filter(p => p.id !== confirmDelete))
+        setToastMsg({ tipo: 'success', texto: 'Producto eliminado del sistema.' })
+      }
     } catch (err) {
       setToastMsg({ tipo: 'error', texto: err.message || 'No se pudo eliminar el producto.' })
     } finally {
@@ -221,8 +232,19 @@ export function useProducts() {
     }
   }, [confirmDelete])
 
+  const handleReactivar = useCallback(async (id) => {
+    try {
+      const prod = await reactivarProducto(id)
+      setProductos(prev => prev.map(p => p.id === id ? prod : p))
+      setToastMsg({ tipo: 'success', texto: 'Producto reactivado.' })
+    } catch (err) {
+      setToastMsg({ tipo: 'error', texto: err.message || 'No se pudo reactivar el producto.' })
+    }
+  }, [])
+
   return {
     productosFiltrados,
+    productosBajoStock,
     categorias,
     kpis,
     cargando,
@@ -249,6 +271,7 @@ export function useProducts() {
     handleGuardar,
     pedirConfirmarEliminar,
     handleEliminar,
+    handleReactivar,
     cancelarEliminar: () => setConfirmDelete(null),
   }
 }

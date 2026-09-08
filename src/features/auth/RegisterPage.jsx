@@ -22,6 +22,9 @@ export default function RegisterPage() {
       </div>
 
       <div className={styles.formPanel}>
+        <h1 className={styles.mobileTitle}>
+          EP <span className={styles.mobileTitleAccent}>Agent</span>
+        </h1>
         <div className={styles.formCard}>
           <h2 className={styles.formTitle}>Crear Cuenta</h2>
           <p className={styles.formSubtitle}>Ingresa tus datos para registrarte</p>
@@ -88,23 +91,6 @@ export default function RegisterPage() {
               {fieldErrors.email && (
                 <p className={styles.fieldError}>{fieldErrors.email}</p>
               )}
-            </div>
-
-            <div className={styles.fieldGroup}>
-              <label htmlFor="rol" className={styles.label}>
-                Rol
-              </label>
-              <select
-                id="rol"
-                name="rol"
-                value={formData.rol}
-                onChange={handleChange}
-                disabled={loading}
-                className="input-base"
-              >
-                <option value="asesor">Asesor Comercial</option>
-                <option value="administrador">Administrador</option>
-              </select>
             </div>
 
             <div className={styles.fieldGroup}>
