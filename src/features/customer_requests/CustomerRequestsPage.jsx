@@ -6,6 +6,7 @@ import {
 import { useCustomerRequests } from './useCustomerRequests';
 import { formatearFecha } from './customerRequestsService';
 import { usePagination } from '../../hooks/usePagination';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 import Pagination from '../../components/ui/Pagination';
 import CustomerRequestForm from './CustomerRequestForm';
 import styles from './customerRequests.module.css';
@@ -35,7 +36,9 @@ function DetallePanel({ solicitud, onCerrar }) {
   if (!solicitud) return null;
 
   return (
-    <aside className={styles.detallePanel}>
+    <>
+    <div className="rt-backdrop" onClick={onCerrar} aria-hidden="true" />
+    <aside className={`${styles.detallePanel} rt-drawer`}>
       <div className={styles.detallePanelHeader}>
         <h2 className={styles.detalleTitulo}>{solicitud.codigo}</h2>
         <button onClick={onCerrar} className={styles.btnIcono} aria-label="Cerrar">
@@ -82,6 +85,7 @@ function DetallePanel({ solicitud, onCerrar }) {
         ))}
       </div>
     </aside>
+    </>
   );
 }
 
@@ -98,6 +102,8 @@ export default function CustomerRequestsPage() {
     handleGuardar, verDetalle, cerrarDetalle,
   } = useCustomerRequests();
 
+  const esMovilVertical = useMediaQuery('(max-width: 768px)');
+
   const {
     itemsPagina: solicitudesPagina,
     pagina,
@@ -107,7 +113,7 @@ export default function CustomerRequestsPage() {
     irAPagina,
     paginaAnterior,
     paginaSiguiente,
-  } = usePagination(solicitudesFiltradas, 7);
+  } = usePagination(solicitudesFiltradas, esMovilVertical ? 2 : 7);
 
   if (cargando) {
     return (
@@ -181,7 +187,7 @@ export default function CustomerRequestsPage() {
           </select>
         </div>
 
-        <section className={styles.tableCard}>
+        <section className={`${styles.tableCard} rt-flat`}>
           {solicitudesFiltradas.length === 0 ? (
             <div className={styles.emptyState}>
               <MessageSquare size={36} color="#94A3B8" />
@@ -191,7 +197,7 @@ export default function CustomerRequestsPage() {
               </button>
             </div>
           ) : (
-            <table className={styles.table}>
+            <table className={`${styles.table} responsive-table`}>
               <thead>
                 <tr>
                   <th>Código</th>
@@ -205,18 +211,18 @@ export default function CustomerRequestsPage() {
               </thead>
               <tbody>
                 {solicitudesPagina.map((s) => (
-                  <tr key={s.id} onClick={() => verDetalle(s)} style={{ cursor: 'pointer' }}>
-                    <td><strong style={{ color: '#1E293B' }}>{s.codigo}</strong></td>
-                    <td>{s.cliente}</td>
-                    <td>{s.canal}</td>
-                    <td>{s.detalles.length} ítem{s.detalles.length !== 1 ? 's' : ''}</td>
-                    <td>{formatearFecha(s.fecha)}</td>
-                    <td>
+                  <tr key={s.id} onClick={() => verDetalle(s)} data-estado={s.estado === 'Pendiente' ? 'pendiente' : 'atendida'} data-rownav="" style={{ cursor: 'pointer' }}>
+                    <td data-label="Código" data-primary><strong style={{ color: '#1E293B' }}>{s.codigo}</strong></td>
+                    <td data-label="Cliente">{s.cliente}</td>
+                    <td data-label="Canal">{s.canal}</td>
+                    <td data-label="Ítems Solicitados">{s.detalles.length} ítem{s.detalles.length !== 1 ? 's' : ''}</td>
+                    <td data-label="Fecha">{formatearFecha(s.fecha)}</td>
+                    <td data-label="Estado">
                       <span className={`${styles.pill} ${s.estado === 'Pendiente' ? styles.pillPendiente : styles.pillAtendida}`}>
                         {s.estado}
                       </span>
                     </td>
-                    <td onClick={(e) => e.stopPropagation()}>
+                    <td data-label="Acción" onClick={(e) => e.stopPropagation()}>
                       <button onClick={() => verDetalle(s)} className={styles.btnIcono}>
                         <Eye size={13} />
                       </button>

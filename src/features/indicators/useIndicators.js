@@ -275,6 +275,16 @@ export function useIndicators() {
               col2: `${datos.TDCE} dec.`,
               col3: datos.TDCT > 0 ? `${((datos.TDCE / datos.TDCT) * 100).toFixed(1)}%` : '0%',
             },
+            {
+              col1: 'Con incidencia sin resolver',
+              col2: `${Math.max(0, datos.TDCT - datos.TDCE)} dec.`,
+              col3: datos.TDCT > 0 ? `${(((datos.TDCT - datos.TDCE) / datos.TDCT) * 100).toFixed(1)}%` : '0%',
+            },
+            {
+              col1: 'Corregidas tras incidencia inicial',
+              col2: `${datos.decisionesCorregidas || 0} dec.`,
+              col3: datos.TDCT > 0 ? `${(((datos.decisionesCorregidas || 0) / datos.TDCT) * 100).toFixed(1)}%` : '0%',
+            },
           ],
         },
       },

@@ -3,7 +3,7 @@ import {
   fetchDashboardSummary,
   procesarGraficaDesdePedidos,
 } from './dashboardService';
-import { METAS_COMERCIALES, PERIODOS_GRAFICA_DASHBOARD } from '../../constants/appConstants';
+import { PERIODOS_GRAFICA_DASHBOARD } from '../../constants/appConstants';
 
 export function useDashboard() {
   const [kpis, setKpis] = useState(null);
@@ -28,7 +28,6 @@ export function useDashboard() {
           setStock(summary.stockAlertas);
           setAlertas(summary.alertas);
           setPedidosRaw(summary.pedidos);
-          setGraficaData(procesarGraficaDesdePedidos(summary.pedidos, 'hoy'));
         }
       } catch (err) {
         if (!cancelled) setError('No se pudieron cargar los datos del dashboard.');
@@ -43,13 +42,18 @@ export function useDashboard() {
     };
   }, []);
 
+  useEffect(() => {
+    setGraficaData(procesarGraficaDesdePedidos(pedidosRaw, periodo));
+  }, [pedidosRaw, periodo]);
+
   const cambiarPeriodo = useCallback((nuevoPeriodo) => {
     setPeriodo(nuevoPeriodo);
-    setGraficaData(procesarGraficaDesdePedidos(pedidosRaw, nuevoPeriodo));
-  }, [pedidosRaw]);
+  }, []);
 
-  const metaDiaria = METAS_COMERCIALES.META_DIARIA_VENTAS;
-  const porcentajeMeta = kpis ? Math.round(((kpis.ventasTotales % metaDiaria) / metaDiaria) * 100) : 0;
+  const metaDiaria = kpis?.metaDiaria || 6000;
+  const porcentajeMeta = kpis
+    ? Math.min(100, Math.round((kpis.ventasTotales / metaDiaria) * 100))
+    : 0;
 
   function porcentajeStock(item) {
     if (!item.minimo) return 100;

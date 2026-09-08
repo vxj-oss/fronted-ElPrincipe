@@ -94,23 +94,6 @@ export default function RegisterPage() {
             </div>
 
             <div className={styles.fieldGroup}>
-              <label htmlFor="rol" className={styles.label}>
-                Rol
-              </label>
-              <select
-                id="rol"
-                name="rol"
-                value={formData.rol}
-                onChange={handleChange}
-                disabled={loading}
-                className="input-base"
-              >
-                <option value="asesor">Asesor Comercial</option>
-                <option value="administrador">Administrador</option>
-              </select>
-            </div>
-
-            <div className={styles.fieldGroup}>
               <label htmlFor="password" className={styles.label}>
                 Contraseña
               </label>

@@ -68,6 +68,10 @@ export const ACCIONES_AUDITORIA = [
   'ACTUALIZAR',
   'ELIMINAR',
   'CONSULTA_IA',
+  'INICIAR_SESION',
+  'CERRAR_SESION',
+  'EXPORTAR',
+  'ERROR',
 ];
 
 export const MODULOS_SISTEMA = [
@@ -86,6 +90,10 @@ export const CONFIG_ACCION_AUDITORIA = {
   ACTUALIZAR: { label: 'Actualizar', color: '#1d4ed8', bg: '#eff6ff', border: '#bfdbfe' },
   ELIMINAR: { label: 'Eliminar', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca' },
   CONSULTA_IA: { label: 'Consulta IA', color: '#7e22ce', bg: '#fdf4ff', border: '#e9d5ff' },
+  INICIAR_SESION: { label: 'Inicio de sesión', color: '#0369a1', bg: '#f0f9ff', border: '#bae6fd' },
+  CERRAR_SESION: { label: 'Cierre de sesión', color: '#475569', bg: '#f8fafc', border: '#e2e8f0' },
+  EXPORTAR: { label: 'Exportar', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa' },
+  ERROR: { label: 'Error', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca' },
 };
 
 export const FORMATOS_REPORTE = ['Excel', 'PDF'];
@@ -233,11 +241,11 @@ export const INDICADORES_DEF = {
     numero: '03',
     sigla: 'NTDC',
     nombre: 'Nivel de toma de decisiones comerciales',
-    descripcion: 'Mide la proporción de decisiones comerciales efectivas (correctas y oportunas) respecto al total de decisiones tomadas en el periodo por el asesor comercial.',
+    descripcion: 'Mide la proporción de decisiones comerciales efectivas respecto al total tomadas. Cada pedido registrado (salvo los cancelados) es una decisión: es efectiva cuando no mantiene errores de ítem ni fallas de condición comercial. Se recalcula en vivo, por lo que una decisión corregida pasa a contar como efectiva.',
     formula: 'NTDC = (TDCE ÷ TDCT) × 100',
     variables: [
-      { clave: 'TDCE', nombre: 'Total de decisiones comerciales efectivas', desc: 'Decisiones que derivaron en resultado positivo o correcto' },
-      { clave: 'TDCT', nombre: 'Total de decisiones comerciales tomadas', desc: 'Total de decisiones registradas en el periodo' },
+      { clave: 'TDCE', nombre: 'Total de decisiones comerciales efectivas', desc: 'Pedidos sin errores de ítem ni fallas de condición comercial al momento del cálculo' },
+      { clave: 'TDCT', nombre: 'Total de decisiones comerciales tomadas', desc: 'Pedidos registrados en el periodo, excluyendo los cancelados' },
     ],
     umbrales: [
       { nivel: 'bueno', label: 'Bueno', rango: 'NTDC ≥ 75%', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: 75, max: null },

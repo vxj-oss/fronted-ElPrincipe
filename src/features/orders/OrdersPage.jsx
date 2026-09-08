@@ -8,6 +8,7 @@ import { useOrders } from './useOrders';
 import { calcularTotal, formatearFecha } from './ordersService';
 import { EMPRESA } from '../../constants/appConstants';
 import { usePagination } from '../../hooks/usePagination';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 import Pagination from '../../components/ui/Pagination';
 import Modal from '../../components/ui/Modal';
 import Button from '../../components/ui/Button';
@@ -64,13 +65,17 @@ function KPICard({ label, value, note, color }) {
 
 function Toast({ toast }) {
   if (!toast) return null;
-  const esError = toast.tipo === 'error';
+  const clase = {
+    error: styles.toastError,
+    warning: styles.toastWarning,
+  }[toast.tipo] || styles.toastSuccess;
+  const Icono = {
+    error: AlertCircle,
+    warning: AlertTriangle,
+  }[toast.tipo] || CheckCircle;
   return (
-    <div
-      className={`${styles.toast} ${esError ? styles.toastError : styles.toastSuccess}`}
-      role="status"
-    >
-      {esError ? <AlertCircle size={14} aria-hidden="true" /> : <CheckCircle size={14} aria-hidden="true" />}
+    <div className={`${styles.toast} ${clase}`} role="status">
+      <Icono size={14} aria-hidden="true" />
       {toast.texto}
     </div>
   );
@@ -82,7 +87,9 @@ function DetallePanel({ pedido, onCerrar, onEditar, onConfirmar }) {
   const cond = pedido.condicionComercial;
 
   return (
-    <aside className={styles.detallePanel} aria-label="Detalle del pedido">
+    <>
+    <div className="rt-backdrop" onClick={onCerrar} aria-hidden="true" />
+    <aside className={`${styles.detallePanel} rt-drawer`} aria-label="Detalle del pedido">
       <div className={styles.detallePanelHeader}>
         <h2 className={styles.detalleTitulo}>{pedido.numero}</h2>
         <button onClick={onCerrar} className={styles.btnIcono} aria-label="Cerrar">
@@ -200,6 +207,7 @@ function DetallePanel({ pedido, onCerrar, onEditar, onConfirmar }) {
         </button>
       </div>
     </aside>
+    </>
   );
 }
 
@@ -341,6 +349,8 @@ export default function OrdersPage() {
     verDetalle, cerrarDetalle,
   } = useOrders();
 
+  const esMovilVertical = useMediaQuery('(max-width: 768px)');
+
   const {
     itemsPagina: pedidosPagina,
     pagina,
@@ -350,7 +360,7 @@ export default function OrdersPage() {
     irAPagina,
     paginaAnterior,
     paginaSiguiente,
-  } = usePagination(pedidosFiltrados, 7);
+  } = usePagination(pedidosFiltrados, esMovilVertical ? 2 : 7);
 
   if (cargando) {
     return (
@@ -431,7 +441,7 @@ export default function OrdersPage() {
           </select>
         </div>
 
-        <section className={styles.tableCard} aria-label="Lista de pedidos">
+        <section className={`${styles.tableCard} rt-flat`} aria-label="Lista de pedidos">
           {pedidosFiltrados.length === 0 ? (
             <div className={styles.emptyState}>
               <ShoppingBag size={36} className={styles.emptyIcon} aria-hidden="true" />
@@ -442,7 +452,7 @@ export default function OrdersPage() {
               </button>
             </div>
           ) : (
-            <table className={styles.table}>
+            <table className={`${styles.table} responsive-table`}>
               <thead>
                 <tr>
                   <th>N° Pedido</th>
@@ -461,9 +471,10 @@ export default function OrdersPage() {
                     key={p.id}
                     className={p.tieneError || p.tieneFallaCondicion ? styles.rowConError : ''}
                     onClick={() => verDetalle(p)}
+                    data-rownav=""
                     style={{ cursor: 'pointer' }}
                   >
-                    <td>
+                    <td data-label="N° Pedido" data-primary>
                       <span className={styles.numPedido}>{p.numero}</span>
                       {p.tieneError && (
                         <span className={styles.errBadge}>
@@ -471,22 +482,22 @@ export default function OrdersPage() {
                         </span>
                       )}
                     </td>
-                    <td>
+                    <td data-label="Cliente">
                       <span className={styles.clienteNombre}>{p.cliente}</span>
                       <span className={styles.clienteSub}>{p.pago}</span>
                     </td>
-                    <td className={styles.tdSecundario}>{formatearFecha(p.fecha)}</td>
-                    <td className={styles.tdSecundario}>
+                    <td data-label="Fecha" className={styles.tdSecundario}>{formatearFecha(p.fecha)}</td>
+                    <td data-label="Ítems" className={styles.tdSecundario}>
                       {p.items.length} línea{p.items.length !== 1 ? 's' : ''}
                     </td>
-                    <td className={styles.tdMonto}>
+                    <td data-label={`Total ${EMPRESA.MONEDA_SIMBOLO}`} className={styles.tdMonto}>
                       {EMPRESA.MONEDA_SIMBOLO} {calcularTotal(p.items).toLocaleString('es-PE', { minimumFractionDigits: 2 })}
                     </td>
-                    <td>
+                    <td data-label="Auditoría CC">
                       <PillCondicion condicion={p.condicionComercial} />
                     </td>
-                    <td><PillEstado estado={p.estado} /></td>
-                    <td onClick={(e) => e.stopPropagation()}>
+                    <td data-label="Estado"><PillEstado estado={p.estado} /></td>
+                    <td data-label="Acciones" onClick={(e) => e.stopPropagation()}>
                       <div className={styles.acciones}>
                         <button
                           onClick={() => verDetalle(p)}

@@ -700,13 +700,19 @@
 @media (max-width: 768px) {
   .page {
     padding: 16px;
+    overflow-x: hidden;
   }
   .toolbar {
     flex-direction: column;
     align-items: stretch;
+    width: 100%;
   }
   .searchWrap {
     max-width: 100%;
+  }
+  .filterSelect {
+    width: 100%;
+    min-width: 0;
   }
   .kpiGrid {
     grid-template-columns: 1fr 1fr;
@@ -719,8 +725,18 @@
     gap: 10px;
     align-items: flex-start;
   }
-  .table th:nth-child(6),
-  .table td:nth-child(6) {
-    display: none;
+  .paginacionBtns {
+    flex-wrap: wrap;
+  }
+  .table tr:hover td {
+    background: transparent;
+  }
+  .table tr[data-ok='no']::before,
+  :global(.dark) .table tr[data-ok='no']::before,
+  :global([data-theme='dark']) .table tr[data-ok='no']::before {
+    background: #dc2626;
+  }
+  .fechaDia {
+    font-size: 0.9375rem;
   }
 }

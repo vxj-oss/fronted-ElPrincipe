@@ -144,7 +144,7 @@ export default function IndicatorPage() {
           <h2 className={styles.seccionTitulo}>Consolidado de Indicadores</h2>
         </div>
         <div style={{ overflowX: 'auto' }}>
-          <table className={styles.datosTabla}>
+          <table className={`${styles.datosTabla} responsive-table`}>
             <thead>
               <tr>
                 <th>Sigla</th>
@@ -162,12 +162,12 @@ export default function IndicatorPage() {
                 const meta = INDICADORES_META[s];
                 return (
                   <tr key={s}>
-                    <td><strong style={{ color: meta.color }}>{s}</strong></td>
-                    <td>{meta.nombre}</td>
-                    <td><code>{s === 'NEPP' ? 'TEPP ÷ TPP' : s === 'PFCC' ? '(TCCF ÷ TCCD) × 100' : '(TDCE ÷ TDCT) × 100'}</code></td>
-                    <td><strong style={{ color: res?.interpretacion?.color }}>{res ? res.valorFormateado : '—'}</strong></td>
-                    <td><span style={{ fontSize: '0.75rem', color: '#64748b' }}>{meta.metaTexto}</span></td>
-                    <td>
+                    <td data-label="Sigla" data-primary><strong style={{ color: meta.color }}>{s}</strong></td>
+                    <td data-label="Nombre del Indicador">{meta.nombre}</td>
+                    <td data-label="Fórmula"><code>{s === 'NEPP' ? 'TEPP ÷ TPP' : s === 'PFCC' ? '(TCCF ÷ TCCD) × 100' : '(TDCE ÷ TDCT) × 100'}</code></td>
+                    <td data-label="Resultado Actual"><strong style={{ color: res?.interpretacion?.color }}>{res ? res.valorFormateado : '—'}</strong></td>
+                    <td data-label="Umbral Meta"><span style={{ fontSize: '0.75rem', color: '#64748b' }}>{meta.metaTexto}</span></td>
+                    <td data-label="Estado">
                       {res && (
                         <span
                           className={styles.estadoBadge}
@@ -177,7 +177,7 @@ export default function IndicatorPage() {
                         </span>
                       )}
                     </td>
-                    <td>
+                    <td data-label="Acción">
                       <button
                         onClick={() => setIndicadorActivo(s)}
                         className={styles.btnSecundarioSmall}

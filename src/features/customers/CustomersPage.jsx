@@ -5,6 +5,7 @@
 } from 'lucide-react'
 import { useCustomers, iniciales } from './useCustomers'
 import { usePagination } from '../../hooks/usePagination'
+import { useMediaQuery } from '../../hooks/useMediaQuery'
 import Pagination from '../../components/ui/Pagination'
 import CustomerForm from './CustomerForm'
 import styles from './customers.module.css'
@@ -42,10 +43,17 @@ function KPICard({ label, value, note, color }) {
 
 function Toast({ toast }) {
   if (!toast) return null
-  const esError = toast.tipo === 'error'
+  const clase = {
+    error: styles.toastError,
+    warning: styles.toastWarning,
+  }[toast.tipo] || styles.toastSuccess
+  const Icono = {
+    error: AlertCircle,
+    warning: AlertCircle,
+  }[toast.tipo] || CheckCircle
   return (
-    <div className={`${styles.toast} ${esError ? styles.toastError : styles.toastSuccess}`} role="status">
-      {esError ? <AlertCircle size={14} aria-hidden="true" /> : <CheckCircle size={14} aria-hidden="true" />}
+    <div className={`${styles.toast} ${clase}`} role="status">
+      <Icono size={14} aria-hidden="true" />
       {toast.texto}
     </div>
   )
@@ -55,6 +63,8 @@ function DetallePanel({ cliente, onCerrar, onEditar }) {
   if (!cliente) return null
 
   return (
+    <>
+    <div className={styles.detalleBackdrop} onClick={onCerrar} aria-hidden="true" />
     <aside className={styles.detallePanel} aria-label="Detalle del cliente">
       <div className={styles.detallePanelHeader}>
         <h2 className={styles.detallePanelTitulo}>Detalle</h2>
@@ -122,6 +132,7 @@ function DetallePanel({ cliente, onCerrar, onEditar }) {
         </button>
       </div>
     </aside>
+    </>
   )
 }
 
@@ -220,6 +231,8 @@ export default function CustomersPage() {
     cerrarDetalle,
   } = useCustomers()
 
+  const esMovilVertical = useMediaQuery('(max-width: 768px)')
+
   const {
     itemsPagina: clientesPagina,
     pagina,
@@ -229,7 +242,7 @@ export default function CustomersPage() {
     irAPagina,
     paginaAnterior,
     paginaSiguiente,
-  } = usePagination(clientesFiltrados, 7)
+  } = usePagination(clientesFiltrados, esMovilVertical ? 2 : 7)
 
   if (cargando) {
     return (
@@ -320,7 +333,7 @@ export default function CustomersPage() {
               </button>
             </div>
           ) : (
-            <table className={styles.table}>
+            <table className={`${styles.table} responsive-table`}>
               <thead>
                 <tr>
                   <th style={{ width: 40 }}></th>
@@ -338,22 +351,24 @@ export default function CustomersPage() {
                   <tr
                     key={c.id}
                     onClick={() => verDetalle(c)}
+                    data-activo={c.activo ? 'si' : 'no'}
+                    data-rownav=""
                     className={clienteDetalle?.id === c.id ? styles.rowActiva : ''}
                     style={{ cursor: 'pointer' }}
                   >
-                    <td><Avatar nombre={c.nombre} /></td>
-                    <td>
+                    <td data-label=""><Avatar nombre={c.nombre} /></td>
+                    <td data-label="Cliente" data-primary>
                       <span className={styles.clienteNombre}>{c.nombre}</span>
                       <span className={styles.clienteSub}>
                         {c.tipo}
                         {c.clasificacion === 'VIP' && <span className={styles.vipBadge}> · VIP</span>}
                       </span>
                     </td>
-                    <td className={styles.mono}>{c.ruc}</td>
-                    <td className={styles.tdSecundario}>{c.distrito}</td>
-                    <td>S/ {c.comprasTotal.toLocaleString('es-PE', { maximumFractionDigits: 0 })}</td>
-                    <td><PillEstado activo={c.activo} /></td>
-                    <td onClick={e => e.stopPropagation()}>
+                    <td data-label="RUC / DNI" className={styles.mono}>{c.ruc}</td>
+                    <td data-label="Distrito" className={styles.tdSecundario}>{c.distrito}</td>
+                    <td data-label="Compras S/">S/ {c.comprasTotal.toLocaleString('es-PE', { maximumFractionDigits: 0 })}</td>
+                    <td data-label="Estado"><PillEstado activo={c.activo} /></td>
+                    <td data-label="Activo" onClick={e => e.stopPropagation()}>
                       <button
                         onClick={() => handleToggleActivo(c.id)}
                         className={styles.toggleBtn}
@@ -365,7 +380,7 @@ export default function CustomersPage() {
                         }
                       </button>
                     </td>
-                    <td onClick={e => e.stopPropagation()}>
+                    <td data-label="Acciones" onClick={e => e.stopPropagation()}>
                       <div className={styles.acciones}>
                         <button
                           onClick={() => abrirEditar(c)}

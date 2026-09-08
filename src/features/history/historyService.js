@@ -1,3 +1,4 @@
+import { apiRequest } from '../../utils/api';
 import {
   ACCIONES_AUDITORIA,
   MODULOS_SISTEMA,
@@ -37,31 +38,8 @@ function formatearRelativa(fecha) {
   return `Hace ${diffD} días`;
 }
 
-function getAuthHeaders() {
-  return { 'Content-Type': 'application/json' };
-}
-
-async function fetchEventosCompletos({ accion, modulo, rango, busqueda } = {}) {
-  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
-  const params = new URLSearchParams();
-
-  if (modulo) params.append('modulo', modulo);
-  params.append('skip', '0');
-  params.append('limit', '500');
-
-  const response = await fetch(`${baseUrl}/history/?${params.toString()}`, {
-    method: 'GET',
-    headers: getAuthHeaders(),
-    credentials: 'include',
-  });
-
-  if (!response.ok) {
-    throw new Error('Error al cargar el historial de auditoría desde el servidor');
-  }
-
-  const rawItems = await response.json();
-
-  let lista = rawItems.map((item) => ({
+function normalizarEvento(item) {
+  return {
     id: item.id,
     fecha: item.fecha_hora,
     usuarioId: item.usuario_id,
@@ -75,31 +53,7 @@ async function fetchEventosCompletos({ accion, modulo, rango, busqueda } = {}) {
       `${item.accion} en ${item.modulo_afectado}`,
     exitoso: item.accion !== 'ERROR',
     detalle: item.detalle_cambio || {},
-  }));
-
-  if (accion) lista = lista.filter((e) => e.accion === accion);
-  if (busqueda) {
-    const q = busqueda.toLowerCase();
-    lista = lista.filter(
-      (e) =>
-        e.descripcion.toLowerCase().includes(q) ||
-        e.modulo.toLowerCase().includes(q) ||
-        e.usuario.toLowerCase().includes(q)
-    );
-  }
-
-  if (rango === 'hoy') {
-    const hoySt = new Date().toISOString().split('T')[0];
-    lista = lista.filter((e) => e.fecha?.startsWith(hoySt));
-  } else if (rango === 'semana') {
-    const d7 = new Date(Date.now() - 7 * 86400000);
-    lista = lista.filter((e) => new Date(e.fecha) >= d7);
-  } else if (rango === 'mes') {
-    const dm = new Date(Date.now() - 30 * 86400000);
-    lista = lista.filter((e) => new Date(e.fecha) >= dm);
-  }
-
-  return lista;
+  };
 }
 
 export async function fetchEventos({
@@ -110,46 +64,30 @@ export async function fetchEventos({
   pagina = 1,
   porPagina = 20,
 } = {}) {
-  const lista = await fetchEventosCompletos({ accion, modulo, rango, busqueda });
+  const params = new URLSearchParams();
+  if (accion) params.append('accion', accion);
+  if (modulo) params.append('modulo', modulo);
+  if (rango) params.append('rango', rango);
+  if (busqueda) params.append('busqueda', busqueda);
+  params.append('pagina', String(pagina));
+  params.append('por_pagina', String(porPagina));
 
-  const total = lista.length;
-  const totalPaginas = Math.max(1, Math.ceil(total / porPagina));
-  const inicio = (pagina - 1) * porPagina;
-
+  const data = await apiRequest(`/history/?${params.toString()}`);
   return {
-    items: lista.slice(inicio, inicio + porPagina),
-    total,
-    pagina,
-    porPagina,
-    totalPaginas,
+    items: (data.items || []).map(normalizarEvento),
+    total: data.total || 0,
+    pagina: data.pagina || pagina,
+    porPagina: data.por_pagina || porPagina,
+    totalPaginas: data.total_paginas || 1,
   };
 }
 
-export async function fetchEvento(id) {
-  const lista = await fetchEventosCompletos({});
-  const evento = lista.find((x) => x.id === id);
-  if (!evento) throw new Error(`Evento #${id} no encontrado.`);
-  return evento;
-}
-
 export async function fetchEstadisticas() {
-  const items = await fetchEventosCompletos({});
-  const hoySt = new Date().toISOString().split('T')[0];
-
-  const hoy = items.filter((e) => e.fecha?.startsWith(hoySt));
-  const conError = items.filter((e) => !e.exitoso);
-
-  const conteoModulos = {};
-  items.forEach((e) => {
-    conteoModulos[e.modulo] = (conteoModulos[e.modulo] || 0) + 1;
-  });
-  const moduloActivo =
-    Object.entries(conteoModulos).sort((a, b) => b[1] - a[1])[0]?.[0] ?? '—';
-
+  const data = await apiRequest('/history/stats');
   return {
-    eventosHoy: hoy.length,
-    eventosMes: items.length,
-    conError: conError.length,
-    moduloActivo,
+    eventosHoy: data.eventos_hoy || 0,
+    eventosMes: data.eventos_mes || 0,
+    conError: data.con_error || 0,
+    moduloActivo: data.modulo_activo || '—',
   };
 }

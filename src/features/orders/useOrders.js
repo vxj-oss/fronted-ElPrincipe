@@ -16,20 +16,21 @@ import {
 import { fetchClientes } from '../customers/customersService';
 import { fetchProductos } from '../products/productsService';
 import { apiRequest } from '../../utils/api';
+import { fechaHoyLima } from '../../utils/fechas';
 
 const ITEM_VACIO = () => ({ producto: '', cant: 1, precio: 0, producto_id: null });
 
-const FORM_INICIAL = {
+const FORM_INICIAL = () => ({
   solicitud_id: null,
   cliente_id: null,
   cliente: '',
   condicion_comercial_id: null,
-  fecha: new Date().toISOString().split('T')[0],
+  fecha: fechaHoyLima(),
   estado: ESTADOS_PEDIDO[0] || 'Pendiente',
   pago: 'Contado',
   direccion: '',
   observaciones: '',
-};
+});
 
 function validarForm(form, items) {
   const errs = {};
@@ -38,6 +39,7 @@ function validarForm(form, items) {
   if (items.length === 0) errs.items = 'Agrega al menos una línea de pedido.';
   if (items.some((i) => !i.producto_id)) errs.items = 'Todos los ítems deben tener un producto válido.';
   if (items.some((i) => i.cant <= 0)) errs.items = 'Las cantidades deben ser mayores a cero.';
+  if (items.some((i) => !(parseFloat(i.precio) > 0))) errs.items = 'Todos los ítems deben tener un precio mayor a cero.';
   return errs;
 }
 
@@ -58,6 +60,17 @@ function detectarRiesgos(pedido) {
     riesgos.push(pedido.motivoFallaCondicion || 'El pedido no cumple la condición comercial pactada con el cliente.');
   }
   return riesgos;
+}
+
+function avisoStockBajo(alertas = []) {
+  if (!alertas.length) return null;
+  const detalle = alertas
+    .map((a) => (a.agotado ? `${a.nombre} (agotado)` : `${a.nombre} (${a.stock}/${a.minimo})`))
+    .join(', ');
+  return {
+    tipo: 'warning',
+    texto: `Stock bajo el mínimo tras descontar el pedido: ${detalle}. Se recomienda reponer.`,
+  };
 }
 
 function opcionesEstadoPara(estadoOriginal) {
@@ -86,7 +99,7 @@ export function useOrders() {
 
   const [modalAbierto, setModalAbierto] = useState(false);
   const [editandoId, setEditandoId] = useState(null);
-  const [form, setForm] = useState(FORM_INICIAL);
+  const [form, setForm] = useState(FORM_INICIAL());
   const [formErrors, setFormErrors] = useState({});
   const [items, setItems] = useState([ITEM_VACIO()]);
   const [alertaIA, setAlertaIA] = useState(null);
@@ -128,7 +141,8 @@ export function useOrders() {
 
   useEffect(() => {
     if (!toastMsg) return;
-    const t = setTimeout(() => setToastMsg(null), 3200);
+    const duracion = toastMsg.tipo === 'warning' ? 6500 : 3200;
+    const t = setTimeout(() => setToastMsg(null), duracion);
     return () => clearTimeout(t);
   }, [toastMsg]);
 
@@ -183,7 +197,7 @@ export function useOrders() {
 
   const abrirCrear = useCallback(() => {
     setEditandoId(null);
-    setForm(FORM_INICIAL);
+    setForm(FORM_INICIAL());
     setItems([ITEM_VACIO()]);
     setFormErrors({});
     setAlertaIA(null);
@@ -357,17 +371,21 @@ export function useOrders() {
     async (payload) => {
       setGuardando(true);
       try {
+        let resultado;
         if (editandoId) {
-          const actualizado = await actualizarPedido(editandoId, payload);
-          setPedidos((prev) => prev.map((p) => (p.id === editandoId ? actualizado : p)));
-          if (pedidoDetalle?.id === editandoId) setPedidoDetalle(actualizado);
+          resultado = await actualizarPedido(editandoId, payload);
+          setPedidos((prev) => prev.map((p) => (p.id === editandoId ? resultado : p)));
+          if (pedidoDetalle?.id === editandoId) setPedidoDetalle(resultado);
           setToastMsg({ tipo: 'success', texto: 'Pedido actualizado exitosamente.' });
         } else {
-          const nuevo = await crearPedido(payload);
-          setPedidos((prev) => [nuevo, ...prev]);
+          resultado = await crearPedido(payload);
+          setPedidos((prev) => [resultado, ...prev]);
           setSolicitudesPendientes((prev) => prev.filter((s) => s.id !== form.solicitud_id));
-          setToastMsg({ tipo: 'success', texto: `Pedido ${nuevo.numero} procesado con éxito.` });
+          setToastMsg({ tipo: 'success', texto: `Pedido ${resultado.numero} procesado con éxito.` });
         }
+        const aviso = avisoStockBajo(resultado.alertasStock);
+        if (aviso) setToastMsg(aviso);
+        fetchProductos().then(setProductosCatalogo).catch(() => {});
         cerrarModal();
       } catch (err) {
         setToastMsg({ tipo: 'error', texto: err.message || 'Error al guardar el pedido.' });
@@ -446,7 +464,14 @@ export function useOrders() {
         const actualizado = await cambiarEstadoPedido(id, nuevoEstado);
         setPedidos((prev) => prev.map((p) => (p.id === id ? actualizado : p)));
         if (pedidoDetalle?.id === id) setPedidoDetalle(actualizado);
-        setToastMsg({ tipo: 'success', texto: `Estado cambiado a "${nuevoEstado}".` });
+        const aviso = avisoStockBajo(actualizado.alertasStock);
+        setToastMsg(aviso || { tipo: 'success', texto: `Estado cambiado a "${nuevoEstado}".` });
+        fetchProductos().then(setProductosCatalogo).catch(() => {});
+        if (nuevoEstado === 'Cancelado') {
+          apiRequest('/customer-requests/')
+            .then((data) => setSolicitudesPendientes((data || []).filter((s) => s.estado === 'Pendiente')))
+            .catch(() => {});
+        }
       } catch {
         setToastMsg({ tipo: 'error', texto: 'No se pudo actualizar el estado.' });
       }
@@ -467,6 +492,10 @@ export function useOrders() {
       setPedidos((prev) => prev.filter((p) => p.id !== confirmDelete));
       if (pedidoDetalle?.id === confirmDelete) setPedidoDetalle(null);
       setToastMsg({ tipo: 'success', texto: 'Pedido eliminado de la lista.' });
+      fetchProductos().then(setProductosCatalogo).catch(() => {});
+      apiRequest('/customer-requests/')
+        .then((data) => setSolicitudesPendientes((data || []).filter((s) => s.estado === 'Pendiente')))
+        .catch(() => {});
     } catch (err) {
       setToastMsg({ tipo: 'error', texto: err.message || 'No se pudo eliminar el pedido.' });
     } finally {

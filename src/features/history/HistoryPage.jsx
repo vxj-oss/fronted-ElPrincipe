@@ -349,7 +349,7 @@ export default function HistoryPage() {
         </select>
       </div>
 
-      <section className={styles.tableCard} aria-label="Registro de auditoría">
+      <section className={`${styles.tableCard} rt-flat`} aria-label="Registro de auditoría">
         {cargando ? (
           <div className={styles.tablaCargando}>
             <div className={styles.spinner} aria-label="Cargando historial..." />
@@ -365,7 +365,7 @@ export default function HistoryPage() {
           </div>
         ) : (
           <>
-            <table className={styles.table}>
+            <table className={`${styles.table} responsive-table`}>
               <thead>
                 <tr>
                   <th>Fecha y hora</th>
@@ -383,29 +383,30 @@ export default function HistoryPage() {
                     <tr
                       key={evento.id}
                       className={!evento.exitoso ? styles.rowError : ''}
+                      data-ok={evento.exitoso ? 'si' : 'no'}
                     >
-                      <td>
+                      <td data-label="Fecha y hora" data-primary>
                         <span className={styles.fechaDia}>{fechaFmt.fecha}</span>
                         <span className={styles.fechaHora}>{fechaFmt.hora}</span>
                       </td>
-                      <td>
+                      <td data-label="Usuario">
                         <div className={styles.usuarioCell}>
                           <AvatarUsuario iniciales={evento.iniciales} />
                           <span className={styles.usuarioNombre}>{evento.usuario}</span>
                         </div>
                       </td>
-                      <td>
+                      <td data-label="Acción">
                         <PillAccion accion={evento.accion} config={CONFIG_ACCION} />
                       </td>
-                      <td>
+                      <td data-label="Módulo">
                         <ModBadge modulo={evento.modulo} />
                       </td>
-                      <td className={styles.tdDescripcion}>
+                      <td data-label="Descripción" className={styles.tdDescripcion}>
                         {evento.descripcion}
                       </td>
-                      <td>
+                      <td data-label="Detalle">
                         <button
-                          onClick={() => verDetalle(evento.id)}
+                          onClick={() => verDetalle(evento)}
                           className={styles.btnDetalle}
                           aria-label={`Ver detalle del evento #${evento.id}`}
                         >

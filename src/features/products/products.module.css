@@ -123,6 +123,37 @@
   transition: background-color 150ms ease, border-color 150ms ease;
 }
 
+.insightStock {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 0.625rem;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #9a3412;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.insightStockIcon {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: #ea580c;
+}
+
+:global(.dark) .insightStock,
+:global([data-theme="dark"]) .insightStock {
+  background: rgba(234, 88, 12, 0.14);
+  border-color: rgba(234, 88, 12, 0.32);
+  color: #fdba74;
+}
+
+:global(.dark) .insightStockIcon,
+:global([data-theme="dark"]) .insightStockIcon {
+  color: #fb923c;
+}
+
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -248,6 +279,11 @@
 .pillCritico {
   background: #fef2f2;
   color: #b91c1c;
+}
+
+.pillInactivo {
+  background: #f1f5f9;
+  color: #64748b;
 }
 
 .emptyState {
@@ -403,6 +439,129 @@
   color: #0f172a;
 }
 
+.modalTabs {
+  display: flex;
+  gap: 4px;
+  padding: 10px 20px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.modalTab {
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #64748b;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 8px 6px;
+  margin-bottom: -1px;
+  cursor: pointer;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+.modalTab:hover {
+  color: #1E3A8A;
+}
+
+.modalTabActivo {
+  color: #1E3A8A;
+  border-bottom-color: #1E3A8A;
+}
+
+.movEstado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.movLista {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px 16px;
+  max-height: 62vh;
+  overflow-y: auto;
+}
+
+.movItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 8px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.movItem:last-child {
+  border-bottom: none;
+}
+
+.movIcono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.movSalida {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.movEntrada {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.movInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.movMotivo {
+  font-size: 0.8125rem;
+  color: #0f172a;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.movMeta {
+  font-size: 0.6875rem;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.movCantidad {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.movNeg {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+.movPos {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #16a34a;
+}
+
+.movStock {
+  font-size: 0.6875rem;
+  color: #94a3b8;
+  margin-top: 1px;
+}
+
 .modalBody {
   padding: 20px;
   display: grid;
@@ -517,6 +676,14 @@
   color: #b91c1c;
 }
 
+.toastWarning {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #c2410c;
+  max-width: 360px;
+  align-items: flex-start;
+}
+
 @keyframes slideIn {
   from {
     transform: translateY(-8px);
@@ -627,6 +794,50 @@
   border-color: #1e293b;
 }
 
+:global(.dark) .modalTabs,
+:global([data-theme="dark"]) .modalTabs {
+  border-bottom-color: #1e293b;
+}
+
+:global(.dark) .modalTab,
+:global([data-theme="dark"]) .modalTab {
+  color: #94a3b8;
+}
+
+:global(.dark) .modalTab:hover,
+:global(.dark) .modalTabActivo,
+:global([data-theme="dark"]) .modalTab:hover,
+:global([data-theme="dark"]) .modalTabActivo {
+  color: #60a5fa;
+}
+
+:global(.dark) .modalTabActivo,
+:global([data-theme="dark"]) .modalTabActivo {
+  border-bottom-color: #60a5fa;
+}
+
+:global(.dark) .movItem,
+:global([data-theme="dark"]) .movItem {
+  border-bottom-color: #1e293b;
+}
+
+:global(.dark) .movMotivo,
+:global([data-theme="dark"]) .movMotivo {
+  color: #f8fafc;
+}
+
+:global(.dark) .movSalida,
+:global([data-theme="dark"]) .movSalida {
+  background: rgba(220, 38, 38, 0.18);
+  color: #f87171;
+}
+
+:global(.dark) .movEntrada,
+:global([data-theme="dark"]) .movEntrada {
+  background: rgba(22, 163, 74, 0.18);
+  color: #4ade80;
+}
+
 :global(.dark) .table th,
 :global([data-theme="dark"]) .table th {
   background: #1e293b;
@@ -725,6 +936,19 @@
   color: #fca5a5;
 }
 
+:global(.dark) .toastWarning,
+:global([data-theme="dark"]) .toastWarning {
+  background: rgba(234, 88, 12, 0.15);
+  border-color: rgba(234, 88, 12, 0.35);
+  color: #fdba74;
+}
+
+:global(.dark) .pillInactivo,
+:global([data-theme="dark"]) .pillInactivo {
+  background: #1e293b;
+  color: #94a3b8;
+}
+
 :global(.dark) .spinner,
 :global([data-theme="dark"]) .spinner {
   border-color: #1e293b;
@@ -743,8 +967,15 @@
 }
 
 @media (max-width: 640px) {
+  .modalBody {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
   .page {
     padding: 16px;
+    overflow-x: hidden;
   }
   .kpiGrid {
     grid-template-columns: 1fr 1fr;
@@ -752,15 +983,39 @@
   .toolbar {
     flex-direction: column;
     align-items: stretch;
+    width: 100%;
   }
   .searchWrap {
     max-width: 100%;
   }
-  .modalBody {
-    grid-template-columns: 1fr;
+  .filterSelect {
+    width: 100%;
+    min-width: 0;
   }
-  .table th:nth-child(n+5),
-  .table td:nth-child(n+5) {
-    display: none;
+  .table tr:hover td {
+    background: transparent;
+  }
+  .table tr[data-estado='critico']::before,
+  :global(.dark) .table tr[data-estado='critico']::before,
+  :global([data-theme='dark']) .table tr[data-estado='critico']::before {
+    background: #dc2626;
+  }
+  .table tr[data-estado='bajo']::before,
+  :global(.dark) .table tr[data-estado='bajo']::before,
+  :global([data-theme='dark']) .table tr[data-estado='bajo']::before {
+    background: #f59e0b;
+  }
+  .table tr[data-estado='ok']::before,
+  :global(.dark) .table tr[data-estado='ok']::before,
+  :global([data-theme='dark']) .table tr[data-estado='ok']::before {
+    background: #22c55e;
+  }
+  .productoNombre {
+    font-size: 0.9375rem;
+  }
+  .table td[data-label='Precio S/'] {
+    font-weight: 700;
+    color: #1E3A8A;
+    font-size: 0.875rem;
   }
 }

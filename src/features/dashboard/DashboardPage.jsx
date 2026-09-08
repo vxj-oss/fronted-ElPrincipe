@@ -309,7 +309,7 @@ export default function DashboardPage() {
             Meta comercial — {porcentajeMeta}% completado
           </span>
           <span className={styles.metaValores}>
-            {EMPRESA.MONEDA_SIMBOLO} {((kpis?.ventasTotales || 0) % metaDiaria).toLocaleString('es-PE', { minimumFractionDigits: 2 })} / {EMPRESA.MONEDA_SIMBOLO} {metaDiaria.toLocaleString('es-PE')}
+            {EMPRESA.MONEDA_SIMBOLO} {Math.min(kpis?.ventasTotales || 0, metaDiaria).toLocaleString('es-PE', { minimumFractionDigits: 2 })} / {EMPRESA.MONEDA_SIMBOLO} {metaDiaria.toLocaleString('es-PE')}
           </span>
         </div>
         <div className={styles.metaTrack}>

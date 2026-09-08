@@ -5,8 +5,12 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem('user');
-    return savedUser ? JSON.parse(savedUser) : null;
+    try {
+      const savedUser = localStorage.getItem('user');
+      return savedUser ? JSON.parse(savedUser) : null;
+    } catch {
+      return null;
+    }
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,20 +25,7 @@ export function AuthProvider({ children }) {
           ...userData,
           nombreCompleto: userData.nombre_completo,
           cargo: userData.rol === 'administrador' ? 'Administrador General' : 'Asesor Comercial',
-          permisos: [
-            'dashboard',
-            'agent',
-            'products',
-            'customers',
-            'customer_requests',
-            'orders',
-            'commercial_terms',
-            'indicators',
-            'reports',
-            'history',
-            'profile',
-            'settings',
-          ],
+          esAdmin: userData.rol === 'administrador',
         };
         setUser(normalizedUser);
         localStorage.setItem('user', JSON.stringify(normalizedUser));
@@ -95,7 +86,6 @@ export function AuthProvider({ children }) {
     try {
       await apiRequest('/auth/logout', { method: 'POST' });
     } catch {
-      // si falla la llamada de red, igual limpiamos la sesión local
     }
     localStorage.removeItem('user');
     setUser(null);

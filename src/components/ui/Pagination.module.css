@@ -85,4 +85,7 @@
     align-items: flex-start;
     gap: 8px;
   }
+  .paginacionBtns {
+    flex-wrap: wrap;
+  }
 }

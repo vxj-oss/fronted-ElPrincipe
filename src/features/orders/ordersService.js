@@ -1,26 +1,16 @@
 import { apiRequest } from '../../utils/api';
 import { ESTADOS_PEDIDO, FORMAS_PAGO, TIPOS_ERROR } from '../../constants/appConstants';
+import { fechaHoyLima, fechaLimaDeISO } from '../../utils/fechas';
 
 export { ESTADOS_PEDIDO, FORMAS_PAGO as CONDICIONES_PAGO, TIPOS_ERROR };
 
 export function getFechaActualLima() {
-  const ahora = new Date();
-  const partes = new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'America/Lima',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).formatToParts(ahora);
-
-  const y = partes.find((p) => p.type === 'year')?.value;
-  const m = partes.find((p) => p.type === 'month')?.value;
-  const d = partes.find((p) => p.type === 'day')?.value;
-  return `${y}-${m}-${d}`;
+  return fechaHoyLima();
 }
 
 export function formatearFecha(fechaISO) {
   if (!fechaISO) return '—';
-  const soloFecha = fechaISO.includes('T') ? fechaISO.split('T')[0] : fechaISO;
+  const soloFecha = fechaLimaDeISO(fechaISO);
   const [y, m, d] = soloFecha.split('-');
   if (!y || !m || !d) return fechaISO;
   return `${d}/${m}/${y}`;
@@ -44,9 +34,7 @@ function normalizeOrderFromBackend(o) {
   const lineas = o.detalles || o.items || [];
   const primerError = lineas.find((it) => it.tiene_error || (it.tipo_error && it.tipo_error !== 'Ninguno'));
 
-  const fechaLimpia = o.fecha_pedido
-    ? o.fecha_pedido.split('T')[0]
-    : (o.creado_en ? o.creado_en.split('T')[0] : getFechaActualLima());
+  const fechaLimpia = fechaLimaDeISO(o.fecha_pedido || o.creado_en);
   const audit = o.auditoria_condicion || null;
   const condPolitica = audit?.condicion_comercial || null;
 
@@ -85,6 +73,14 @@ function normalizeOrderFromBackend(o) {
       tiene_error: Boolean(i.tiene_error),
       tipo_error: i.tipo_error || 'Ninguno',
       descripcion_error: i.descripcion_error || '',
+    })),
+    stockDescontado: Boolean(o.stock_descontado),
+    alertasStock: (o.alertas_stock || []).map((a) => ({
+      productoId: a.producto_id,
+      nombre: a.nombre,
+      stock: a.stock_actual,
+      minimo: a.stock_minimo,
+      agotado: Boolean(a.agotado),
     })),
     creadoEn: o.creado_en || o.created_at || new Date().toISOString(),
   };
