@@ -1,7 +1,73 @@
-﻿import { Search, Eye, X, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+﻿import { Search, Eye, X, AlertCircle, CheckCircle, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
 import { useHistory } from './useHistory';
 import { formatearFechaEvento } from './historyService';
 import styles from './history.module.css';
+
+function Toast({ toast }) {
+  if (!toast) return null;
+  const esError = toast.tipo === 'error';
+  return (
+    <div className={`${styles.toast} ${esError ? styles.toastError : styles.toastSuccess}`} role="status">
+      {esError ? <AlertCircle size={14} /> : <CheckCircle size={14} />}
+      {toast.texto}
+    </div>
+  );
+}
+
+function PurgaModal({
+  abierto, desde, hasta, error, purgando,
+  onDesde, onHasta, onConfirmar, onCancelar,
+}) {
+  if (!abierto) return null;
+
+  return (
+    <div className={styles.overlay} role="dialog" aria-modal="true" aria-label="Eliminar historial por rango de fechas">
+      <div className={styles.modal} style={{ width: 440 }}>
+        <div className={styles.modalHeader}>
+          <h2 className={styles.modalTitle}>Eliminar historial por rango de fechas</h2>
+          <button onClick={onCancelar} className={styles.modalClose} aria-label="Cerrar">
+            <X size={16} aria-hidden="true" />
+          </button>
+        </div>
+        <div className={styles.modalBody}>
+          <div className={styles.fieldRow}>
+            <div className={styles.field}>
+              <label htmlFor="purga-desde" className={styles.fieldLabel}>Desde</label>
+              <input
+                id="purga-desde"
+                type="date"
+                value={desde}
+                onChange={(e) => onDesde(e.target.value)}
+                className={styles.fieldInput}
+              />
+            </div>
+            <div className={styles.field}>
+              <label htmlFor="purga-hasta" className={styles.fieldLabel}>Hasta</label>
+              <input
+                id="purga-hasta"
+                type="date"
+                value={hasta}
+                onChange={(e) => onHasta(e.target.value)}
+                className={styles.fieldInput}
+              />
+            </div>
+          </div>
+          {error && <p className={styles.fieldError} role="alert" style={{ marginTop: 8 }}>{error}</p>}
+          <div className={styles.warningBox}>
+            <AlertCircle size={16} aria-hidden="true" />
+            <span>Esta acción elimina permanentemente los eventos de auditoría registrados dentro del rango indicado (ambas fechas incluidas). No se puede deshacer.</span>
+          </div>
+        </div>
+        <div className={styles.modalFooter}>
+          <button onClick={onCancelar} className={styles.btnSecondary} disabled={purgando}>Cancelar</button>
+          <button onClick={onConfirmar} className={styles.btnDanger} disabled={purgando}>
+            {purgando ? 'Eliminando...' : 'Eliminar rango'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function PillAccion({ accion, config }) {
   const cfg = config[accion] ?? {
@@ -271,6 +337,18 @@ export default function HistoryPage() {
     irAPagina,
     paginaAnterior,
     paginaSiguiente,
+    toastMsg,
+    esAdmin,
+    modalPurgaAbierto,
+    purgaDesde,
+    purgaHasta,
+    purgaError,
+    purgando,
+    setPurgaDesde,
+    setPurgaHasta,
+    abrirPurga,
+    cerrarPurga,
+    confirmarPurga,
   } = useHistory();
 
   if (error) {
@@ -284,6 +362,8 @@ export default function HistoryPage() {
 
   return (
     <div className={styles.page}>
+      <Toast toast={toastMsg} />
+
       <header className={styles.pageHeader}>
         <div>
           <h1 className={styles.pageTitle}>Historial de Auditoría</h1>
@@ -291,6 +371,13 @@ export default function HistoryPage() {
             Registro de todas las acciones del sistema — EL PRÍNCIPE
           </p>
         </div>
+        {esAdmin && (
+          <div className={styles.headerActions}>
+            <button onClick={abrirPurga} className={styles.btnDanger}>
+              <Trash2 size={14} aria-hidden="true" /> Eliminar por rango
+            </button>
+          </div>
+        )}
       </header>
 
       <section className={styles.kpiGrid} aria-label="Resumen de auditoría">
@@ -440,6 +527,18 @@ export default function HistoryPage() {
         config={CONFIG_ACCION}
         onCerrar={cerrarDetalle}
         calcularDiff={calcularDiff}
+      />
+
+      <PurgaModal
+        abierto={modalPurgaAbierto}
+        desde={purgaDesde}
+        hasta={purgaHasta}
+        error={purgaError}
+        purgando={purgando}
+        onDesde={setPurgaDesde}
+        onHasta={setPurgaHasta}
+        onConfirmar={confirmarPurga}
+        onCancelar={cerrarPurga}
       />
     </div>
   );

@@ -43,8 +43,8 @@ export async function fetchProductos(categoryId = null, incluirInactivos = false
   const params = new URLSearchParams();
   if (categoryId) params.append('category_id', categoryId);
   if (incluirInactivos) params.append('incluir_inactivos', 'true');
-  const query = params.toString() ? `?${params.toString()}` : '';
-  const data = await apiRequest(`/products/${query}`);
+  params.append('limit', '1000');
+  const data = await apiRequest(`/products/?${params.toString()}`);
   return data.map(normalizeProductFromBackend);
 }
 

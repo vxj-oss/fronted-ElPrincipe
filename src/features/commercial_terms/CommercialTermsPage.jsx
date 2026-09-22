@@ -3,6 +3,7 @@ import {
   Plus,
   Search,
   Pencil,
+  Trash2,
   AlertCircle,
   CheckCircle,
   FileText,
@@ -60,7 +61,7 @@ function Toast({ toast }) {
   );
 }
 
-function DetallePanel({ condicion, onCerrar, onEditar }) {
+function DetallePanel({ condicion, onCerrar, onEditar, onEliminar }) {
   if (!condicion) return null;
 
   return (
@@ -134,13 +135,21 @@ function DetallePanel({ condicion, onCerrar, onEditar }) {
         </div>
       </dl>
 
-      <div className={styles.detallePanelFooter}>
+      <div className={styles.detallePanelFooter} style={{ display: 'flex', gap: 8 }}>
         <button
           onClick={() => onEditar(condicion)}
           className={styles.btnPrimary}
-          style={{ width: '100%', justifyContent: 'center' }}
+          style={{ flex: 1, justifyContent: 'center' }}
         >
-          <Pencil size={13} aria-hidden="true" /> Modificar política
+          <Pencil size={13} aria-hidden="true" /> Modificar
+        </button>
+        <button
+          onClick={() => onEliminar(condicion.id)}
+          className={`${styles.btnIcono} ${styles.btnIconoDanger}`}
+          aria-label="Eliminar condición"
+          title="Eliminar"
+        >
+          <Trash2 size={15} aria-hidden="true" />
         </button>
       </div>
     </aside>
@@ -289,6 +298,33 @@ function CondicionModal({
   );
 }
 
+function ConfirmDeleteModal({ condicion, guardando, onConfirm, onCancel }) {
+  if (!condicion) return null;
+
+  return (
+    <div className={styles.overlay} role="dialog" aria-modal="true" aria-label="Confirmar eliminación">
+      <div className={`${styles.modal} ${styles.modalSmall}`}>
+        <div className={styles.modalHeader}>
+          <h2 className={styles.modalTitle}>Eliminar condición comercial</h2>
+          <button onClick={onCancel} className={styles.modalClose} aria-label="Cerrar">×</button>
+        </div>
+        <div className={styles.confirmBody}>
+          <AlertCircle size={32} className={styles.confirmIcon} aria-hidden="true" />
+          <p className={styles.confirmText}>
+            ¿Eliminar la condición <strong>{(CONFIG_TIPO[condicion.tipo] ?? { label: condicion.tipo }).label}</strong> pactada con {condicion.cliente}? Esta acción no se puede deshacer.
+          </p>
+        </div>
+        <div className={styles.modalFooter}>
+          <button onClick={onCancel} className={styles.btnSecondary}>Cancelar</button>
+          <button onClick={onConfirm} disabled={guardando} className={styles.btnDanger}>
+            {guardando ? 'Eliminando...' : 'Eliminar'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function CommercialTermsPage() {
   const {
     condicionesFiltradas,
@@ -316,6 +352,11 @@ export default function CommercialTermsPage() {
     handleGuardar,
     verDetalle,
     cerrarDetalle,
+    confirmDelete,
+    eliminando,
+    pedirConfirmarEliminar,
+    cancelarEliminar,
+    handleEliminar,
   } = useCommercialTerms();
 
   const esMovilVertical = useMediaQuery('(max-width: 768px)');
@@ -450,6 +491,14 @@ export default function CommercialTermsPage() {
                         >
                           <Pencil size={13} aria-hidden="true" />
                         </button>
+                        <button
+                          onClick={() => pedirConfirmarEliminar(c.id)}
+                          className={`${styles.btnIcono} ${styles.btnIconoDanger}`}
+                          aria-label={`Eliminar condición de ${c.cliente}`}
+                          title="Eliminar"
+                        >
+                          <Trash2 size={13} aria-hidden="true" />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -474,6 +523,14 @@ export default function CommercialTermsPage() {
         condicion={condicionDetalle}
         onCerrar={cerrarDetalle}
         onEditar={abrirEditar}
+        onEliminar={pedirConfirmarEliminar}
+      />
+
+      <ConfirmDeleteModal
+        condicion={condicionesFiltradas.find((c) => c.id === confirmDelete)}
+        guardando={eliminando}
+        onConfirm={handleEliminar}
+        onCancel={cancelarEliminar}
       />
 
       <CondicionModal

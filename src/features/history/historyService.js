@@ -91,3 +91,8 @@ export async function fetchEstadisticas() {
     moduloActivo: data.modulo_activo || '—',
   };
 }
+
+export async function eliminarEventosPorRango(desde, hasta) {
+  const params = new URLSearchParams({ desde, hasta });
+  return apiRequest(`/history/?${params.toString()}`, { method: 'DELETE' });
+}

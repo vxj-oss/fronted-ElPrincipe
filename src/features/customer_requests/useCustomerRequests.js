@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   fetchSolicitudes,
   crearSolicitud,
+  eliminarSolicitud,
   CANALES_RECEPCION,
   ESTADOS_SOLICITUD,
 } from './customerRequestsService';
@@ -49,6 +50,8 @@ export function useCustomerRequests() {
   const [items, setItems] = useState([ITEM_VACIO()]);
   const [formErrors, setFormErrors] = useState({});
   const [solicitudDetalle, setSolicitudDetalle] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
+  const [eliminando, setEliminando] = useState(false);
 
   const cargarDatos = useCallback(async () => {
     try {
@@ -179,6 +182,28 @@ export function useCustomerRequests() {
     }
   }, [form, items, cerrarModal]);
 
+  const pedirConfirmarEliminar = useCallback((id) => {
+    setConfirmDelete(id);
+  }, []);
+
+  const cancelarEliminar = useCallback(() => setConfirmDelete(null), []);
+
+  const handleEliminar = useCallback(async () => {
+    if (!confirmDelete) return;
+    setEliminando(true);
+    try {
+      await eliminarSolicitud(confirmDelete);
+      setSolicitudes((prev) => prev.filter((s) => s.id !== confirmDelete));
+      setSolicitudDetalle((prev) => (prev?.id === confirmDelete ? null : prev));
+      setToastMsg({ tipo: 'success', texto: 'Solicitud eliminada.' });
+    } catch (err) {
+      setToastMsg({ tipo: 'error', texto: err.message || 'No se pudo eliminar la solicitud.' });
+    } finally {
+      setEliminando(false);
+      setConfirmDelete(null);
+    }
+  }, [confirmDelete]);
+
   return {
     solicitudesFiltradas,
     kpis,
@@ -212,5 +237,10 @@ export function useCustomerRequests() {
     handleGuardar,
     verDetalle: (s) => setSolicitudDetalle((prev) => (prev?.id === s.id ? null : s)),
     cerrarDetalle: () => setSolicitudDetalle(null),
+    confirmDelete,
+    eliminando,
+    pedirConfirmarEliminar,
+    cancelarEliminar,
+    handleEliminar,
   };
 }

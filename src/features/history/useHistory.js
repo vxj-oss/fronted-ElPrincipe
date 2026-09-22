@@ -2,11 +2,13 @@ import { useState, useEffect, useCallback } from 'react';
 import {
   fetchEventos,
   fetchEstadisticas,
+  eliminarEventosPorRango,
   ACCIONES,
   MODULOS,
   CONFIG_ACCION,
 } from './historyService';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { useAuth } from '../../context/AuthContext';
 
 const RANGOS = [
   { value: '', label: 'Todo el tiempo' },
@@ -19,6 +21,7 @@ const POR_PAGINA = 7;
 const POR_PAGINA_MOVIL = 2;
 
 export function useHistory() {
+  const { user: usuarioActual } = useAuth();
   const esMovilVertical = useMediaQuery('(max-width: 768px)');
   const porPagina = esMovilVertical ? POR_PAGINA_MOVIL : POR_PAGINA;
   const [eventos, setEventos] = useState([]);
@@ -26,6 +29,13 @@ export function useHistory() {
   const [cargando, setCargando] = useState(true);
   const [cargandoDet, setCargandoDet] = useState(false);
   const [error, setError] = useState(null);
+  const [toastMsg, setToastMsg] = useState(null);
+
+  const [modalPurgaAbierto, setModalPurgaAbierto] = useState(false);
+  const [purgaDesde, setPurgaDesde] = useState('');
+  const [purgaHasta, setPurgaHasta] = useState('');
+  const [purgaError, setPurgaError] = useState(null);
+  const [purgando, setPurgando] = useState(false);
 
   const [pagina, setPagina] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
@@ -47,12 +57,19 @@ export function useHistory() {
 
   const [eventoDetalle, setEventoDetalle] = useState(null);
   const [modalAbierto, setModalAbierto] = useState(false);
+  const [recargaTick, setRecargaTick] = useState(0);
+
+  useEffect(() => {
+    if (!toastMsg) return;
+    const t = setTimeout(() => setToastMsg(null), 3200);
+    return () => clearTimeout(t);
+  }, [toastMsg]);
 
   useEffect(() => {
     fetchEstadisticas()
       .then(setStats)
       .catch(() => {});
-  }, []);
+  }, [recargaTick]);
 
   useEffect(() => {
     let cancelled = false;
@@ -83,7 +100,7 @@ export function useHistory() {
     return () => {
       cancelled = true;
     };
-  }, [busquedaDebounced, filtroAccion, filtroModulo, filtroRango, pagina, porPagina]);
+  }, [busquedaDebounced, filtroAccion, filtroModulo, filtroRango, pagina, porPagina, recargaTick]);
 
   const resetPagina = useCallback(() => setPagina(1), []);
 
@@ -116,6 +133,42 @@ export function useHistory() {
     setModalAbierto(false);
     setEventoDetalle(null);
   }, []);
+
+  const abrirPurga = useCallback(() => {
+    setPurgaDesde('');
+    setPurgaHasta('');
+    setPurgaError(null);
+    setModalPurgaAbierto(true);
+  }, []);
+
+  const cerrarPurga = useCallback(() => {
+    if (purgando) return;
+    setModalPurgaAbierto(false);
+  }, [purgando]);
+
+  const confirmarPurga = useCallback(async () => {
+    if (!purgaDesde || !purgaHasta) {
+      setPurgaError('Selecciona ambas fechas del rango a eliminar.');
+      return;
+    }
+    if (purgaDesde > purgaHasta) {
+      setPurgaError("La fecha 'desde' no puede ser posterior a 'hasta'.");
+      return;
+    }
+    setPurgando(true);
+    setPurgaError(null);
+    try {
+      const res = await eliminarEventosPorRango(purgaDesde, purgaHasta);
+      setToastMsg({ tipo: 'success', texto: res?.message || 'Historial eliminado.' });
+      setModalPurgaAbierto(false);
+      setPagina(1);
+      setRecargaTick((t) => t + 1);
+    } catch (err) {
+      setPurgaError(err.message || 'No se pudo eliminar el historial en ese rango.');
+    } finally {
+      setPurgando(false);
+    }
+  }, [purgaDesde, purgaHasta]);
 
   const irAPagina = useCallback((p) => setPagina(p), []);
   const paginaAnterior = useCallback(() => setPagina((p) => Math.max(1, p - 1)), []);
@@ -191,5 +244,17 @@ export function useHistory() {
     irAPagina,
     paginaAnterior,
     paginaSiguiente,
+    toastMsg,
+    esAdmin: !!usuarioActual?.esAdmin,
+    modalPurgaAbierto,
+    purgaDesde,
+    purgaHasta,
+    purgaError,
+    purgando,
+    setPurgaDesde,
+    setPurgaHasta,
+    abrirPurga,
+    cerrarPurga,
+    confirmarPurga,
   };
 }

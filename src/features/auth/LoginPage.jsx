@@ -1,6 +1,6 @@
 ﻿import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, User, Lock } from 'lucide-react';
 import { useLogin } from './useLogin';
 import Button from '../../components/ui/Button';
 import logo from '../../assets/logo.png';
@@ -44,16 +44,19 @@ export default function LoginPage() {
               <label htmlFor="nombre_usuario" className={styles.label}>
                 Nombre de Usuario
               </label>
-              <input
-                id="nombre_usuario"
-                name="nombre_usuario"
-                type="text"
-                value={formData.nombre_usuario}
-                onChange={handleChange}
-                placeholder="ej. Juan Nar"
-                disabled={loading}
-                className={`input-base ${fieldErrors.nombre_usuario ? styles.inputError : ''}`}
-              />
+              <div className={styles.inputIconWrap}>
+                <User size={16} className={styles.inputIcon} />
+                <input
+                  id="nombre_usuario"
+                  name="nombre_usuario"
+                  type="text"
+                  value={formData.nombre_usuario}
+                  onChange={handleChange}
+                  placeholder="ej. Juan Nar"
+                  disabled={loading}
+                  className={`input-base ${styles.hasIcon} ${fieldErrors.nombre_usuario ? styles.inputError : ''}`}
+                />
+              </div>
               {fieldErrors.nombre_usuario && (
                 <p className={styles.fieldError}>{fieldErrors.nombre_usuario}</p>
               )}
@@ -64,6 +67,7 @@ export default function LoginPage() {
                 Contraseña
               </label>
               <div className={styles.passwordWrapper}>
+                <Lock size={16} className={styles.inputIcon} />
                 <input
                   id="password"
                   name="password"
@@ -72,7 +76,7 @@ export default function LoginPage() {
                   onChange={handleChange}
                   placeholder="••••••••"
                   disabled={loading}
-                  className={`input-base ${fieldErrors.password ? styles.inputError : ''}`}
+                  className={`input-base ${styles.hasIcon} ${fieldErrors.password ? styles.inputError : ''}`}
                 />
                 <button
                   type="button"

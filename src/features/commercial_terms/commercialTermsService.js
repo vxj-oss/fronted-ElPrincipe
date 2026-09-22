@@ -74,3 +74,7 @@ export async function actualizarCondicion(id, data) {
 
   return normalizeTerm(response);
 }
+
+export async function eliminarCondicion(id) {
+  return apiRequest(`/commercial-terms/${id}`, { method: 'DELETE' });
+}

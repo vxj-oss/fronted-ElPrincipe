@@ -1,6 +1,6 @@
 ﻿import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, User, AtSign, Mail, Lock } from 'lucide-react';
 import { useRegister } from './useRegister';
 import Button from '../../components/ui/Button';
 import styles from './auth.module.css';
@@ -40,16 +40,19 @@ export default function RegisterPage() {
               <label htmlFor="nombre_completo" className={styles.label}>
                 Nombre Completo
               </label>
-              <input
-                id="nombre_completo"
-                name="nombre_completo"
-                type="text"
-                value={formData.nombre_completo}
-                onChange={handleChange}
-                placeholder="ej. Juan Narciso"
-                disabled={loading}
-                className={`input-base ${fieldErrors.nombre_completo ? styles.inputError : ''}`}
-              />
+              <div className={styles.inputIconWrap}>
+                <User size={16} className={styles.inputIcon} />
+                <input
+                  id="nombre_completo"
+                  name="nombre_completo"
+                  type="text"
+                  value={formData.nombre_completo}
+                  onChange={handleChange}
+                  placeholder="ej. Juan Narciso"
+                  disabled={loading}
+                  className={`input-base ${styles.hasIcon} ${fieldErrors.nombre_completo ? styles.inputError : ''}`}
+                />
+              </div>
               {fieldErrors.nombre_completo && (
                 <p className={styles.fieldError}>{fieldErrors.nombre_completo}</p>
               )}
@@ -59,16 +62,19 @@ export default function RegisterPage() {
               <label htmlFor="nombre_usuario" className={styles.label}>
                 Nombre de Usuario
               </label>
-              <input
-                id="nombre_usuario"
-                name="nombre_usuario"
-                type="text"
-                value={formData.nombre_usuario}
-                onChange={handleChange}
-                placeholder="ej. Juan Nar"
-                disabled={loading}
-                className={`input-base ${fieldErrors.nombre_usuario ? styles.inputError : ''}`}
-              />
+              <div className={styles.inputIconWrap}>
+                <AtSign size={16} className={styles.inputIcon} />
+                <input
+                  id="nombre_usuario"
+                  name="nombre_usuario"
+                  type="text"
+                  value={formData.nombre_usuario}
+                  onChange={handleChange}
+                  placeholder="ej. Juan Nar"
+                  disabled={loading}
+                  className={`input-base ${styles.hasIcon} ${fieldErrors.nombre_usuario ? styles.inputError : ''}`}
+                />
+              </div>
               {fieldErrors.nombre_usuario && (
                 <p className={styles.fieldError}>{fieldErrors.nombre_usuario}</p>
               )}
@@ -78,16 +84,19 @@ export default function RegisterPage() {
               <label htmlFor="email" className={styles.label}>
                 Correo Electrónico
               </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="ejemplo@elprincipe.com"
-                disabled={loading}
-                className={`input-base ${fieldErrors.email ? styles.inputError : ''}`}
-              />
+              <div className={styles.inputIconWrap}>
+                <Mail size={16} className={styles.inputIcon} />
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="ejemplo@elprincipe.com"
+                  disabled={loading}
+                  className={`input-base ${styles.hasIcon} ${fieldErrors.email ? styles.inputError : ''}`}
+                />
+              </div>
               {fieldErrors.email && (
                 <p className={styles.fieldError}>{fieldErrors.email}</p>
               )}
@@ -98,6 +107,7 @@ export default function RegisterPage() {
                 Contraseña
               </label>
               <div className={styles.passwordWrapper}>
+                <Lock size={16} className={styles.inputIcon} />
                 <input
                   id="password"
                   name="password"
@@ -106,7 +116,7 @@ export default function RegisterPage() {
                   onChange={handleChange}
                   placeholder="••••••••"
                   disabled={loading}
-                  className={`input-base ${fieldErrors.password ? styles.inputError : ''}`}
+                  className={`input-base ${styles.hasIcon} ${fieldErrors.password ? styles.inputError : ''}`}
                 />
                 <button
                   type="button"
@@ -127,16 +137,19 @@ export default function RegisterPage() {
               <label htmlFor="confirmPassword" className={styles.label}>
                 Confirmar Contraseña
               </label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type={showPassword ? 'text' : 'password'}
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                placeholder="••••••••"
-                disabled={loading}
-                className={`input-base ${fieldErrors.confirmPassword ? styles.inputError : ''}`}
-              />
+              <div className={styles.passwordWrapper}>
+                <Lock size={16} className={styles.inputIcon} />
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type={showPassword ? 'text' : 'password'}
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  disabled={loading}
+                  className={`input-base ${styles.hasIcon} ${fieldErrors.confirmPassword ? styles.inputError : ''}`}
+                />
+              </div>
               {fieldErrors.confirmPassword && (
                 <p className={styles.fieldError}>{fieldErrors.confirmPassword}</p>
               )}

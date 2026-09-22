@@ -1,6 +1,6 @@
 .page {
   padding: 28px 32px;
-  max-width: 1280px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -476,4 +476,194 @@
   .kpiGrid     { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .alertasGrid { grid-template-columns: minmax(0, 1fr); }
   .topbar      { flex-direction: column; gap: 10px; }
+}
+
+.kpiCard {
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background-color 150ms ease;
+}
+
+.kpiCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px -10px rgba(15, 23, 42, 0.22);
+  border-color: rgba(30, 58, 138, 0.35);
+}
+
+.btnPrimary {
+  background: linear-gradient(135deg, #1E3A8A, #2563eb);
+  box-shadow: 0 1px 2px rgba(30, 58, 138, 0.35);
+  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease, opacity 180ms ease;
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px -10px rgba(30, 58, 138, 0.55);
+}
+
+.btnPrimary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(30, 58, 138, 0.3);
+}
+
+.btnSecondary {
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+}
+
+.btnSecondary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px -6px rgba(15, 23, 42, 0.2);
+}
+
+.btnSecondary:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.btnDanger {
+  background: linear-gradient(135deg, #dc2626, #e11d48);
+  box-shadow: 0 1px 2px rgba(220, 38, 38, 0.35);
+  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.btnDanger:hover {
+  background: linear-gradient(135deg, #b91c1c, #dc2626);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px -10px rgba(220, 38, 38, 0.5);
+}
+
+.btnDanger:active {
+  transform: translateY(0);
+}
+
+.btnIcono {
+  transition: transform 180ms ease, background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+.btnIcono:hover {
+  transform: translateY(-1px) scale(1.05);
+}
+
+.btnIcono:active {
+  transform: translateY(0) scale(0.96);
+}
+
+.toggleBtn {
+  transition: transform 150ms ease, opacity 150ms ease;
+}
+
+.toggleBtn:hover {
+  transform: scale(1.08);
+}
+
+.toggleBtn:active {
+  transform: scale(0.94);
+}
+
+.pill {
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.searchInput:focus,
+.filterSelect:focus,
+.fieldInput:focus,
+.fieldSelect:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+@media (min-width: 769px) {
+  .table td {
+    transition: background-color 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+  }
+
+  .table tr:hover td:first-child {
+    box-shadow: inset 3px 0 0 0 #1E3A8A;
+  }
+
+  .table tr:active td {
+    background: #eff6ff;
+  }
+}
+
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalPopIn {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.overlay {
+  animation: overlayFadeIn 150ms ease;
+}
+
+.modal {
+  animation: modalPopIn 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kpiCard,
+  .btnPrimary,
+  .btnSecondary,
+  .btnDanger,
+  .btnIcono,
+  .toggleBtn,
+  .pill,
+  .overlay,
+  .modal,
+  .table td {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+:global(.dark) .kpiCard,
+:global([data-theme="dark"]) .kpiCard {
+  border-color: rgba(51, 65, 85, 0.8);
+}
+
+:global(.dark) .kpiCard:hover,
+:global([data-theme="dark"]) .kpiCard:hover {
+  box-shadow: 0 6px 16px -10px rgba(0, 0, 0, 0.5);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+:global(.dark) .btnPrimary,
+:global([data-theme="dark"]) .btnPrimary {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.35);
+}
+
+:global(.dark) .btnPrimary:hover:not(:disabled),
+:global([data-theme="dark"]) .btnPrimary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #3b82f6, #60a5fa);
+  box-shadow: 0 10px 20px -10px rgba(59, 130, 246, 0.5);
+}
+
+@media (min-width: 769px) {
+  :global(.dark) .table tr:hover td:first-child,
+  :global([data-theme="dark"]) .table tr:hover td:first-child {
+    box-shadow: inset 3px 0 0 0 #3b82f6;
+  }
+
+  :global(.dark) .table tr:active td,
+  :global([data-theme="dark"]) .table tr:active td {
+    background: rgba(59, 130, 246, 0.12);
+  }
+}
+
+.pageTitle,
+.cardTitle,
+.greeting,
+.modalTitle {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+.kpiValue {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }

@@ -3,6 +3,7 @@ import {
   fetchCondiciones,
   crearCondicion,
   actualizarCondicion,
+  eliminarCondicion,
   TIPOS_CONDICION,
   PLAZOS_PAGO,
 } from './commercialTermsService';
@@ -51,6 +52,8 @@ export function useCommercialTerms() {
   const [formErrors, setFormErrors] = useState({});
 
   const [condicionDetalle, setCondicionDetalle] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
+  const [eliminando, setEliminando] = useState(false);
 
   const cargarDatos = useCallback(async () => {
     setCargando(true);
@@ -175,6 +178,28 @@ export function useCommercialTerms() {
 
   const cerrarDetalle = useCallback(() => setCondicionDetalle(null), []);
 
+  const pedirConfirmarEliminar = useCallback((id) => {
+    setConfirmDelete(id);
+  }, []);
+
+  const cancelarEliminar = useCallback(() => setConfirmDelete(null), []);
+
+  const handleEliminar = useCallback(async () => {
+    if (!confirmDelete) return;
+    setEliminando(true);
+    try {
+      await eliminarCondicion(confirmDelete);
+      setCondiciones((prev) => prev.filter((c) => c.id !== confirmDelete));
+      setCondicionDetalle((prev) => (prev?.id === confirmDelete ? null : prev));
+      setToastMsg({ tipo: 'success', texto: 'Condición comercial eliminada.' });
+    } catch (err) {
+      setToastMsg({ tipo: 'error', texto: err.message || 'No se pudo eliminar la condición.' });
+    } finally {
+      setEliminando(false);
+      setConfirmDelete(null);
+    }
+  }, [confirmDelete]);
+
   return {
     condicionesFiltradas,
     kpis,
@@ -202,5 +227,10 @@ export function useCommercialTerms() {
     handleGuardar,
     verDetalle,
     cerrarDetalle,
+    confirmDelete,
+    eliminando,
+    pedirConfirmarEliminar,
+    cancelarEliminar,
+    handleEliminar,
   };
 }
