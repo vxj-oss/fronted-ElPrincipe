@@ -60,3 +60,7 @@ export async function crearSolicitud(payload) {
   });
   return normalizeRequest(data);
 }
+
+export async function eliminarSolicitud(id) {
+  return apiRequest(`/customer-requests/${id}`, { method: 'DELETE' });
+}

@@ -11,6 +11,50 @@
   align-items: flex-start;
 }
 
+.headerActions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.toast {
+  position: fixed;
+  top: 80px;
+  right: 24px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  animation: toastSlideIn 250ms ease;
+}
+
+.toastSuccess {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+}
+
+.toastError {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+}
+
+@keyframes toastSlideIn {
+  from {
+    transform: translateY(-8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 .pageTitle {
   font-size: 1.375rem;
   font-weight: 600;
@@ -739,4 +783,349 @@
   .fechaDia {
     font-size: 0.9375rem;
   }
+}
+
+.kpiCard {
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background-color 150ms ease;
+}
+
+.kpiCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px -10px rgba(15, 23, 42, 0.22);
+  border-color: rgba(30, 58, 138, 0.35);
+}
+
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  background: linear-gradient(135deg, #1E3A8A, #2563eb);
+  box-shadow: 0 1px 2px rgba(30, 58, 138, 0.35);
+  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease, opacity 180ms ease;
+}
+
+.btnPrimary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px -10px rgba(30, 58, 138, 0.55);
+}
+
+.btnPrimary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(30, 58, 138, 0.3);
+}
+
+.btnSecondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  background: #fff;
+  color: #374151;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+}
+
+.btnSecondary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px -6px rgba(15, 23, 42, 0.2);
+}
+
+.btnSecondary:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.btnDanger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  background: linear-gradient(135deg, #dc2626, #e11d48);
+  box-shadow: 0 1px 2px rgba(220, 38, 38, 0.35);
+  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.btnDanger:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.modalFooter {
+  padding: 14px 20px;
+  border-top: 1px solid #e2e8f0;
+  background: #f8fafc;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.fieldLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.fieldInput {
+  padding: 8px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-family: inherit;
+  background: #fff;
+  color: #0f172a;
+  outline: none;
+  transition: border-color 150ms, background-color 150ms ease, color 150ms ease;
+}
+
+.fieldInput:focus {
+  border-color: #1E3A8A;
+}
+
+.fieldError {
+  font-size: 0.6875rem;
+  color: #b91c1c;
+}
+
+.warningBox {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 0.5rem;
+  padding: 12px 14px;
+  color: #b91c1c;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  margin-top: 14px;
+}
+
+.btnDanger:hover {
+  background: linear-gradient(135deg, #b91c1c, #dc2626);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px -10px rgba(220, 38, 38, 0.5);
+}
+
+.btnDanger:active {
+  transform: translateY(0);
+}
+
+.btnIcono {
+  transition: transform 180ms ease, background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+.btnIcono:hover {
+  transform: translateY(-1px) scale(1.05);
+}
+
+.btnIcono:active {
+  transform: translateY(0) scale(0.96);
+}
+
+.toggleBtn {
+  transition: transform 150ms ease, opacity 150ms ease;
+}
+
+.toggleBtn:hover {
+  transform: scale(1.08);
+}
+
+.toggleBtn:active {
+  transform: scale(0.94);
+}
+
+.pill {
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.searchInput:focus,
+.filterSelect:focus,
+.fieldInput:focus,
+.fieldSelect:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+@media (min-width: 769px) {
+  .table td {
+    transition: background-color 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+  }
+
+  .table tr:hover td:first-child {
+    box-shadow: inset 3px 0 0 0 #1E3A8A;
+  }
+
+  .table tr:active td {
+    background: #eff6ff;
+  }
+}
+
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalPopIn {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.overlay {
+  animation: overlayFadeIn 150ms ease;
+}
+
+.modal {
+  animation: modalPopIn 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kpiCard,
+  .btnPrimary,
+  .btnSecondary,
+  .btnDanger,
+  .btnIcono,
+  .toggleBtn,
+  .pill,
+  .overlay,
+  .modal,
+  .table td {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+:global(.dark) .kpiCard,
+:global([data-theme="dark"]) .kpiCard {
+  border-color: rgba(51, 65, 85, 0.8);
+}
+
+:global(.dark) .kpiCard:hover,
+:global([data-theme="dark"]) .kpiCard:hover {
+  box-shadow: 0 6px 16px -10px rgba(0, 0, 0, 0.5);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+:global(.dark) .btnPrimary,
+:global([data-theme="dark"]) .btnPrimary {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.35);
+}
+
+:global(.dark) .btnPrimary:hover:not(:disabled),
+:global([data-theme="dark"]) .btnPrimary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #3b82f6, #60a5fa);
+  box-shadow: 0 10px 20px -10px rgba(59, 130, 246, 0.5);
+}
+
+:global(.dark) .btnSecondary,
+:global([data-theme="dark"]) .btnSecondary {
+  background: #1e293b;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+
+:global(.dark) .modalFooter,
+:global([data-theme="dark"]) .modalFooter {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+
+:global(.dark) .fieldLabel,
+:global([data-theme="dark"]) .fieldLabel {
+  color: #cbd5e1;
+}
+
+:global(.dark) .fieldInput,
+:global([data-theme="dark"]) .fieldInput {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global(.dark) .warningBox,
+:global([data-theme="dark"]) .warningBox {
+  background: rgba(220, 38, 38, 0.12);
+  border-color: rgba(220, 38, 38, 0.3);
+  color: #fca5a5;
+}
+
+:global(.dark) .toastSuccess,
+:global([data-theme="dark"]) .toastSuccess {
+  background: rgba(21, 128, 61, 0.15);
+  border-color: rgba(21, 128, 61, 0.3);
+  color: #4ade80;
+}
+
+:global(.dark) .toastError,
+:global([data-theme="dark"]) .toastError {
+  background: rgba(220, 38, 38, 0.15);
+  border-color: rgba(220, 38, 38, 0.3);
+  color: #fca5a5;
+}
+
+@media (min-width: 769px) {
+  :global(.dark) .table tr:hover td:first-child,
+  :global([data-theme="dark"]) .table tr:hover td:first-child {
+    box-shadow: inset 3px 0 0 0 #3b82f6;
+  }
+
+  :global(.dark) .table tr:active td,
+  :global([data-theme="dark"]) .table tr:active td {
+    background: rgba(59, 130, 246, 0.12);
+  }
+}
+
+.pageTitle,
+.cardTitle,
+.greeting,
+.modalTitle {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+.kpiValue {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }

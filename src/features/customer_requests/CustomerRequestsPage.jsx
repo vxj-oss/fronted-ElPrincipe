@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   Plus, Search, Eye, X, MessageSquare,
-  CheckCircle, Clock, AlertCircle,
+  CheckCircle, Clock, AlertCircle, Trash2,
 } from 'lucide-react';
 import { useCustomerRequests } from './useCustomerRequests';
 import { formatearFecha } from './customerRequestsService';
@@ -32,7 +32,7 @@ function Toast({ toast }) {
   );
 }
 
-function DetallePanel({ solicitud, onCerrar }) {
+function DetallePanel({ solicitud, onCerrar, onEliminar }) {
   if (!solicitud) return null;
 
   return (
@@ -41,9 +41,19 @@ function DetallePanel({ solicitud, onCerrar }) {
     <aside className={`${styles.detallePanel} rt-drawer`}>
       <div className={styles.detallePanelHeader}>
         <h2 className={styles.detalleTitulo}>{solicitud.codigo}</h2>
-        <button onClick={onCerrar} className={styles.btnIcono} aria-label="Cerrar">
-          <X size={14} />
-        </button>
+        <div style={{ display: 'flex', gap: 6 }}>
+          <button
+            onClick={() => onEliminar(solicitud.id)}
+            className={`${styles.btnIcono} ${styles.btnIconoDanger}`}
+            aria-label="Eliminar solicitud"
+            title="Eliminar"
+          >
+            <Trash2 size={14} />
+          </button>
+          <button onClick={onCerrar} className={styles.btnIcono} aria-label="Cerrar">
+            <X size={14} />
+          </button>
+        </div>
       </div>
 
       <dl className={styles.detalleGrid}>
@@ -89,6 +99,33 @@ function DetallePanel({ solicitud, onCerrar }) {
   );
 }
 
+function ConfirmDeleteModal({ solicitud, guardando, onConfirm, onCancel }) {
+  if (!solicitud) return null;
+
+  return (
+    <div className={styles.overlay} role="dialog" aria-modal="true" aria-label="Confirmar eliminación">
+      <div className={`${styles.modal} ${styles.modalSmall}`}>
+        <div className={styles.modalHeader}>
+          <h2 className={styles.modalTitle}>Eliminar solicitud</h2>
+          <button onClick={onCancel} className={styles.modalClose} aria-label="Cerrar">×</button>
+        </div>
+        <div className={styles.confirmBody}>
+          <AlertCircle size={32} className={styles.confirmIcon} aria-hidden="true" />
+          <p className={styles.confirmText}>
+            ¿Eliminar la solicitud <strong>{solicitud.codigo}</strong> de {solicitud.cliente}? Esta acción no se puede deshacer.
+          </p>
+        </div>
+        <div className={styles.modalFooter}>
+          <button onClick={onCancel} className={styles.btnSecondary}>Cancelar</button>
+          <button onClick={onConfirm} disabled={guardando} className={styles.btnDanger}>
+            {guardando ? 'Eliminando...' : 'Eliminar'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function CustomerRequestsPage() {
   const {
     solicitudesFiltradas, kpis, cargando, guardando, error, toastMsg,
@@ -100,6 +137,7 @@ export default function CustomerRequestsPage() {
     agregarItem, quitarItem,
     cambiarProductoItem, cambiarCantItem, cambiarPrecioItem,
     handleGuardar, verDetalle, cerrarDetalle,
+    confirmDelete, eliminando, pedirConfirmarEliminar, cancelarEliminar, handleEliminar,
   } = useCustomerRequests();
 
   const esMovilVertical = useMediaQuery('(max-width: 768px)');
@@ -223,9 +261,19 @@ export default function CustomerRequestsPage() {
                       </span>
                     </td>
                     <td data-label="Acción" onClick={(e) => e.stopPropagation()}>
-                      <button onClick={() => verDetalle(s)} className={styles.btnIcono}>
-                        <Eye size={13} />
-                      </button>
+                      <div style={{ display: 'flex', gap: 6 }}>
+                        <button onClick={() => verDetalle(s)} className={styles.btnIcono} title="Ver detalle">
+                          <Eye size={13} />
+                        </button>
+                        <button
+                          onClick={() => pedirConfirmarEliminar(s.id)}
+                          className={`${styles.btnIcono} ${styles.btnIconoDanger}`}
+                          aria-label={`Eliminar solicitud ${s.codigo}`}
+                          title="Eliminar"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -245,7 +293,14 @@ export default function CustomerRequestsPage() {
         </section>
       </div>
 
-      <DetallePanel solicitud={solicitudDetalle} onCerrar={cerrarDetalle} />
+      <DetallePanel solicitud={solicitudDetalle} onCerrar={cerrarDetalle} onEliminar={pedirConfirmarEliminar} />
+
+      <ConfirmDeleteModal
+        solicitud={solicitudesFiltradas.find((s) => s.id === confirmDelete)}
+        guardando={eliminando}
+        onConfirm={handleEliminar}
+        onCancel={cancelarEliminar}
+      />
 
       {modalAbierto && (
         <div className={styles.overlay} role="dialog" aria-modal="true">

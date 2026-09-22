@@ -156,13 +156,18 @@ export function GraficoLinea({ titulo, labels = [], data = [], color = '#1E3A8A'
         },
       });
     });
+    const handlePrintResize = () => chartRef.current?.resize();
+    window.addEventListener('beforeprint', handlePrintResize);
+    window.addEventListener('afterprint', handlePrintResize);
     return () => {
+      window.removeEventListener('beforeprint', handlePrintResize);
+      window.removeEventListener('afterprint', handlePrintResize);
       if (chartRef.current) chartRef.current.destroy();
     };
   }, [labels, data, color]);
 
   return (
-    <div style={{ border: '1px solid #e2e8f0', borderRadius: '0.5rem', padding: '12px' }}>
+    <div style={{ border: '1px solid #e2e8f0', borderRadius: '0.5rem', padding: '12px', breakInside: 'avoid', pageBreakInside: 'avoid' }}>
       <p style={{ fontSize: '0.6875rem', color: '#94a3b8', marginBottom: 8 }}>{titulo}</p>
       <div style={{ position: 'relative', height: 100 }}>
         <canvas ref={ref} role="img" aria-label={titulo} />
@@ -205,13 +210,18 @@ export function GraficoBarras({ titulo, labels = [], data = [], color = '#1E3A8A
         },
       });
     });
+    const handlePrintResize = () => chartRef.current?.resize();
+    window.addEventListener('beforeprint', handlePrintResize);
+    window.addEventListener('afterprint', handlePrintResize);
     return () => {
+      window.removeEventListener('beforeprint', handlePrintResize);
+      window.removeEventListener('afterprint', handlePrintResize);
       if (chartRef.current) chartRef.current.destroy();
     };
   }, [labels, data, color]);
 
   return (
-    <div style={{ border: '1px solid #e2e8f0', borderRadius: '0.5rem', padding: '12px' }}>
+    <div style={{ border: '1px solid #e2e8f0', borderRadius: '0.5rem', padding: '12px', breakInside: 'avoid', pageBreakInside: 'avoid' }}>
       <p style={{ fontSize: '0.6875rem', color: '#94a3b8', marginBottom: 8 }}>{titulo}</p>
       <div style={{ position: 'relative', height: 100 }}>
         <canvas ref={ref} role="img" aria-label={titulo} />
@@ -245,13 +255,18 @@ export function GraficoPie({ titulo, labels = [], data = [], colores = [] }) {
         },
       });
     });
+    const handlePrintResize = () => chartRef.current?.resize();
+    window.addEventListener('beforeprint', handlePrintResize);
+    window.addEventListener('afterprint', handlePrintResize);
     return () => {
+      window.removeEventListener('beforeprint', handlePrintResize);
+      window.removeEventListener('afterprint', handlePrintResize);
       if (chartRef.current) chartRef.current.destroy();
     };
   }, [labels, data, colores]);
 
   return (
-    <div style={{ border: '1px solid #e2e8f0', borderRadius: '0.5rem', padding: '12px' }}>
+    <div style={{ border: '1px solid #e2e8f0', borderRadius: '0.5rem', padding: '12px', breakInside: 'avoid', pageBreakInside: 'avoid' }}>
       <p style={{ fontSize: '0.6875rem', color: '#94a3b8', marginBottom: 8 }}>{titulo}</p>
       <div style={{ position: 'relative', height: 140 }}>
         <canvas ref={ref} role="img" aria-label={titulo} />
