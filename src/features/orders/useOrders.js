@@ -14,6 +14,8 @@ import {
   TIPOS_ERROR,
   opcionesPagoParaCondicion,
   valorPactadoTexto,
+  descuentoPactadoDeCondiciones,
+  precioConDescuento,
 } from './ordersService';
 import { fetchOpcionesCondicionAgrupadas } from '../commercial_terms/condicionOpcionesService';
 import { fetchClientes } from '../customers/customersService';
@@ -179,6 +181,11 @@ export function useOrders() {
     [condicionClienteActiva, opcionesCondicion]
   );
 
+  const descuentoPactadoCliente = useMemo(
+    () => descuentoPactadoDeCondiciones(condicionesDelCliente),
+    [condicionesDelCliente]
+  );
+
   const pedidosFiltrados = useMemo(() => {
     const q = busqueda.toLowerCase();
     return pedidos.filter((p) => {
@@ -282,13 +289,14 @@ export function useOrders() {
         }));
 
         if (sol.detalles && sol.detalles.length > 0) {
+          const descuentoSol = descuentoPactadoDeCondiciones(condsCli);
           const nuevosItems = sol.detalles.map((d) => {
             const prod = productosCatalogo.find((p) => p.id === d.producto_id);
             return {
               producto: prod?.nombre || d.nombre_producto_solicitado,
               producto_id: d.producto_id || prod?.id || null,
               cant: d.cantidad_solicitada || 1,
-              precio: prod ? parseFloat(prod.precio) : parseFloat(d.precio_esperado || 0),
+              precio: prod ? precioConDescuento(prod.precio, descuentoSol) : parseFloat(d.precio_esperado || 0),
             };
           });
           setItems(nuevosItems);
@@ -355,14 +363,14 @@ export function useOrders() {
                 ...it,
                 producto: prod?.nombre || valorSeleccionado,
                 producto_id: prod?.id || null,
-                precio: prod ? parseFloat(prod.precio) : it.precio,
+                precio: prod ? precioConDescuento(prod.precio, descuentoPactadoCliente) : it.precio,
               }
             : it
         )
       );
       setFormErrors((prev) => ({ ...prev, items: undefined }));
     },
-    [productosCatalogo]
+    [productosCatalogo, descuentoPactadoCliente]
   );
 
   const cambiarCantItem = useCallback((idx, valor) => {

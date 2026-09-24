@@ -21,6 +21,17 @@ export function opcionesPagoParaCondicion(condicion, opcionesCondicion) {
   return OPCION_SIN_CONDICION;
 }
 
+export function descuentoPactadoDeCondiciones(condicionesDelCliente = []) {
+  const cond = condicionesDelCliente.find((c) => c.tipo_condicion === 'Descuento');
+  return cond ? parseFloat(cond.porcentaje_descuento || 0) : 0;
+}
+
+export function precioConDescuento(precioLista, descuentoPct) {
+  const precio = parseFloat(precioLista) || 0;
+  const pct = parseFloat(descuentoPct) || 0;
+  return Math.round(precio * (1 - pct / 100) * 100) / 100;
+}
+
 export function valorPactadoTexto(condicion) {
   if (!condicion) return 'Contado';
   if (condicion.tipo_condicion === 'Credito') return `Credito ${condicion.dias_plazo_pactados ?? 0}d`;
