@@ -16,7 +16,6 @@ export default function CustomerForm({
     return (
         <form onSubmit={(e) => { e.preventDefault(); onGuardar(); }}>
             <div className={styles.modalBody}>
-                {/* Razón Social */}
                 <div className={`${styles.field} ${styles.fieldFull}`}>
                     <label htmlFor="f-nombre" className={styles.fieldLabel}>
                         Razón social / Nombre completo
@@ -34,7 +33,6 @@ export default function CustomerForm({
                     )}
                 </div>
 
-                {/* RUC / DNI */}
                 <div className={styles.field}>
                     <label htmlFor="f-ruc" className={styles.fieldLabel}>RUC / DNI</label>
                     <input
@@ -51,7 +49,6 @@ export default function CustomerForm({
                     )}
                 </div>
 
-                {/* Tipo de cliente */}
                 <div className={styles.field}>
                     <label htmlFor="f-tipo" className={styles.fieldLabel}>Tipo de cliente</label>
                     <select
@@ -69,7 +66,6 @@ export default function CustomerForm({
                     )}
                 </div>
 
-                {/* Distrito */}
                 <div className={styles.field}>
                     <label htmlFor="f-distrito" className={styles.fieldLabel}>Distrito</label>
                     <select
@@ -87,7 +83,6 @@ export default function CustomerForm({
                     )}
                 </div>
 
-                {/* Teléfono */}
                 <div className={styles.field}>
                     <label htmlFor="f-tel" className={styles.fieldLabel}>Teléfono</label>
                     <input
@@ -100,7 +95,6 @@ export default function CustomerForm({
                     />
                 </div>
 
-                {/* Email */}
                 <div className={styles.field}>
                     <label htmlFor="f-email" className={styles.fieldLabel}>Correo electrónico</label>
                     <input
@@ -117,7 +111,6 @@ export default function CustomerForm({
                     )}
                 </div>
 
-                {/* Clasificación */}
                 <div className={styles.field}>
                     <label htmlFor="f-clasif" className={styles.fieldLabel}>Clasificación</label>
                     <select
@@ -131,7 +124,6 @@ export default function CustomerForm({
                     </select>
                 </div>
 
-                {/* Dirección */}
                 <div className={`${styles.field} ${styles.fieldFull}`}>
                     <label htmlFor="f-dir" className={styles.fieldLabel}>Dirección</label>
                     <input

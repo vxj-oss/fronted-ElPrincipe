@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&display=swap');
 
-/* ── Layout principal de Login ─────────────────────────────────────────────── */
 .wrapper {
   display: flex;
   height: 100vh;
@@ -8,7 +7,6 @@
   overflow: hidden;
 }
 
-/* Panel izquierdo: 45% de la pantalla */
 .branding {
   display: none;
   flex: 0 0 45%;
@@ -118,7 +116,6 @@
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
 }
 
-/* Panel derecho: 55% restante */
 .formPanel {
   flex: 1;
   display: flex;
@@ -178,7 +175,6 @@
   margin-bottom: 1.25rem;
 }
 
-/* Campos */
 .fieldGroup {
   margin-bottom: 0.875rem;
   animation: fieldIn 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -266,7 +262,6 @@
   transform: translateY(-50%) scale(1.1);
 }
 
-/* Alertas */
 .alertError {
   background-color: #fef2f2;
   border: 1px solid #fecaca;
@@ -277,7 +272,6 @@
   margin-bottom: 1.25rem;
 }
 
-/* Spinner */
 .spinner {
   display: inline-block;
   width: 18px;
@@ -360,14 +354,11 @@
     box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35), 0 0 0 3px rgba(255, 255, 255, 0.15);
   }
 
-  /* La tarjeta usaba margin: auto, que en flex-column absorbe todo el
-     espacio libre y la aleja del logo/título. La fijamos al flujo normal. */
   .formCard {
     margin: 0;
   }
 }
 
-/* ── Enlaces de registro y navegación ── */
 .registerLink {
   text-align: center;
   font-size: 0.875rem;

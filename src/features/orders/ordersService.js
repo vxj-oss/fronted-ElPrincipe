@@ -4,6 +4,31 @@ import { fechaHoyLima, fechaLimaDeISO } from '../../utils/fechas';
 
 export { ESTADOS_PEDIDO, FORMAS_PAGO as CONDICIONES_PAGO, TIPOS_ERROR };
 
+const OPCION_SIN_CONDICION = [{ valor: 'Contado', label: 'Contado' }];
+
+export function opcionesPagoParaCondicion(condicion, opcionesCondicion) {
+  if (!condicion) return OPCION_SIN_CONDICION;
+  const catalogo = opcionesCondicion || { Credito: [], Descuento: [], Forma_Pago: [] };
+  if (condicion.tipo_condicion === 'Credito') {
+    return (catalogo.Credito || []).map((o) => ({ valor: `Credito ${o.valor}d`, label: `Crédito ${o.valor}d` }));
+  }
+  if (condicion.tipo_condicion === 'Descuento') {
+    return (catalogo.Descuento || []).map((o) => ({ valor: `Descuento ${o.valor}%`, label: `Descuento ${o.valor}%` }));
+  }
+  if (condicion.tipo_condicion === 'Forma_Pago') {
+    return catalogo.Forma_Pago || [];
+  }
+  return OPCION_SIN_CONDICION;
+}
+
+export function valorPactadoTexto(condicion) {
+  if (!condicion) return 'Contado';
+  if (condicion.tipo_condicion === 'Credito') return `Credito ${condicion.dias_plazo_pactados ?? 0}d`;
+  if (condicion.tipo_condicion === 'Descuento') return `Descuento ${parseInt(condicion.porcentaje_descuento || 0, 10)}%`;
+  if (condicion.tipo_condicion === 'Forma_Pago') return condicion.forma_pago_pactada || 'Contado';
+  return 'Contado';
+}
+
 export function getFechaActualLima() {
   return fechaHoyLima();
 }
@@ -55,10 +80,11 @@ function normalizeOrderFromBackend(o) {
     condicionComercial: audit ? {
       id: audit.id,
       condicion_id: audit.condicion_comercial_id,
-      tipo: condPolitica?.tipo_condicion || 'Plazo_Credito',
+      tipo: condPolitica?.tipo_condicion || 'Credito',
       diasPlazo: condPolitica?.dias_plazo_pactados || 0,
       descuento: parseFloat(condPolitica?.porcentaje_descuento || 0),
-      limiteCredito: parseFloat(condPolitica?.limite_credito_asignado || 0),
+      formaPago: condPolitica?.forma_pago_pactada || '',
+      valorPactado: valorPactadoTexto(condPolitica),
       tieneFalla: Boolean(audit.tiene_falla),
       motivoFalla: audit.motivo_falla || '',
     } : null,

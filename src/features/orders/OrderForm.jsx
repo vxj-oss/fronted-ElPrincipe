@@ -1,7 +1,16 @@
 import React, { useMemo } from 'react';
 import { Plus, X, Sparkles, ShieldCheck, ShieldAlert } from 'lucide-react';
-import { EMPRESA } from '../../constants/appConstants';
+import { EMPRESA, LABELS_TIPO_CONDICION } from '../../constants/appConstants';
+import { valorPactadoTexto } from './ordersService';
 import styles from './orders.module.css';
+
+function etiquetaValorPactado(condicion) {
+  if (!condicion) return 'Sin condición pactada (Estricto Contado)';
+  if (condicion.tipo_condicion === 'Credito') return `Crédito ${condicion.dias_plazo_pactados}d`;
+  if (condicion.tipo_condicion === 'Descuento') return `Descuento ${parseInt(condicion.porcentaje_descuento || 0, 10)}%`;
+  if (condicion.tipo_condicion === 'Forma_Pago') return condicion.forma_pago_pactada || 'Contado';
+  return '—';
+}
 
 export default function OrderForm({
   form,
@@ -31,36 +40,22 @@ export default function OrderForm({
   const evaluacionComercial = useMemo(() => {
     if (!form.cliente_id) return null;
 
-    const diasPactados = condicionClienteActiva ? (condicionClienteActiva.dias_plazo_pactados ?? 0) : 0;
-    const limiteCredito = condicionClienteActiva ? parseFloat(condicionClienteActiva.limite_credito_asignado || 0) : 0;
+    const pactadoValor = valorPactadoTexto(condicionClienteActiva);
+    const pactadoTxt = etiquetaValorPactado(condicionClienteActiva);
+    const digitadoTxt = form.pago;
 
-    let diasPedido = 0;
-    if (form.pago === 'Credito 15d' || form.pago?.includes('15')) diasPedido = 15;
-    else if (form.pago === 'Credito 30d' || form.pago?.includes('30')) diasPedido = 30;
-
-    const motivos = [];
-    let hayFalla = false;
-
-    if (diasPedido !== diasPactados) {
-      hayFalla = true;
-      const pactadoTxt = diasPactados > 0 ? `Crédito ${diasPactados}d` : 'Contado';
-      const digitadoTxt = diasPedido > 0 ? `Crédito ${diasPedido}d` : 'Contado';
-      motivos.push(`Discrepancia en condición: Se seleccionó '${digitadoTxt}' pero la condición pactada es '${pactadoTxt}'.`);
-    }
-
-    if (diasPedido > 0 && limiteCredito > 0 && totalFormulario > limiteCredito) {
-      hayFalla = true;
-      motivos.push(`Límite de crédito excedido: Total de S/ ${totalFormulario.toFixed(2)} supera el límite de S/ ${limiteCredito.toFixed(2)}.`);
-    }
+    const hayFalla = (form.pago || '').trim().toLowerCase() !== pactadoValor.trim().toLowerCase();
+    const motivos = hayFalla
+      ? [`Discrepancia en condición: Se seleccionó '${digitadoTxt}' pero la condición pactada es '${pactadoTxt}'.`]
+      : [];
 
     return {
       hayFalla,
-      diasPactados,
-      diasPedido,
-      limiteCredito,
+      pactadoTxt,
+      digitadoTxt,
       motivos,
     };
-  }, [form.cliente_id, form.pago, condicionClienteActiva, totalFormulario]);
+  }, [form.cliente_id, form.pago, condicionClienteActiva]);
 
   return (
     <form className={styles.modalForm} onSubmit={(e) => { e.preventDefault(); onGuardar(); }}>
@@ -186,7 +181,7 @@ export default function OrderForm({
             ) : (
               condicionesDelCliente.map((c) => (
                 <option key={c.id} value={c.id}>
-                  {c.tipo_condicion.replace('_', ' ')} — {c.dias_plazo_pactados > 0 ? `Crédito ${c.dias_plazo_pactados}d` : 'Contado 0d'} | Límite: S/ {parseFloat(c.limite_credito_asignado || 0).toFixed(2)}
+                  {LABELS_TIPO_CONDICION[c.tipo_condicion] || c.tipo_condicion} — {etiquetaValorPactado(c)}
                 </option>
               ))
             )}
@@ -205,7 +200,7 @@ export default function OrderForm({
             className={styles.fieldInput}
           >
             {condicionesPago.map((p) => (
-              <option key={p} value={p}>{p}</option>
+              <option key={p.valor} value={p.valor}>{p.label}</option>
             ))}
           </select>
         </div>
@@ -240,9 +235,8 @@ export default function OrderForm({
                   </span>
                 </div>
                 <div style={{ display: 'flex', gap: '12px', color: '#475569' }}>
-                  <span><strong>Pactado:</strong> {evaluacionComercial.diasPactados > 0 ? `${evaluacionComercial.diasPactados}d` : 'Contado'}</span>
-                  <span><strong>Digitado:</strong> {form.pago}</span>
-                  <span><strong>Límite:</strong> S/ {evaluacionComercial.limiteCredito.toFixed(2)}</span>
+                  <span><strong>Pactado:</strong> {evaluacionComercial.pactadoTxt}</span>
+                  <span><strong>Digitado:</strong> {evaluacionComercial.digitadoTxt}</span>
                 </div>
               </div>
 

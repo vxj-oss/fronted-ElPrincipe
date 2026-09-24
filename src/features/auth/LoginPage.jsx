@@ -12,7 +12,6 @@ export default function LoginPage() {
 
   return (
     <div className={styles.wrapper}>
-      {/* Panel lateral de branding */}
       <div className={styles.branding}>
         <div className={styles.brandingContent}>
           <h1 className={styles.brandTitle}>EL PRÍNCIPE</h1>
@@ -23,7 +22,6 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Panel del formulario */}
       <div className={styles.formPanel}>
         <h1 className={styles.mobileTitle}>
           EP <span className={styles.mobileTitleAccent}>Agent</span>
@@ -102,7 +100,6 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          {/* Enlace hacia el Registro */}
           <p className={styles.registerLink}>
             ¿No tienes una cuenta?{' '}
             <Link to="/registro" className={styles.link}>

@@ -74,7 +74,7 @@ export function useProducts() {
         ])
         setProductos(prodList)
         setCategorias(catList)
-      } catch (err) {
+      } catch {
         setError('No se pudieron cargar los datos de productos y categorías.')
       } finally {
         setCargando(false)

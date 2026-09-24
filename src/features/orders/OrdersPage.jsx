@@ -339,7 +339,7 @@ export default function OrdersPage() {
     condicionClienteActiva,
     pedidoDetalle, confirmDelete,
     advertenciaConfirmacion, cerrarAdvertenciaConfirmacion,
-    ESTADOS_PEDIDO, estadosPedidoDisponibles, CONDICIONES_PAGO,
+    ESTADOS_PEDIDO, estadosPedidoDisponibles, opcionesPagoActivas,
     clientesCatalogo, productosCatalogo, solicitudesPendientes,
     abrirCrear, abrirEditar, cerrarModal,
     handleFormChange, handleGuardar, handleCambiarEstado,
@@ -566,7 +566,7 @@ export default function OrdersPage() {
         productosCatalogo={productosCatalogo}
         solicitudesPendientes={solicitudesPendientes}
         estadosPedido={estadosPedidoDisponibles}
-        condicionesPago={CONDICIONES_PAGO}
+        condicionesPago={opcionesPagoActivas}
         onClose={cerrarModal}
         onChange={handleFormChange}
         onGuardar={handleGuardar}

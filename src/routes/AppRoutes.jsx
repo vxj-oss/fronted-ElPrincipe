@@ -3,15 +3,12 @@ import { useAuth } from '../context/AuthContext';
 import { puede } from '../utils/permissions';
 import Spinner from '../components/ui/Spinner';
 
-// Layouts
 import MainLayout from '../components/layout/MainLayout';
 import AuthLayout from '../components/layout/AuthLayout';
 
-// Auth
 import LoginPage from '../features/auth/LoginPage';
 import RegisterPage from '../features/auth/RegisterPage';
 
-// Módulos protegidos
 import DashboardPage from '../features/dashboard/DashboardPage';
 import AgentPage from '../features/agent/AgentPage';
 import ProductsPage from '../features/products/ProductsPage';
@@ -64,7 +61,6 @@ export default function AppRoutes() {
     <BrowserRouter>
       <Routes>
 
-        {/* Rutas públicas (auth) */}
         <Route element={<AuthLayout />}>
           <Route
             path="/login"
@@ -84,7 +80,6 @@ export default function AppRoutes() {
           />
         </Route>
 
-        {/* Rutas protegidas (app principal) */}
         <Route
           element={
             <PrivateRoute>
@@ -122,7 +117,6 @@ export default function AppRoutes() {
           <Route path="/configuracion" element={<SettingsPage />} />
         </Route>
 
-        {/* Fallback */}
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
 
       </Routes>

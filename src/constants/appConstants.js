@@ -31,11 +31,7 @@ export const ESTADOS_PEDIDO = [
   'Cancelado',
 ];
 
-export const FORMAS_PAGO = [
-  'Contado',
-  'Credito 15d',
-  'Credito 30d',
-];
+export const FORMAS_PAGO = ['Contado'];
 
 export const ROLES_USUARIO = {
   ASESOR: 'asesor',
@@ -49,12 +45,18 @@ export const TIPOS_ERROR = [
   'Cantidad_Erronea',
 ];
 
-export const TIPOS_CONDICION_COMERCIAL = [
-  'Plazo_Credito',
-  'Descuento_Volumen',
-  'Limite_Credito',
-  'Forma_Pago',
-];
+export const TIPOS_CONDICION_COMERCIAL = ['Credito', 'Descuento', 'Forma_Pago'];
+export const OPCIONES_CONDICION_FALLBACK = {
+  Credito: [],
+  Descuento: [],
+  Forma_Pago: [],
+};
+
+export const LABELS_TIPO_CONDICION = {
+  Credito: 'Crédito',
+  Descuento: 'Descuento',
+  Forma_Pago: 'Forma de Pago',
+};
 
 export const TIPOS_DECISION_COMERCIAL = [
   'Aprobacion_Descuento',

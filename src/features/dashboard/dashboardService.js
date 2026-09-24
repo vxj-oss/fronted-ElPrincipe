@@ -86,11 +86,6 @@ const HORA_CIERRE = 20;
 
 const horaDePedido = (p) => new Date(p.creadoEn || `${p.fecha}T12:00:00`).getHours();
 
-/**
- * Arma los datos de la gráfica "Ventas por período" para el período en curso.
- * @param {Array}  pedidos  Lista de pedidos normalizados.
- * @param {string} periodo  'hoy' | 'semana' | 'mes'.
- */
 const ESTADOS_CONFIRMADOS = ['Aprobado', 'Entregado'];
 
 export function procesarGraficaDesdePedidos(pedidos = [], periodo = 'hoy') {
