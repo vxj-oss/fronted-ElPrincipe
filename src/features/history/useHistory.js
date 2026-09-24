@@ -203,7 +203,6 @@ export function useHistory() {
       });
     }
 
-    // Filtrar campos redundantes si no hay diff antes/despues
     const camposOmitir = ['entidad', 'descripcion', 'mensaje'];
     return Object.entries(resto)
       .filter(([k]) => !camposOmitir.includes(k))

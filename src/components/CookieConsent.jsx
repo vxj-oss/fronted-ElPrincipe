@@ -42,7 +42,7 @@ export default function CookieConsent() {
                 onClick={() => setModalAbierto(true)}
                 className="font-medium text-brand-900 dark:text-brand-500 underline underline-offset-2 hover:no-underline"
               >
-                Términos del Servicio y Política de Cookies
+                Términos y Condiciones y Política de Privacidad
               </button>
               .
             </p>
@@ -61,7 +61,7 @@ export default function CookieConsent() {
       <Modal
         open={modalAbierto}
         onClose={() => setModalAbierto(false)}
-        title="Términos del Servicio y Política de Cookies"
+        title="Términos y Condiciones y Política de Privacidad"
         size="lg"
         footer={
           <Button variant="primary" onClick={aceptar}>
@@ -72,85 +72,170 @@ export default function CookieConsent() {
         <div className="max-h-[60vh] overflow-y-auto pr-2 space-y-4 text-sm text-neutral-text dark:text-slate-200 leading-relaxed">
           <section>
             <h3 className="font-semibold text-neutral-text dark:text-white mb-1">
-              1. Términos del Servicio
+              1. Términos y Condiciones
             </h3>
             <p>
-              Esta plataforma es un sistema interno de gestión comercial de {EMPRESA.NOMBRE}
-              {' '}({EMPRESA.CIUDAD}), de uso exclusivo para personal autorizado de la empresa
-              (administradores y asesores comerciales).
+              Bienvenido a la página web de Productos {EMPRESA.NOMBRE}. Al navegar por este
+              sitio o realizar una compra, el usuario declara haber leído y aceptado los
+              presentes términos y condiciones.
             </p>
           </section>
 
           <section>
             <h4 className="font-medium text-neutral-text dark:text-white mb-1">
-              Cuentas y acceso
+              Productos y disponibilidad
             </h4>
             <p>
-              Eres responsable de mantener la confidencialidad de tu usuario y contraseña, y de
-              toda actividad realizada bajo tu cuenta. Notifica de inmediato cualquier uso no
-              autorizado de tus credenciales.
+              Ofrecemos productos de limpieza, higiene, cuidado del hogar y artículos
+              complementarios. La disponibilidad está sujeta al stock existente.
+            </p>
+            <p className="mt-2">
+              Las imágenes son referenciales. El color, presentación o empaque del producto
+              podría variar debido a actualizaciones realizadas por el fabricante, sin alterar
+              sus características principales.
             </p>
           </section>
 
           <section>
-            <h4 className="font-medium text-neutral-text dark:text-white mb-1">Uso aceptable</h4>
+            <h4 className="font-medium text-neutral-text dark:text-white mb-1">Precios</h4>
             <p>
-              El acceso al sistema no debe compartirse con terceros ni utilizarse para fines
-              distintos a la operación comercial de {EMPRESA.NOMBRE}. Los datos de clientes,
-              pedidos y condiciones comerciales registrados son propiedad de la empresa y deben
-              tratarse con confidencialidad.
+              Todos los precios se muestran en soles peruanos (S/) e incluyen los impuestos
+              aplicables, salvo que se indique lo contrario.
+            </p>
+            <p className="mt-2">
+              Los precios, descuentos y promociones pueden cambiar sin previo aviso. El precio
+              válido será el mostrado al momento de confirmar la compra. Las promociones están
+              sujetas a disponibilidad, condiciones y fechas señaladas.
+            </p>
+          </section>
+
+          <section>
+            <h4 className="font-medium text-neutral-text dark:text-white mb-1">Pedidos</h4>
+            <p>
+              El cliente deberá proporcionar información correcta y completa para procesar su
+              pedido. La compra se considerará confirmada después de verificar el pago y la
+              disponibilidad de los productos.
+            </p>
+            <p className="mt-2">
+              En caso de falta de stock, error en el precio o imposibilidad de atender el
+              pedido, nos comunicaremos con el cliente para ofrecerle un cambio, una
+              reprogramación o la devolución del importe pagado, según corresponda.
             </p>
           </section>
 
           <section>
             <h4 className="font-medium text-neutral-text dark:text-white mb-1">
-              Asistente comercial (IA)
+              Uso de la página web
             </h4>
             <p>
-              Las respuestas generadas por el Agente Comercial son un apoyo a la toma de
-              decisiones basado en los datos registrados en el sistema, y no sustituyen el
-              criterio profesional del usuario.
+              El usuario se compromete a utilizar esta página de manera responsable y lícita.
+              Está prohibido realizar pedidos fraudulentos, proporcionar información falsa,
+              intentar alterar el funcionamiento del sitio o utilizar su contenido sin
+              autorización.
             </p>
           </section>
 
           <section>
-            <h4 className="font-medium text-neutral-text dark:text-white mb-1">Disponibilidad</h4>
+            <h4 className="font-medium text-neutral-text dark:text-white mb-1">
+              Propiedad intelectual
+            </h4>
             <p>
-              El sistema puede presentar interrupciones por mantenimiento y no garantiza una
-              disponibilidad ininterrumpida.
+              El nombre comercial, logotipos, diseños, fotografías, textos y demás elementos
+              propios de Productos {EMPRESA.NOMBRE} están protegidos por la normativa
+              correspondiente. No podrán reproducirse ni utilizarse con fines comerciales sin
+              autorización previa.
+            </p>
+          </section>
+
+          <section>
+            <h4 className="font-medium text-neutral-text dark:text-white mb-1">
+              Atención de reclamos
+            </h4>
+            <p>
+              Los clientes pueden presentar consultas o reclamos mediante nuestros canales de
+              atención o a través del Libro de Reclamaciones Virtual disponible en esta página.
+            </p>
+            <p className="mt-2">
+              Estos términos se interpretan de acuerdo con las leyes vigentes de la República
+              del Perú y el Código de Protección y Defensa del Consumidor.
             </p>
           </section>
 
           <section>
             <h3 className="font-semibold text-neutral-text dark:text-white mb-1 pt-2 border-t border-surface-border dark:border-slate-800">
-              2. Política de Cookies y Almacenamiento Local
+              2. Política de Privacidad
             </h3>
             <p>
-              Este sistema no utiliza cookies de rastreo publicitario ni de terceros. Usamos una
-              cookie técnica y el almacenamiento local de tu navegador (localStorage) únicamente
-              para:
-            </p>
-            <ul className="list-disc pl-5 mt-2 space-y-1">
-              <li>
-                Mantener tu sesión iniciada mediante una cookie de autenticación segura
-                (HttpOnly), que no es accesible desde el código de la página.
-              </li>
-              <li>Recordar tus datos básicos de usuario mientras la sesión está activa.</li>
-              <li>Recordar tu preferencia de tema (claro u oscuro).</li>
-            </ul>
-            <p className="mt-2">
-              Esta información se guarda solo en tu propio navegador y se elimina al cerrar
-              sesión o al limpiar el almacenamiento del navegador.
+              En Productos {EMPRESA.NOMBRE} respetamos y protegemos la información personal de
+              nuestros clientes y usuarios.
             </p>
           </section>
 
           <section>
             <h4 className="font-medium text-neutral-text dark:text-white mb-1">
-              Cambios en estos términos
+              Información recopilada
+            </h4>
+            <p>Podemos recopilar los siguientes datos:</p>
+            <ul className="list-disc pl-5 mt-2 space-y-1">
+              <li>Nombres y apellidos.</li>
+              <li>DNI o RUC, cuando sea necesario.</li>
+              <li>Número telefónico y correo electrónico.</li>
+              <li>Dirección de entrega.</li>
+              <li>Información relacionada con pedidos y comprobantes de pago.</li>
+              <li>Datos de navegación y preferencias dentro de la página.</li>
+            </ul>
+            <p className="mt-2">
+              No almacenamos directamente los datos completos de tarjetas bancarias cuando el
+              pago es procesado por una plataforma externa.
+            </p>
+          </section>
+
+          <section>
+            <h4 className="font-medium text-neutral-text dark:text-white mb-1">
+              Uso de la información
+            </h4>
+            <p>Utilizamos los datos para:</p>
+            <ul className="list-disc pl-5 mt-2 space-y-1">
+              <li>Procesar, confirmar y entregar pedidos.</li>
+              <li>Emitir boletas o facturas.</li>
+              <li>Comunicarnos con el cliente.</li>
+              <li>Atender consultas, cambios o reclamos.</li>
+              <li>Mejorar nuestros productos y servicios.</li>
+              <li>Enviar promociones, únicamente cuando exista autorización.</li>
+              <li>Cumplir obligaciones legales y tributarias.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h4 className="font-medium text-neutral-text dark:text-white mb-1">
+              Protección y conservación
             </h4>
             <p>
-              Estos términos pueden actualizarse periódicamente. El uso continuado del sistema
-              después de una actualización implica la aceptación de los cambios.
+              Adoptamos medidas razonables para evitar el acceso, pérdida, alteración o uso no
+              autorizado de la información. Los datos se conservarán únicamente durante el
+              tiempo necesario para cumplir las finalidades señaladas y las obligaciones legales
+              aplicables.
+            </p>
+            <p className="mt-2">
+              La información podrá compartirse con proveedores de delivery, medios de pago u
+              otros prestadores cuando sea necesario para completar el pedido. No vendemos ni
+              alquilamos los datos personales de nuestros clientes.
+            </p>
+          </section>
+
+          <section>
+            <h4 className="font-medium text-neutral-text dark:text-white mb-1">
+              Derechos del usuario
+            </h4>
+            <p>
+              El titular puede solicitar el acceso, rectificación, cancelación u oposición al
+              tratamiento de sus datos personales —derechos ARCO— escribiendo a nuestros canales
+              de atención. La solicitud deberá incluir sus datos de identificación y una
+              descripción clara de lo solicitado.
+            </p>
+            <p className="mt-2">
+              Esta política se encuentra alineada con la Ley N.° 29733, Ley de Protección de
+              Datos Personales.
             </p>
           </section>
         </div>

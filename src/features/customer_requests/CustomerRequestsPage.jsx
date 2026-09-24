@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   Plus, Search, Eye, X, MessageSquare,
-  CheckCircle, Clock, AlertCircle, Trash2,
+  CheckCircle, AlertCircle, Trash2,
 } from 'lucide-react';
 import { useCustomerRequests } from './useCustomerRequests';
 import { formatearFecha } from './customerRequestsService';

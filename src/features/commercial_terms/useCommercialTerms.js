@@ -5,31 +5,20 @@ import {
   actualizarCondicion,
   eliminarCondicion,
   TIPOS_CONDICION,
-  PLAZOS_PAGO,
 } from './commercialTermsService';
+import { fetchOpcionesCondicionAgrupadas } from './condicionOpcionesService';
 import { fetchClientes } from '../customers/customersService';
 
-const FORM_INICIAL = {
-  cliente_id: '',
-  tipo: 'Plazo_Credito',
-  diasPlazo: '0',
-  descuento: '0',
-  limiteCredito: '0',
-};
+const FORM_VACIO = { cliente_id: '', tipo: 'Credito', valor: '' };
 
-function validarForm(form) {
+function validarForm(form, opcionesCondicion) {
   const errs = {};
   if (!form.cliente_id) errs.cliente_id = 'Selecciona un cliente.';
   if (!form.tipo) errs.tipo = 'Selecciona el tipo de condición.';
 
-  const desc = parseFloat(form.descuento);
-  if (form.descuento !== '' && (isNaN(desc) || desc < 0 || desc > 100)) {
-    errs.descuento = 'El descuento debe estar entre 0% y 100%.';
-  }
-
-  const dias = parseInt(form.diasPlazo, 10);
-  if (![0, 15, 30].includes(dias)) {
-    errs.diasPlazo = 'El plazo solo puede ser Contado (0d), Crédito 15d o Crédito 30d.';
+  const opciones = opcionesCondicion[form.tipo] || [];
+  if (!opciones.some((o) => o.valor === form.valor)) {
+    errs.valor = 'Selecciona un valor válido para este tipo de condición.';
   }
 
   return errs;
@@ -38,6 +27,7 @@ function validarForm(form) {
 export function useCommercialTerms() {
   const [condiciones, setCondiciones] = useState([]);
   const [clientes, setClientes] = useState([]);
+  const [opcionesCondicion, setOpcionesCondicion] = useState({ Credito: [], Descuento: [], Forma_Pago: [] });
   const [cargando, setCargando] = useState(true);
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState(null);
@@ -48,7 +38,7 @@ export function useCommercialTerms() {
 
   const [modalAbierto, setModalAbierto] = useState(false);
   const [editandoId, setEditandoId] = useState(null);
-  const [form, setForm] = useState(FORM_INICIAL);
+  const [form, setForm] = useState(FORM_VACIO);
   const [formErrors, setFormErrors] = useState({});
 
   const [condicionDetalle, setCondicionDetalle] = useState(null);
@@ -59,12 +49,14 @@ export function useCommercialTerms() {
     setCargando(true);
     setError(null);
     try {
-      const [terms, clis] = await Promise.all([
+      const [terms, clis, opciones] = await Promise.all([
         fetchCondiciones(),
         fetchClientes(),
+        fetchOpcionesCondicionAgrupadas(),
       ]);
       setCondiciones(terms);
       setClientes(clis.filter((c) => c.activo));
+      setOpcionesCondicion(opciones);
     } catch {
       setError('No se pudieron cargar las condiciones comerciales.');
     } finally {
@@ -93,40 +85,42 @@ export function useCommercialTerms() {
 
   const kpis = useMemo(() => {
     const total = condiciones.length;
-    const conCredito = condiciones.filter((c) => c.diasPlazo > 0).length;
-    const aContado = total - conCredito;
-    const descuentos = condiciones.filter((c) => c.descuento > 0).map((c) => c.descuento);
+    const conCredito = condiciones.filter((c) => c.tipo === 'Credito').length;
+    const conFormaPago = condiciones.filter((c) => c.tipo === 'Forma_Pago').length;
+    const descuentos = condiciones.filter((c) => c.tipo === 'Descuento').map((c) => c.descuento);
 
     return {
       total,
       conCredito,
-      aContado,
+      conFormaPago,
       maxDesc: descuentos.length ? Math.max(...descuentos) : 0,
     };
   }, [condiciones]);
 
-  const preview = useMemo(() => ({
-    descuento: parseFloat(form.descuento) || 0,
-    diasPlazo: parseInt(form.diasPlazo, 10) || 0,
-    limiteCredito: parseFloat(form.limiteCredito) || 0,
-  }), [form.descuento, form.diasPlazo, form.limiteCredito]);
+  const preview = useMemo(() => {
+    const opciones = opcionesCondicion[form.tipo] || [];
+    const opcion = opciones.find((o) => o.valor === form.valor);
+    return {
+      tipo: form.tipo,
+      valor: form.valor,
+      label: opcion?.label || '—',
+    };
+  }, [form.tipo, form.valor, opcionesCondicion]);
 
   const abrirCrear = useCallback(() => {
     setEditandoId(null);
-    setForm(FORM_INICIAL);
+    setForm({ cliente_id: '', tipo: 'Credito', valor: opcionesCondicion.Credito?.[0]?.valor || '' });
     setFormErrors({});
     setModalAbierto(true);
     setCondicionDetalle(null);
-  }, []);
+  }, [opcionesCondicion]);
 
   const abrirEditar = useCallback((condicion) => {
     setEditandoId(condicion.id);
     setForm({
       cliente_id: String(condicion.cliente_id || ''),
       tipo: condicion.tipo,
-      diasPlazo: String(condicion.diasPlazo),
-      descuento: String(condicion.descuento),
-      limiteCredito: String(condicion.limiteCredito),
+      valor: condicion.valor,
     });
     setFormErrors({});
     setModalAbierto(true);
@@ -140,15 +134,18 @@ export function useCommercialTerms() {
 
   const handleFormChange = useCallback((e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setForm((prev) => {
+      if (name === 'tipo') {
+        const primeraOpcion = opcionesCondicion[value]?.[0]?.valor || '';
+        return { ...prev, tipo: value, valor: primeraOpcion };
+      }
+      return { ...prev, [name]: value };
+    });
     setFormErrors((prev) => ({ ...prev, [name]: undefined }));
-  }, []);
+  }, [opcionesCondicion]);
 
   const handleGuardar = useCallback(async () => {
-    const errs = validarForm(form);
+    const errs = validarForm(form, opcionesCondicion);
     if (Object.keys(errs).length) {
       setFormErrors(errs);
       return;
@@ -170,7 +167,7 @@ export function useCommercialTerms() {
     } finally {
       setGuardando(false);
     }
-  }, [form, editandoId, cargarDatos, cerrarModal]);
+  }, [form, editandoId, cargarDatos, cerrarModal, opcionesCondicion]);
 
   const verDetalle = useCallback((c) => {
     setCondicionDetalle((prev) => (prev?.id === c.id ? null : c));
@@ -219,7 +216,7 @@ export function useCommercialTerms() {
     formErrors,
     condicionDetalle,
     TIPOS_CONDICION,
-    PLAZOS_PAGO,
+    opcionesCondicion,
     abrirCrear,
     abrirEditar,
     cerrarModal,

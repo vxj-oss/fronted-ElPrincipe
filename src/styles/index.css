@@ -1,11 +1,9 @@
-/* ── Fuentes desde Google Fonts (siempre primera línea) ── */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ── Variables CSS globales ── */
 :root {
   --color-brand:    #1E3A8A;
   --color-success:  #16a34a;
@@ -24,7 +22,6 @@ h1, h2, h3, h4,
   letter-spacing: -0.01em;
 }
 
-/* ── Reset base ── */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;

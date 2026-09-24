@@ -12,7 +12,10 @@ import {
   ESTADOS_PEDIDO,
   CONDICIONES_PAGO,
   TIPOS_ERROR,
+  opcionesPagoParaCondicion,
+  valorPactadoTexto,
 } from './ordersService';
+import { fetchOpcionesCondicionAgrupadas } from '../commercial_terms/condicionOpcionesService';
 import { fetchClientes } from '../customers/customersService';
 import { fetchProductos } from '../products/productsService';
 import { apiRequest } from '../../utils/api';
@@ -86,6 +89,7 @@ export function useOrders() {
   const [productosCatalogo, setProductosCatalogo] = useState([]);
   const [solicitudesPendientes, setSolicitudesPendientes] = useState([]);
   const [condicionesCatalogo, setCondicionesCatalogo] = useState([]);
+  const [opcionesCondicion, setOpcionesCondicion] = useState({ Credito: [], Descuento: [], Forma_Pago: [] });
 
   const [cargando, setCargando] = useState(true);
   const [guardando, setGuardando] = useState(false);
@@ -116,18 +120,20 @@ export function useOrders() {
 
   const cargarDatosIniciales = useCallback(async () => {
     try {
-      const [pedidosData, clientesData, productosData, solicitudesData, condicionesData] = await Promise.all([
+      const [pedidosData, clientesData, productosData, solicitudesData, condicionesData, opciones] = await Promise.all([
         fetchPedidos(),
         fetchClientes(),
         fetchProductos(),
         apiRequest('/customer-requests/').catch(() => []),
         apiRequest('/commercial-terms/').catch(() => []),
+        fetchOpcionesCondicionAgrupadas(),
       ]);
       setPedidos(pedidosData);
       setClientesCatalogo(clientesData.filter((c) => c.activo));
       setProductosCatalogo(productosData);
       setSolicitudesPendientes(solicitudesData.filter((s) => s.estado === 'Pendiente'));
       setCondicionesCatalogo(condicionesData);
+      setOpcionesCondicion(opciones);
     } catch {
       setError('No se pudieron sincronizar los datos de pedidos.');
     } finally {
@@ -167,6 +173,11 @@ export function useOrders() {
     }
     return condicionesDelCliente[0];
   }, [condicionesDelCliente, form.condicion_comercial_id]);
+
+  const opcionesPagoActivas = useMemo(
+    () => opcionesPagoParaCondicion(condicionClienteActiva, opcionesCondicion),
+    [condicionClienteActiva, opcionesCondicion]
+  );
 
   const pedidosFiltrados = useMemo(() => {
     const q = busqueda.toLowerCase();
@@ -267,7 +278,7 @@ export function useOrders() {
           condicion_comercial_id: primeraCond?.id || null,
           direccion: cli?.direccion || prev.direccion,
           observaciones: sol.observaciones || prev.observaciones,
-          pago: 'Contado',
+          pago: valorPactadoTexto(primeraCond),
         }));
 
         if (sol.detalles && sol.detalles.length > 0) {
@@ -304,12 +315,15 @@ export function useOrders() {
           cliente: cli?.nombre || cli?.razon_social || '',
           condicion_comercial_id: primeraCond ? primeraCond.id : null,
           direccion: cli?.direccion || prev.direccion,
+          pago: valorPactadoTexto(primeraCond),
         }));
       } else if (name === 'condicion_comercial_id') {
         const condId = parseInt(value, 10) || null;
+        const condSeleccionada = condicionesCatalogo.find((c) => c.id === condId) || null;
         setForm((prev) => ({
           ...prev,
           condicion_comercial_id: condId,
+          pago: valorPactadoTexto(condSeleccionada),
         }));
       } else {
         setForm((prev) => ({ ...prev, [name]: value }));
@@ -603,6 +617,7 @@ export function useOrders() {
     ESTADOS_PEDIDO,
     estadosPedidoDisponibles,
     CONDICIONES_PAGO,
+    opcionesPagoActivas,
     TIPOS_ERROR,
     clientesCatalogo,
     productosCatalogo,

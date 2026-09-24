@@ -29,11 +29,9 @@ export default defineConfig({
         ],
       },
       workbox: {
-        // Solo precachea el "app shell" (JS/CSS/imágenes del build). Las
-        // peticiones a /api/* NUNCA se cachean: son datos de negocio y de
-        // sesión que siempre deben pedirse en vivo al backend.
         globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
         navigateFallbackDenylist: [/^\/api\//],
+        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
       },
       devOptions: {
         enabled: false,

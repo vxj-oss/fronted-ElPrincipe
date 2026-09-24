@@ -29,7 +29,7 @@ export function useDashboard() {
           setAlertas(summary.alertas);
           setPedidosRaw(summary.pedidos);
         }
-      } catch (err) {
+      } catch {
         if (!cancelled) setError('No se pudieron cargar los datos del dashboard.');
       } finally {
         if (!cancelled) setLoading(false);

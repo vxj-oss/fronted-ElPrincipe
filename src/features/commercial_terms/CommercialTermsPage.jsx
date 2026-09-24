@@ -19,16 +19,9 @@ import { useMediaQuery } from '../../hooks/useMediaQuery';
 import Pagination from '../../components/ui/Pagination';
 import styles from './commercialTerms.module.css';
 
-const OPCIONES_PLAZO = [
-  { valor: '0', label: 'Contado (0 días)' },
-  { valor: '15', label: 'Crédito 15d (15 días)' },
-  { valor: '30', label: 'Crédito 30d (30 días)' },
-];
-
 const CONFIG_TIPO = {
-  Plazo_Credito: { clase: styles.pillVolumen, label: 'Plazo Crédito' },
-  Descuento_Volumen: { clase: styles.pillPromocional, label: 'Desc. Volumen' },
-  Limite_Credito: { clase: styles.pillInstitucional, label: 'Límite Crédito' },
+  Credito: { clase: styles.pillVolumen, label: 'Crédito' },
+  Descuento: { clase: styles.pillPromocional, label: 'Descuento' },
   Forma_Pago: { clase: styles.pillEspecial, label: 'Forma de Pago' },
 };
 
@@ -94,18 +87,10 @@ function DetallePanel({ condicion, onCerrar, onEditar, onEliminar }) {
 
       <dl className={styles.detalleGrid}>
         <div className={styles.detalleItem}>
-          <dt>Descuento pactado</dt>
-          <dd style={{ color: condicion.descuento > 0 ? '#15803d' : '#94a3b8', fontWeight: 600, fontSize: '1.25rem' }}>
-            {condicion.descuento > 0 ? `${condicion.descuento}%` : '0.00%'}
+          <dt>Valor pactado</dt>
+          <dd style={{ color: '#1E3A8A', fontWeight: 600, fontSize: '1.25rem' }}>
+            {condicion.valorLabel}
           </dd>
-        </div>
-        <div className={styles.detalleItem}>
-          <dt>Plazo pactado</dt>
-          <dd>{condicion.diasPlazo > 0 ? `${condicion.diasPlazo} días` : 'Contado'}</dd>
-        </div>
-        <div className={styles.detalleItem}>
-          <dt>Límite de crédito</dt>
-          <dd>{condicion.limiteCredito > 0 ? `${EMPRESA.MONEDA_SIMBOLO} ${condicion.limiteCredito.toLocaleString('es-PE', { minimumFractionDigits: 2 })}` : 'No asignado'}</dd>
         </div>
         <div className={styles.detalleItem}>
           <dt>Fecha de pacto</dt>
@@ -166,6 +151,7 @@ function CondicionModal({
   preview,
   clientes,
   tiposCondicion,
+  opcionesCondicion,
   onClose,
   onChange,
   onGuardar,
@@ -224,64 +210,33 @@ function CondicionModal({
           </div>
 
           <div className={styles.field}>
-            <label htmlFor="f-dias" className={styles.fieldLabel}>Días de plazo pactados</label>
+            <label htmlFor="f-valor" className={styles.fieldLabel}>
+              {form.tipo === 'Credito' ? 'Días de plazo' : form.tipo === 'Descuento' ? 'Porcentaje de descuento' : 'Forma de pago'}
+            </label>
             <select
-              id="f-dias"
-              name="diasPlazo"
-              value={form.diasPlazo}
+              id="f-valor"
+              name="valor"
+              value={form.valor}
               onChange={onChange}
-              className={`${styles.fieldInput} ${formErrors.diasPlazo ? styles.fieldInputError : ''}`}
+              className={`${styles.fieldInput} ${formErrors.valor ? styles.fieldInputError : ''}`}
             >
-              {OPCIONES_PLAZO.map((op) => (
+              {(opcionesCondicion[form.tipo] || []).map((op) => (
                 <option key={op.valor} value={op.valor}>{op.label}</option>
               ))}
             </select>
-            {formErrors.diasPlazo && <p className={styles.fieldError} role="alert">{formErrors.diasPlazo}</p>}
-          </div>
-
-          <div className={styles.field}>
-            <label htmlFor="f-descuento" className={styles.fieldLabel}>Porcentaje descuento (%)</label>
-            <input
-              id="f-descuento"
-              name="descuento"
-              type="number"
-              min="0"
-              max="100"
-              step="0.5"
-              value={form.descuento}
-              onChange={onChange}
-              className={`${styles.fieldInput} ${formErrors.descuento ? styles.fieldInputError : ''}`}
-            />
-            {formErrors.descuento && <p className={styles.fieldError} role="alert">{formErrors.descuento}</p>}
-          </div>
-
-          <div className={styles.field}>
-            <label htmlFor="f-limite" className={styles.fieldLabel}>Límite crédito ({EMPRESA.MONEDA_SIMBOLO})</label>
-            <input
-              id="f-limite"
-              name="limiteCredito"
-              type="number"
-              min="0"
-              value={form.limiteCredito}
-              onChange={onChange}
-              className={styles.fieldInput}
-            />
+            {formErrors.valor && <p className={styles.fieldError} role="alert">{formErrors.valor}</p>}
           </div>
 
           <div className={`${styles.field} ${styles.fieldFull}`}>
             <div className={styles.previewBox}>
               <p className={styles.previewTitulo}>Resumen de la política acordada</p>
               <div className={styles.previewFila}>
-                <span>Descuento autorizado</span>
-                <span className={styles.previewVal}>{preview.descuento}%</span>
+                <span>Tipo de condición</span>
+                <span className={styles.previewVal}>{form.tipo?.replace('_', ' ')}</span>
               </div>
               <div className={styles.previewFila}>
-                <span>Plazo de crédito</span>
-                <span className={styles.previewVal}>{preview.diasPlazo > 0 ? `${preview.diasPlazo} días` : 'Contado'}</span>
-              </div>
-              <div className={styles.previewFila}>
-                <span>Límite de crédito asignado</span>
-                <span className={styles.previewVal}>{EMPRESA.MONEDA_SIMBOLO} {preview.limiteCredito.toFixed(2)}</span>
+                <span>Valor pactado</span>
+                <span className={styles.previewVal}>{preview.label}</span>
               </div>
             </div>
           </div>
@@ -345,6 +300,7 @@ export default function CommercialTermsPage() {
     formErrors,
     condicionDetalle,
     TIPOS_CONDICION,
+    opcionesCondicion,
     abrirCrear,
     abrirEditar,
     cerrarModal,
@@ -398,7 +354,7 @@ export default function CommercialTermsPage() {
         <header className={styles.pageHeader}>
           <div>
             <h1 className={styles.pageTitle}>Condiciones Comerciales</h1>
-            <p className={styles.pageSub}>Catálogo de plazos, descuentos y límites autorizados por cliente — {EMPRESA.NOMBRE}</p>
+            <p className={styles.pageSub}>Catálogo de plazos, descuentos y formas de pago pactadas por cliente — {EMPRESA.NOMBRE}</p>
           </div>
           <button onClick={abrirCrear} className={styles.btnPrimary}>
             <Plus size={15} aria-hidden="true" /> Nueva condición
@@ -407,8 +363,8 @@ export default function CommercialTermsPage() {
 
         <section className={styles.kpiGrid} aria-label="Resumen de condiciones">
           <KPICard label="Total condiciones" value={kpis.total} note="políticas vigentes" />
-          <KPICard label="Con crédito" value={kpis.conCredito} note="15 o 30 días" color="#1E3A8A" />
-          <KPICard label="A contado" value={kpis.aContado} note="estricto 0 días" color="#15803d" />
+          <KPICard label="Con crédito" value={kpis.conCredito} note="10, 15 o 30 días" color="#1E3A8A" />
+          <KPICard label="Forma de pago pactada" value={kpis.conFormaPago} note="Contado, Tarjeta u Otro" color="#15803d" />
           <KPICard label="Descuento máximo" value={`${kpis.maxDesc}%`} note="en catálogo" color="#854f0b" />
         </section>
 
@@ -453,9 +409,7 @@ export default function CommercialTermsPage() {
                 <tr>
                   <th>Cliente</th>
                   <th>Tipo de Condición</th>
-                  <th>Plazo Pactado</th>
-                  <th>Descuento</th>
-                  <th>Límite Crédito</th>
+                  <th>Valor Pactado</th>
                   <th>Fecha de Registro</th>
                   <th>Acciones</th>
                 </tr>
@@ -473,13 +427,7 @@ export default function CommercialTermsPage() {
                       <span className={styles.condNombre}>{c.cliente}</span>
                     </td>
                     <td data-label="Tipo de Condición"><PillTipo tipo={c.tipo} /></td>
-                    <td data-label="Plazo Pactado">{c.plazo}</td>
-                    <td data-label="Descuento" style={{ fontWeight: 600, color: c.descuento > 0 ? '#15803d' : '#94a3b8' }}>
-                      {c.descuento > 0 ? `${c.descuento}%` : '0%'}
-                    </td>
-                    <td data-label="Límite Crédito" className={styles.tdSecundario}>
-                      {c.limiteCredito > 0 ? `${EMPRESA.MONEDA_SIMBOLO} ${c.limiteCredito.toLocaleString('es-PE', { minimumFractionDigits: 2 })}` : '—'}
-                    </td>
+                    <td data-label="Valor Pactado" style={{ fontWeight: 600, color: '#1E3A8A' }}>{c.valorLabel}</td>
                     <td data-label="Fecha de Registro" className={styles.tdSecundario}>{formatearFecha(c.fechaRegistro)}</td>
                     <td data-label="Acciones" onClick={(e) => e.stopPropagation()}>
                       <div className={styles.acciones}>
@@ -542,6 +490,7 @@ export default function CommercialTermsPage() {
         preview={preview}
         clientes={clientes}
         tiposCondicion={TIPOS_CONDICION}
+        opcionesCondicion={opcionesCondicion}
         onClose={cerrarModal}
         onChange={handleFormChange}
         onGuardar={handleGuardar}

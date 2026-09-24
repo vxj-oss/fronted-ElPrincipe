@@ -1,9 +1,9 @@
 import { apiRequest } from '../../utils/api';
-import { TIPOS_CONDICION_COMERCIAL, FORMAS_PAGO } from '../../constants/appConstants';
+import { TIPOS_CONDICION_COMERCIAL, LABELS_TIPO_CONDICION } from '../../constants/appConstants';
 import { fechaHoyLima, fechaLimaDeISO } from '../../utils/fechas';
 
 export const TIPOS_CONDICION = TIPOS_CONDICION_COMERCIAL;
-export const PLAZOS_PAGO = FORMAS_PAGO;
+export { LABELS_TIPO_CONDICION };
 
 export function formatearFecha(fechaISO) {
   if (!fechaISO) return '—';
@@ -16,6 +16,20 @@ export function aplicarDescuento(precio, descuentoPct) {
   return precio * (1 - (parseFloat(descuentoPct) || 0) / 100);
 }
 
+function valorDeCondicion(t) {
+  if (t.tipo_condicion === 'Credito') return String(t.dias_plazo_pactados ?? '');
+  if (t.tipo_condicion === 'Descuento') return String(parseInt(t.porcentaje_descuento ?? 0, 10));
+  if (t.tipo_condicion === 'Forma_Pago') return t.forma_pago_pactada || '';
+  return '';
+}
+
+function etiquetaDeCondicion(t) {
+  if (t.tipo_condicion === 'Credito') return t.dias_plazo_pactados != null ? `Crédito ${t.dias_plazo_pactados}d` : '—';
+  if (t.tipo_condicion === 'Descuento') return t.porcentaje_descuento != null ? `Descuento ${parseInt(t.porcentaje_descuento, 10)}%` : '—';
+  if (t.tipo_condicion === 'Forma_Pago') return t.forma_pago_pactada || '—';
+  return '—';
+}
+
 function normalizeTerm(t) {
   const clienteNombre = t.cliente?.razon_social || t.cliente?.nombre || `Cliente #${t.cliente_id || ''}`;
 
@@ -24,10 +38,11 @@ function normalizeTerm(t) {
     cliente_id: t.cliente_id,
     cliente: clienteNombre,
     tipo: t.tipo_condicion,
-    plazo: t.dias_plazo_pactados ? `Crédito ${t.dias_plazo_pactados}d` : 'Contado',
+    valor: valorDeCondicion(t),
+    valorLabel: etiquetaDeCondicion(t),
     diasPlazo: t.dias_plazo_pactados || 0,
     descuento: parseFloat(t.porcentaje_descuento || 0),
-    limiteCredito: parseFloat(t.limite_credito_asignado || 0),
+    formaPago: t.forma_pago_pactada || '',
     fechaRegistro: t.fecha_registro ? fechaLimaDeISO(t.fecha_registro) : fechaHoyLima(),
   };
 }
@@ -42,13 +57,23 @@ export async function fetchCondicionesPorCliente(clienteId) {
   return data.map(normalizeTerm);
 }
 
+function payloadDesdeForm(data) {
+  const payload = {
+    tipo_condicion: data.tipo,
+    dias_plazo_pactados: null,
+    porcentaje_descuento: null,
+    forma_pago_pactada: null,
+  };
+  if (data.tipo === 'Credito') payload.dias_plazo_pactados = parseInt(data.valor, 10);
+  else if (data.tipo === 'Descuento') payload.porcentaje_descuento = parseFloat(data.valor);
+  else if (data.tipo === 'Forma_Pago') payload.forma_pago_pactada = data.valor;
+  return payload;
+}
+
 export async function crearCondicion(data) {
   const payload = {
     cliente_id: parseInt(data.cliente_id, 10),
-    tipo_condicion: data.tipo,
-    dias_plazo_pactados: parseInt(data.diasPlazo, 10),
-    porcentaje_descuento: data.descuento ? parseFloat(data.descuento) : 0,
-    limite_credito_asignado: data.limiteCredito ? parseFloat(data.limiteCredito) : 0,
+    ...payloadDesdeForm(data),
   };
 
   const response = await apiRequest('/commercial-terms/', {
@@ -60,12 +85,7 @@ export async function crearCondicion(data) {
 }
 
 export async function actualizarCondicion(id, data) {
-  const payload = {
-    tipo_condicion: data.tipo || undefined,
-    dias_plazo_pactados: data.diasPlazo !== undefined ? parseInt(data.diasPlazo, 10) : undefined,
-    porcentaje_descuento: data.descuento !== undefined ? parseFloat(data.descuento) : undefined,
-    limite_credito_asignado: data.limiteCredito !== undefined ? parseFloat(data.limiteCredito) : undefined,
-  };
+  const payload = payloadDesdeForm(data);
 
   const response = await apiRequest(`/commercial-terms/${id}`, {
     method: 'PUT',
