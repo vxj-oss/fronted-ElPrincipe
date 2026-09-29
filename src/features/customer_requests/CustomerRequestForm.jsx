@@ -1,5 +1,6 @@
 import React from 'react';
 import { Plus, X } from 'lucide-react';
+import ProductSearchSelect from '../../components/ui/ProductSearchSelect';
 import styles from './customerRequests.module.css';
 
 export default function CustomerRequestForm({
@@ -80,18 +81,13 @@ export default function CustomerRequestForm({
 
             {items.map((it, idx) => (
               <div key={idx} className={styles.itemRow}>
-                <select
-                  value={it.producto_id || it.nombre}
-                  onChange={(e) => onCambiarProducto(idx, e.target.value)}
-                  className={styles.itemInput}
-                >
-                  <option value="">Seleccionar o escribir producto...</option>
-                  {productos.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.nombre} (Stock: {p.stock ?? 0})
-                    </option>
-                  ))}
-                </select>
+                <ProductSearchSelect
+                  productos={productos}
+                  productoId={it.producto_id}
+                  nombre={it.nombre}
+                  onChange={(valor) => onCambiarProducto(idx, valor)}
+                  inputClassName={styles.itemInput}
+                />
 
                 <input
                   type="number"
