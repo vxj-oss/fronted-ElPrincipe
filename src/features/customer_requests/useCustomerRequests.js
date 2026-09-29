@@ -8,6 +8,7 @@ import {
 } from './customerRequestsService';
 import { fetchClientes } from '../customers/customersService';
 import { fetchProductos } from '../products/productsService';
+import { obtenerInicioAtencion, limpiarInicioAtencion } from '../../utils/atencion';
 
 const ITEM_VACIO = () => ({
   producto_id: null,
@@ -18,7 +19,7 @@ const ITEM_VACIO = () => ({
 
 const FORM_INICIAL = {
   cliente_id: '',
-  canal: 'WhatsApp',
+  canal: 'Presencial',
   observaciones: '',
 };
 
@@ -127,7 +128,7 @@ export function useCustomerRequests() {
   }, []);
 
   const cambiarProductoItem = useCallback((idx, prodIdOrName) => {
-    const prodId = parseInt(prodIdOrName, 10);
+    const prodId = /^\d+$/.test(String(prodIdOrName)) ? parseInt(prodIdOrName, 10) : null;
     const prod = productos.find((p) => p.id === prodId || p.nombre === prodIdOrName);
     
     setItems((prev) =>
@@ -173,8 +174,9 @@ export function useCustomerRequests() {
       const nueva = await crearSolicitud({
         ...form,
         detalles: items,
-        horaAperturaModal,
+        horaAperturaModal: obtenerInicioAtencion(form.cliente_id) ?? horaAperturaModal,
       });
+      limpiarInicioAtencion();
       setSolicitudes((prev) => [nueva, ...prev]);
       if (nueva.resultadoAuditoria === 'Con_Observaciones') {
         setToastMsg({ tipo: 'warning', texto: `Solicitud ${nueva.codigo} registrada con observaciones de la IA: ${nueva.descripcionAuditoria}` });

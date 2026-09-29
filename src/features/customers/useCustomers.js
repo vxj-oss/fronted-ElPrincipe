@@ -9,6 +9,7 @@ import {
   TIPOS_CLIENTE,
   CLASIFICACIONES,
 } from './customersService';
+import { marcarAperturaModalCliente, registrarClienteInscrito } from '../../utils/atencion';
 
 const FORM_INICIAL = {
   nombre: '',
@@ -123,6 +124,7 @@ export function useCustomers() {
     setFormErrors({});
     setModalAbierto(true);
     setClienteDetalle(null);
+    marcarAperturaModalCliente();
   }, []);
 
   const abrirEditar = useCallback((cliente) => {
@@ -180,6 +182,7 @@ export function useCustomers() {
         setToastMsg({ tipo: 'success', texto: 'Cliente actualizado exitosamente.' });
       } else {
         const nuevo = await crearCliente(payload);
+        registrarClienteInscrito(nuevo.id);
         setClientes((prev) => [nuevo, ...prev]);
         setToastMsg({ tipo: 'success', texto: 'Cliente agregado a la cartera.' });
       }

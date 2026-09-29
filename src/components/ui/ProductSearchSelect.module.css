@@ -1,0 +1,73 @@
+.lista {
+  position: fixed;
+  z-index: 10000;
+  max-height: 240px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15);
+}
+
+.opcion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 10px;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  color: #0f172a;
+  cursor: pointer;
+}
+
+.opcionActiva {
+  background: #eff6ff;
+  color: #1e3a8a;
+}
+
+.nombre {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stock {
+  flex-shrink: 0;
+  font-size: 0.6875rem;
+  color: #64748b;
+}
+
+.vacio {
+  padding: 10px;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+:global(.dark) .lista,
+:global([data-theme="dark"]) .lista {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+:global(.dark) .opcion,
+:global([data-theme="dark"]) .opcion {
+  color: #f8fafc;
+}
+
+:global(.dark) .opcionActiva,
+:global([data-theme="dark"]) .opcionActiva {
+  background: #334155;
+  color: #f8fafc;
+}
+
+:global(.dark) .stock,
+:global([data-theme="dark"]) .stock,
+:global(.dark) .vacio,
+:global([data-theme="dark"]) .vacio {
+  color: #94a3b8;
+}

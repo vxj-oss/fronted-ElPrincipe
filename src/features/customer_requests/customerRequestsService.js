@@ -47,7 +47,7 @@ export async function fetchSolicitud(id) {
 export async function crearSolicitud(payload) {
   const body = {
     cliente_id: parseInt(payload.cliente_id, 10),
-    canal_recepcion: payload.canal || 'WhatsApp',
+    canal_recepcion: payload.canal || 'Presencial',
     observaciones: payload.observaciones || null,
     hora_apertura_modal: payload.horaAperturaModal
       ? new Date(payload.horaAperturaModal).toISOString()
