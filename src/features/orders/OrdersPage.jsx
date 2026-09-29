@@ -132,7 +132,7 @@ function DetallePanel({ pedido, onCerrar, onEditar, onConfirmar }) {
             marginBottom: '4px'
           }}>
             {cond.tieneFalla ? <ShieldAlert size={16} /> : <ShieldCheck size={16} />}
-            <span>{cond.tieneFalla ? 'Falla en Condición Comercial (Afecta PFCC)' : 'Condición Comercial Conforme'}</span>
+            <span>{cond.tieneFalla ? 'Falla en Condición Comercial' : 'Condición Comercial Conforme'}</span>
           </div>
           <p style={{ margin: 0, fontSize: '12px', color: cond.tieneFalla ? '#991B1B' : '#166534', lineHeight: '1.4' }}>
             {cond.motivoFalla || 'Los términos del pedido cumplen estrictamente con la política comercial pactada del cliente.'}

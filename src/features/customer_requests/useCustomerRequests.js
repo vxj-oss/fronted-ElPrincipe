@@ -46,6 +46,7 @@ export function useCustomerRequests() {
   const [filtroCanal, setFiltroCanal] = useState('');
 
   const [modalAbierto, setModalAbierto] = useState(false);
+  const [horaAperturaModal, setHoraAperturaModal] = useState(null);
   const [form, setForm] = useState(FORM_INICIAL);
   const [items, setItems] = useState([ITEM_VACIO()]);
   const [formErrors, setFormErrors] = useState({});
@@ -76,7 +77,7 @@ export function useCustomerRequests() {
 
   useEffect(() => {
     if (!toastMsg) return;
-    const t = setTimeout(() => setToastMsg(null), 3200);
+    const t = setTimeout(() => setToastMsg(null), toastMsg.tipo === 'warning' ? 8000 : 3200);
     return () => clearTimeout(t);
   }, [toastMsg]);
 
@@ -102,6 +103,7 @@ export function useCustomerRequests() {
     setFormErrors({});
     setModalAbierto(true);
     setSolicitudDetalle(null);
+    setHoraAperturaModal(new Date());
   }, []);
 
   const cerrarModal = useCallback(() => {
@@ -171,16 +173,23 @@ export function useCustomerRequests() {
       const nueva = await crearSolicitud({
         ...form,
         detalles: items,
+        horaAperturaModal,
       });
       setSolicitudes((prev) => [nueva, ...prev]);
-      setToastMsg({ tipo: 'success', texto: `Solicitud ${nueva.codigo} registrada.` });
+      if (nueva.resultadoAuditoria === 'Con_Observaciones') {
+        setToastMsg({ tipo: 'warning', texto: `Solicitud ${nueva.codigo} registrada con observaciones de la IA: ${nueva.descripcionAuditoria}` });
+      } else if (nueva.resultadoAuditoria === 'No_Disponible') {
+        setToastMsg({ tipo: 'warning', texto: `Solicitud ${nueva.codigo} registrada. La auditoría de la IA no estuvo disponible.` });
+      } else {
+        setToastMsg({ tipo: 'success', texto: `Solicitud ${nueva.codigo} registrada y auditada por la IA.` });
+      }
       cerrarModal();
     } catch (err) {
       setToastMsg({ tipo: 'error', texto: err.message || 'Error al guardar la solicitud.' });
     } finally {
       setGuardando(false);
     }
-  }, [form, items, cerrarModal]);
+  }, [form, items, cerrarModal, horaAperturaModal]);
 
   const pedirConfirmarEliminar = useCallback((id) => {
     setConfirmDelete(id);

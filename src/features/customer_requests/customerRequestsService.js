@@ -21,6 +21,9 @@ function normalizeRequest(r) {
     canal: r.canal_recepcion || 'WhatsApp',
     estado: r.estado || 'Pendiente',
     observaciones: r.observaciones || '',
+    auditadoIA: Boolean(r.auditado_ia),
+    resultadoAuditoria: r.resultado_auditoria || null,
+    descripcionAuditoria: r.descripcion_auditoria || '',
     detalles: (r.detalles || []).map((d) => ({
       id: d.id,
       producto_id: d.producto_id,
@@ -46,6 +49,9 @@ export async function crearSolicitud(payload) {
     cliente_id: parseInt(payload.cliente_id, 10),
     canal_recepcion: payload.canal || 'WhatsApp',
     observaciones: payload.observaciones || null,
+    hora_apertura_modal: payload.horaAperturaModal
+      ? new Date(payload.horaAperturaModal).toISOString()
+      : null,
     detalles: payload.detalles.map((d) => ({
       producto_id: d.producto_id ? parseInt(d.producto_id, 10) : null,
       nombre_producto_solicitado: d.nombre.trim(),

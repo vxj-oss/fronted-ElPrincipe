@@ -1,255 +1,172 @@
 import { apiRequest } from '../../utils/api';
-import { fetchPedidos } from '../orders/ordersService';
-import { fetchProductos } from '../products/productsService';
 import { INDICADORES_DEF, INDICADORES_META } from '../../constants/appConstants';
 
 export { INDICADORES_DEF, INDICADORES_META };
 
-function formatearFechaLima(fechaISO) {
-  if (!fechaISO) return '—';
-  const fechaObj = new Date(fechaISO.includes('T') ? fechaISO : `${fechaISO}T12:00:00Z`);
-  return fechaObj.toLocaleDateString('es-PE', {
-    timeZone: 'America/Lima',
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  });
-}
-
-function formatearHoraLima(fechaISO) {
-  if (!fechaISO) return '00:00';
-  const fechaObj = new Date(fechaISO);
-  return fechaObj.toLocaleTimeString('es-PE', {
-    timeZone: 'America/Lima',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+export function formatearMinutos(valor) {
+  const n = parseFloat(valor);
+  return n.toFixed(2);
 }
 
 export function evaluarUmbral(valor, umbrales) {
   return umbrales.find((u) => {
     const bajoMin = u.min === null || valor >= u.min;
-    const bajoMax = u.max === null || valor < u.max;
+    const bajoMax = u.max === null || (u.maxIncl ? valor <= u.max : valor < u.max);
     return bajoMin && bajoMax;
   }) ?? umbrales[umbrales.length - 1];
 }
 
 export function generarInterpretacion(sigla, valor, datos, umbral) {
-  if (sigla === 'NEPP') {
-    const erroresCada100 = (valor * 100).toFixed(1);
-    const sinError = Math.max(0, datos.TPP - datos.TEPP);
+  if (sigla === 'NSC') {
     if (umbral.nivel === 'bueno') {
-      return `Por cada 100 productos pedidos, se detectan aproximadamente <strong>${erroresCada100} errores</strong>. El proceso de registro de pedidos opera dentro del umbral óptimo (NEPP &lt; 0.05). Se procesaron ${sinError} ítems sin incidencias.`;
+      return `Se registraron <strong>${valor} solicitudes</strong> de clientes en el día actual (${datos.diaActual}). La demanda comercial alcanza la meta mínima diaria (NSC ≥ 15).`;
     }
     if (umbral.nivel === 'regular') {
-      return `Por cada 100 productos pedidos, se detectan aproximadamente <strong>${erroresCada100} errores</strong>. Esto indica que el registro de pedidos requiere atención operativa, manteniéndose en zona de advertencia.`;
+      return `Se registraron <strong>${valor} solicitudes</strong> de clientes en el día actual (${datos.diaActual}). La demanda comercial es moderada, por debajo de la meta diaria (NSC ≥ 15).`;
     }
-    return `Por cada 100 productos pedidos, se detectan aproximadamente <strong>${erroresCada100} errores</strong>. El indicador supera el umbral crítico (NEPP &gt; 0.10), requiriendo auditoría inmediata.`;
+    return `Se registraron <strong>${valor} solicitudes</strong> de clientes en el día actual (${datos.diaActual}). La demanda comercial está por debajo de lo esperado, lo cual requiere atención.`;
   }
 
-  if (sigla === 'PFCC') {
-    const pct = valor.toFixed(1);
-    const correctas = Math.max(0, datos.TCCD - datos.TCCF);
+  if (sigla === 'NPP') {
     if (umbral.nivel === 'bueno') {
-      return `El <strong>${pct}%</strong> de las condiciones comerciales presentaron inconsistencias. Nivel óptimo (&lt;10%). ${correctas} condiciones fueron ejecutadas correctamente.`;
+      return `Se registraron <strong>${valor} pedidos</strong> procesados en el día actual (${datos.diaActual}). La conversión comercial alcanza la meta mínima diaria (NPP ≥ 15).`;
     }
     if (umbral.nivel === 'regular') {
-      return `El <strong>${pct}%</strong> de las condiciones comerciales presentaron fallas. El indicador se ubica en zona de riesgo (10%–25%).`;
+      return `Se registraron <strong>${valor} pedidos</strong> procesados en el día actual (${datos.diaActual}). La conversión comercial es moderada, por debajo de la meta diaria (NPP ≥ 15).`;
     }
-    return `El <strong>${pct}%</strong> de las condiciones comerciales tuvieron fallas críticas (&gt;25%). Se requiere revisión de políticas de precios y créditos.`;
+    return `Se registraron <strong>${valor} pedidos</strong> procesados en el día actual (${datos.diaActual}). La conversión comercial está por debajo de lo esperado, lo cual requiere atención.`;
   }
 
-  if (sigla === 'NTDC') {
-    const pct = valor.toFixed(1);
-    const noEfectivas = Math.max(0, datos.TDCT - datos.TDCE);
-    const corregidas = datos.decisionesCorregidas || 0;
+  if (sigla === 'TPD') {
+    if (datos.sinDatos) {
+      return 'Aún no se registran pedidos aprobados vinculados a una solicitud, por lo que no es posible calcular el tiempo promedio de decisión.';
+    }
+    const minutos = formatearMinutos(valor);
     if (umbral.nivel === 'bueno') {
-      return `El <strong>${pct}%</strong> de las decisiones comerciales registradas resultaron efectivas (≥75%). ${corregidas} decisiones requirieron ajustes posteriores y ${noEfectivas} siguen pendientes de corrección.`;
+      return `El asesor comercial demora en promedio <strong>${minutos} minutos</strong> en aprobar el pedido derivado de una solicitud. El tiempo de respuesta es óptimo (TPD ≤ 240 min).`;
     }
     if (umbral.nivel === 'regular') {
-      return `El <strong>${pct}%</strong> de las decisiones comerciales registradas fueron efectivas. El indicador se ubica en rango regular (50%–74%). ${noEfectivas} decisiones siguen con incidencias sin resolver.`;
+      return `El asesor comercial demora en promedio <strong>${minutos} minutos</strong> en aprobar el pedido derivado de una solicitud. El tiempo de respuesta se ubica en un rango moderado (240 min – 720 min).`;
     }
-    return `Solo el <strong>${pct}%</strong> de las decisiones comerciales registradas resultaron efectivas (&lt;50%). ${noEfectivas} decisiones mantienen incidencias sin corregir. Se recomienda soporte con el Agente Comercial IA.`;
+    return `El asesor comercial demora en promedio <strong>${minutos} minutos</strong> en aprobar el pedido derivado de una solicitud. El tiempo de respuesta es crítico (&gt; 720 min) y afecta la experiencia del cliente.`;
   }
 
   return '';
 }
 
 export function generarConclusion(sigla, valor, datos, umbral) {
-  if (sigla === 'NEPP') {
-    return `El índice NEPP de <strong>${valor.toFixed(3)}</strong> califica como <strong>${umbral.label}</strong> en control de pedidos. Total de ítems evaluados: ${datos.TPP} con ${datos.TEPP} error(es) registrados.`;
+  if (sigla === 'NSC') {
+    return `El NSC de <strong>${valor} solicitudes</strong> califica como <strong>${umbral.label}</strong> en captación de solicitudes. Día actual (${datos.diaActual}): ${datos.SA} solicitud(es); día anterior (${datos.diaAnterior}): ${datos.SP} solicitud(es).`;
   }
-  if (sigla === 'PFCC') {
-    return `El PFCC de <strong>${valor.toFixed(2)}%</strong> refleja un estado <strong>${umbral.label}</strong> en negociación comercial. Total evaluado: ${datos.TCCD} condiciones con ${datos.TCCF} falla(s).`;
+  if (sigla === 'NPP') {
+    return `El NPP de <strong>${valor} pedidos</strong> califica como <strong>${umbral.label}</strong> en conversión de pedidos. Día actual (${datos.diaActual}): ${datos.PA} pedido(s); día anterior (${datos.diaAnterior}): ${datos.PP} pedido(s).`;
   }
-  if (sigla === 'NTDC') {
-    const corregidas = datos.decisionesCorregidas || 0;
-    return `El NTDC de <strong>${valor.toFixed(2)}%</strong> indica una efectividad <strong>${umbral.label}</strong> en toma de decisiones. Decisiones efectivas: ${datos.TDCE} de un total de ${datos.TDCT} (${corregidas} corregidas tras una incidencia inicial).`;
+  if (sigla === 'TPD') {
+    if (datos.sinDatos) {
+      return 'No hay pedidos vinculados a solicitudes registrados aún, por lo que el indicador TPD no cuenta con datos suficientes para una conclusión.';
+    }
+    return `El TPD de <strong>${formatearMinutos(valor)} minutos</strong> indica un tiempo de decisión <strong>${umbral.label}</strong> por parte del asesor comercial.`;
   }
   return '';
 }
 
-export async function fetchLatestIndicators() {
-  const data = await apiRequest('/indicators/latest');
+export async function fetchActividadComercial() {
+  const data = await apiRequest('/indicators/actividad-comercial');
   return data;
 }
 
-export async function fetchIndicatorHistory(limit = 7) {
-  const data = await apiRequest(`/indicators/history?limit=${limit}`);
+export async function fetchSerieActividadComercial(dias = 15) {
+  const data = await apiRequest(`/indicators/actividad-comercial/serie?dias=${dias}`);
   return data;
 }
 
-export async function fetchIndicatorDaily() {
-  const data = await apiRequest('/indicators/daily');
-  return data;
+async function descargarArchivo(endpoint, nombreArchivo) {
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+  const response = await fetch(`${baseUrl}${endpoint}`, { method: 'GET', credentials: 'include' });
+
+  if (!response.ok) {
+    throw new Error('Error al generar el reporte');
+  }
+
+  const blob = await response.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = nombreArchivo;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
-export async function fetchIndicatorWeekly() {
-  const data = await apiRequest('/indicators/weekly');
-  return data;
+export async function descargarSerieDiariaExcel(sigla, dias = 15) {
+  await descargarArchivo(
+    `/reports/indicators/actividad/excel?indicador=${sigla}&dias=${dias}`,
+    `${sigla.toLowerCase()}_por_dia.xlsx`
+  );
 }
 
-export async function fetchIndicatorMonthly() {
-  const data = await apiRequest('/indicators/monthly');
-  return data;
-}
-
-export async function calculateIndicators(resumen = 'Cálculo ejecutado desde el panel web') {
-  const data = await apiRequest('/indicators/calculate', {
-    method: 'POST',
-    body: JSON.stringify({ resumen }),
-  });
-  return data;
-}
-
-export async function fetchDecisiones(limit = 100) {
-  const data = await apiRequest(`/decisions/?limit=${limit}`);
-  return data;
+export async function descargarTPDPorPedidoExcel() {
+  await descargarArchivo('/reports/indicators/tpd/por-pedido/excel', 'tpd_por_pedido.xlsx');
 }
 
 export async function fetchResumenIndicadores() {
-  const [latestData, pedidosData, productosData, decisionesData] = await Promise.all([
-    fetchLatestIndicators().catch(() => null),
-    fetchPedidos().catch(() => []),
-    fetchProductos().catch(() => []),
-    fetchDecisiones().catch(() => []),
-  ]);
+  const data = await fetchActividadComercial().catch(() => ({}));
 
-  let latest = latestData;
-  if (!latest) {
-    try {
-      latest = await calculateIndicators('Cálculo inicial automático');
-    } catch {
-      latest = {};
-    }
-  }
+  const diaActual = data.dia_actual || '—';
+  const diaAnterior = data.dia_anterior || '—';
 
-  const mapaProductos = {};
-  productosData.forEach((p) => {
-    mapaProductos[p.id] = p.nombre;
-  });
+  const solicitudesActual = data.solicitudes_dia_actual || 0;
+  const solicitudesAnterior = data.solicitudes_dia_anterior || 0;
+  const nscVal = solicitudesActual;
+  const nscVariacionPct = parseFloat(data.variacion_solicitudes_pct || 0);
 
-  const pedidosConError = pedidosData.filter((p) => p.tieneError);
+  const pedidosActual = data.pedidos_dia_actual || 0;
+  const pedidosAnterior = data.pedidos_dia_anterior || 0;
+  const npVal = pedidosActual;
+  const npVariacionPct = parseFloat(data.variacion_pedidos_pct || 0);
 
-  const tablaErroresNEPP = [];
-  const conteoTiposNEPP = {};
-
-  pedidosConError.forEach((p) => {
-    const errTipo = (p.errores && p.errores[0]) || 'Error_No_Especificado';
-    conteoTiposNEPP[errTipo] = (conteoTiposNEPP[errTipo] || 0) + 1;
-
-    (p.items || []).forEach((item) => {
-      const nombreRealProducto = mapaProductos[item.producto_id] || item.producto || `Producto #${item.producto_id}`;
-
-      tablaErroresNEPP.push({
-        numero: p.numero,
-        cliente: p.cliente,
-        producto: nombreRealProducto,
-        error: errTipo,
-        fecha: formatearFechaLima(p.fecha || p.creadoEn),
-        vendedor: 'Victor Nontol',
-      });
-    });
-  });
-
-  const desgloseTEPP = Object.entries(conteoTiposNEPP).map(([tipo, cantidad]) => ({
-    tipo,
-    cantidad,
-  }));
-
-  if (desgloseTEPP.length === 0 && (latest?.total_errores_productos || 0) > 0) {
-    desgloseTEPP.push({
-      tipo: 'Incidencias registradas',
-      cantidad: latest.total_errores_productos,
-    });
-  }
-
-  const decisionesNoEfectivas = (decisionesData || []).filter((d) => d.es_efectiva === false);
-  const tablaErroresNTDC = decisionesNoEfectivas.map((d) => ({
-    numero: d.pedido_codigo || `#${d.id}`,
-    cliente: d.cliente_nombre || '—',
-    decision: d.decision_tomada || d.tipo_decision,
-    resultado: 'No efectiva',
-    fecha: formatearFechaLima(d.fecha_decision),
-    vendedor: d.usuario_nombre || '—',
-  }));
-
-  const neppVal = parseFloat(latest.valor_nepp || 0);
-  const pfccVal = parseFloat(latest.valor_pfcc || 0);
-  const ntdcVal = parseFloat(latest.valor_ntdc || 0);
-
-  const fechaCalcLima = latest.fecha_calculo ? formatearFechaLima(latest.fecha_calculo) : formatearFechaLima(new Date().toISOString());
-  const horaCalcLima = latest.fecha_calculo ? formatearHoraLima(latest.fecha_calculo) : '00:00';
+  const tpdActual = data.tiempo_promedio_decision_minutos ?? null;
+  const tpdGeneral = data.tiempo_promedio_decision_minutos_general ?? null;
+  const tpdDisponible = tpdActual !== null ? tpdActual : tpdGeneral;
+  const tpdSinDatos = tpdDisponible === null;
+  const tpdVal = tpdSinDatos ? 0 : parseFloat(tpdDisponible);
 
   return {
-    raw: latest,
-    NEPP: {
-      valor: neppVal,
+    raw: data,
+    NSC: {
+      valor: nscVal,
       datos: {
-        TEPP: latest.total_errores_productos || 0,
-        TPP: latest.total_items_pedidos || 0,
-        totalPedidos: latest.total_pedidos_evaluados || 0,
-        desgloseTEPP,
-        desgloseTPP: [
-          { label: 'Ítems procesados', valor: latest.total_items_pedidos || 0, unidad: 'unid.' },
-        ],
-        tablaErrores: tablaErroresNEPP,
-        periodoCalculo: fechaCalcLima,
-        horaActualizacion: horaCalcLima,
+        SA: solicitudesActual,
+        conformes: data.solicitudes_conformes_dia_actual || 0,
+        conObservaciones: data.solicitudes_con_observaciones_dia_actual || 0,
+        SP: solicitudesAnterior,
+        variacionPct: nscVariacionPct,
+        diaActual,
+        diaAnterior,
       },
     },
-    PFCC: {
-      valor: pfccVal,
+    NPP: {
+      valor: npVal,
       datos: {
-        TCCF: latest.total_fallas_condiciones || 0,
-        TCCD: latest.total_condiciones_pactadas || 0,
-        desgloseTCCF: [
-          { tipo: 'Fallas en condiciones comerciales', cantidad: latest.total_fallas_condiciones || 0 },
-        ],
-        desgloseTCCD: [
-          { label: 'Condiciones registradas', valor: latest.total_condiciones_pactadas || 0, unidad: 'cond.' },
-        ],
-        tablaErrores: [],
-        periodoCalculo: fechaCalcLima,
-        horaActualizacion: horaCalcLima,
+        PA: pedidosActual,
+        conformes: data.pedidos_conformes_dia_actual || 0,
+        conObservaciones: data.pedidos_con_observaciones_dia_actual || 0,
+        PP: pedidosAnterior,
+        variacionPct: npVariacionPct,
+        diaActual,
+        diaAnterior,
       },
     },
-    NTDC: {
-      valor: ntdcVal,
+    TPD: {
+      valor: tpdVal,
       datos: {
-        TDCE: latest.total_decisiones_efectivas || 0,
-        TDCT: latest.total_decisiones_evaluadas || 0,
-        decisionesCorregidas: latest.total_decisiones_corregidas || 0,
-        desgloseTDCE: [
-          { tipo: 'Decisiones efectivas', cantidad: latest.total_decisiones_efectivas || 0 },
-        ],
-        desgloseTDCT: [
-          { label: 'Decisiones registradas', valor: latest.total_decisiones_evaluadas || 0, unidad: 'dec.' },
-          { label: 'Corregidas tras incidencia', valor: latest.total_decisiones_corregidas || 0, unidad: 'dec.' },
-        ],
-        tablaErrores: tablaErroresNTDC,
-        periodoCalculo: fechaCalcLima,
-        horaActualizacion: horaCalcLima,
+        tpdActual,
+        tpdGeneral,
+        sinDatos: tpdSinDatos,
+        usaHistorico: tpdActual === null && tpdGeneral !== null,
+        diaActual,
+        diaAnterior,
       },
     },
   };

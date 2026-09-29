@@ -132,6 +132,9 @@ function transformOrderToBackend(data) {
     condicion_comercial_id: data.condicion_comercial_id ? parseInt(data.condicion_comercial_id, 10) : null,
     codigo_pedido: data.numero || null,
     fecha_pedido: `${fechaSeleccionada}T12:00:00`,
+    hora_apertura_modal: data.horaAperturaModal
+      ? new Date(data.horaAperturaModal).toISOString()
+      : null,
     forma_pago: data.pago || 'Contado',
     estado: data.estado || 'Pendiente',
     observaciones: data.observaciones || null,

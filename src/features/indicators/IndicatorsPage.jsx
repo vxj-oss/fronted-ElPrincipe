@@ -2,18 +2,22 @@
 import { AlertCircle, ChevronRight, RefreshCw } from 'lucide-react';
 import { useIndicators } from './useIndicators';
 import { INDICADORES_META } from '../../constants/appConstants';
-import NEPPIndicator from './NEPPIndicator';
-import PFCCIndicator from './PFCCIndicator';
-import NTDCIndicator from './NTDCIndicator';
+import NSCIndicator from './NSCIndicator';
+import NPIndicator from './NPIndicator';
+import TPDIndicator from './TPDIndicator';
 import styles from './indicators.module.css';
 
 function KPIResumenCard({ sigla, resultado, meta, onVerDetalle }) {
   if (!resultado) return null;
-  const { valor, valorFormateado, interpretacion } = resultado;
+  const { valor, valorFormateado, interpretacion, sinDatos } = resultado;
 
   let porcentajeBarra = 0;
-  if (meta.tipo === 'porcentaje_exito') {
+  if (sinDatos) {
+    porcentajeBarra = 0;
+  } else if (meta.tipo === 'porcentaje_exito') {
     porcentajeBarra = Math.min(100, Math.max(0, valor));
+  } else if (meta.tipo === 'conteo') {
+    porcentajeBarra = Math.min(100, Math.max(0, (valor / meta.maxEscala) * 100));
   } else {
     porcentajeBarra = Math.max(0, 100 - (valor / meta.maxEscala) * 100);
   }
@@ -25,15 +29,24 @@ function KPIResumenCard({ sigla, resultado, meta, onVerDetalle }) {
     >
       <div className={styles.kpiHeaderRow}>
         <span className={styles.kpiSigla} style={{ color: meta.color }}>{sigla}</span>
-        <span
-          className={styles.kpiBadgeEstado}
-          style={{ color: interpretacion.color, background: interpretacion.bg, border: `1px solid ${interpretacion.border}` }}
-        >
-          {interpretacion.label}
-        </span>
+        {sinDatos ? (
+          <span
+            className={styles.kpiBadgeEstado}
+            style={{ color: '#64748b', background: '#f1f5f9', border: '1px solid #e2e8f0' }}
+          >
+            Sin datos
+          </span>
+        ) : (
+          <span
+            className={styles.kpiBadgeEstado}
+            style={{ color: interpretacion.color, background: interpretacion.bg, border: `1px solid ${interpretacion.border}` }}
+          >
+            {interpretacion.label}
+          </span>
+        )}
       </div>
 
-      <p className={styles.kpiValor} style={{ color: interpretacion.color }}>
+      <p className={styles.kpiValor} style={{ color: sinDatos ? '#64748b' : interpretacion.color }}>
         {valorFormateado}
       </p>
 
@@ -42,7 +55,7 @@ function KPIResumenCard({ sigla, resultado, meta, onVerDetalle }) {
       <div className={styles.kpiBarBg}>
         <div
           className={styles.kpiBarFill}
-          style={{ width: `${porcentajeBarra}%`, background: interpretacion.color }}
+          style={{ width: `${porcentajeBarra}%`, background: sinDatos ? '#94a3b8' : interpretacion.color }}
           role="progressbar"
           aria-valuenow={Math.round(porcentajeBarra)}
           aria-valuemin={0}
@@ -78,16 +91,16 @@ export default function IndicatorPage() {
     ejecutarRecalculo,
   } = useIndicators();
 
-  if (indicadorActivo === 'NEPP') {
-    return <NEPPIndicator onVolver={() => setIndicadorActivo(null)} />;
+  if (indicadorActivo === 'NSC') {
+    return <NSCIndicator onVolver={() => setIndicadorActivo(null)} />;
   }
 
-  if (indicadorActivo === 'PFCC') {
-    return <PFCCIndicator onVolver={() => setIndicadorActivo(null)} />;
+  if (indicadorActivo === 'NPP') {
+    return <NPIndicator onVolver={() => setIndicadorActivo(null)} />;
   }
 
-  if (indicadorActivo === 'NTDC') {
-    return <NTDCIndicator onVolver={() => setIndicadorActivo(null)} />;
+  if (indicadorActivo === 'TPD') {
+    return <TPDIndicator onVolver={() => setIndicadorActivo(null)} />;
   }
 
   if (cargando) {
@@ -108,14 +121,14 @@ export default function IndicatorPage() {
     );
   }
 
-  const siglas = ['NEPP', 'PFCC', 'NTDC'];
+  const siglas = ['NSC', 'NPP', 'TPD'];
 
   return (
     <div className={styles.page}>
       <header className={styles.pageHeader}>
         <div>
           <h1 className={styles.pageTitle}>Indicadores comerciales</h1>
-          <p className={styles.pageSub}>NEPP · PFCC · NTDC — Panel de control de calidad y efectividad comercial</p>
+          <p className={styles.pageSub}>NSC · NPP · TPD — Panel de actividad comercial por día</p>
         </div>
         <button
           onClick={ejecutarRecalculo}
@@ -123,7 +136,7 @@ export default function IndicatorPage() {
           className={styles.btnPrimary}
         >
           <RefreshCw size={14} className={recalculando ? 'animate-spin' : ''} aria-hidden="true" />
-          {recalculando ? 'Recalculando...' : 'Recalcular ahora'}
+          {recalculando ? 'Actualizando...' : 'Recalcular ahora'}
         </button>
       </header>
 
@@ -164,16 +177,18 @@ export default function IndicatorPage() {
                   <tr key={s}>
                     <td data-label="Sigla" data-primary><strong style={{ color: meta.color }}>{s}</strong></td>
                     <td data-label="Nombre del Indicador">{meta.nombre}</td>
-                    <td data-label="Fórmula"><code>{s === 'NEPP' ? 'TEPP ÷ TPP' : s === 'PFCC' ? '(TCCF ÷ TCCD) × 100' : '(TDCE ÷ TDCT) × 100'}</code></td>
-                    <td data-label="Resultado Actual"><strong style={{ color: res?.interpretacion?.color }}>{res ? res.valorFormateado : '—'}</strong></td>
+                    <td data-label="Fórmula"><code>{s === 'NSC' ? 'Σ Solicitudes Atendidas' : s === 'NPP' ? 'Σ Pedidos Procesados' : 'Σ(FP − FS) ÷ N'}</code></td>
+                    <td data-label="Resultado Actual"><strong style={{ color: res?.sinDatos ? '#64748b' : res?.interpretacion?.color }}>{res ? res.valorFormateado : '—'}</strong></td>
                     <td data-label="Umbral Meta"><span style={{ fontSize: '0.75rem', color: '#64748b' }}>{meta.metaTexto}</span></td>
                     <td data-label="Estado">
                       {res && (
                         <span
                           className={styles.estadoBadge}
-                          style={{ color: res.interpretacion.color, background: res.interpretacion.bg, border: `1px solid ${res.interpretacion.border}` }}
+                          style={res.sinDatos
+                            ? { color: '#64748b', background: '#f1f5f9', border: '1px solid #e2e8f0' }
+                            : { color: res.interpretacion.color, background: res.interpretacion.bg, border: `1px solid ${res.interpretacion.border}` }}
                         >
-                          {res.interpretacion.label}
+                          {res.sinDatos ? 'Sin datos' : res.interpretacion.label}
                         </span>
                       )}
                     </td>

@@ -37,8 +37,9 @@ const FORM_INICIAL = () => ({
   observaciones: '',
 });
 
-function validarForm(form, items) {
+function validarForm(form, items, esEdicion = false) {
   const errs = {};
+  if (!esEdicion && !form.solicitud_id) errs.solicitud_id = 'Selecciona la solicitud del cliente para crear el pedido.';
   if (!form.cliente_id) errs.cliente_id = 'Selecciona un cliente.';
   if (!form.fecha) errs.fecha = 'La fecha es requerida.';
   if (items.length === 0) errs.items = 'Agrega al menos una línea de pedido.';
@@ -104,6 +105,7 @@ export function useOrders() {
   const [filtroError, setFiltroError] = useState('');
 
   const [modalAbierto, setModalAbierto] = useState(false);
+  const [horaAperturaModal, setHoraAperturaModal] = useState(null);
   const [editandoId, setEditandoId] = useState(null);
   const [form, setForm] = useState(FORM_INICIAL());
   const [formErrors, setFormErrors] = useState({});
@@ -221,6 +223,7 @@ export function useOrders() {
     setAlertaIA(null);
     setModalAbierto(true);
     setPedidoDetalle(null);
+    setHoraAperturaModal(new Date());
   }, []);
 
   const abrirEditar = useCallback((pedido) => {
@@ -420,7 +423,7 @@ export function useOrders() {
 
   const handleGuardar = useCallback(
     async (forzarGuardado = false) => {
-      const errs = validarForm(form, items);
+      const errs = validarForm(form, items, Boolean(editandoId));
       if (Object.keys(errs).length) {
         setFormErrors(errs);
         return;
@@ -429,6 +432,7 @@ export function useOrders() {
       const payload = {
         ...form,
         items: items.map((i) => ({ ...i })),
+        horaAperturaModal,
       };
 
       if (form.cliente_id && !forzarGuardado) {
@@ -468,7 +472,7 @@ export function useOrders() {
 
       await persistirPedido(payload);
     },
-    [form, items, persistirPedido, editandoId, pedidos]
+    [form, items, persistirPedido, editandoId, pedidos, horaAperturaModal]
   );
 
   const handleCambiarEstado = useCallback(
