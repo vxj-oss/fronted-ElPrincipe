@@ -662,6 +662,14 @@
   color: #b91c1c;
 }
 
+.toastWarning {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #c2410c;
+  max-width: 380px;
+  align-items: flex-start;
+}
+
 @keyframes slideIn {
   from {
     transform: translateY(-8px);

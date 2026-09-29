@@ -24,9 +24,11 @@ function KPICard({ label, value, note, color }) {
 function Toast({ toast }) {
   if (!toast) return null;
   const esError = toast.tipo === 'error';
+  const esAviso = toast.tipo === 'warning';
+  const clase = esError ? styles.toastError : esAviso ? styles.toastWarning : styles.toastSuccess;
   return (
-    <div className={`${styles.toast} ${esError ? styles.toastError : styles.toastSuccess}`} role="status">
-      {esError ? <AlertCircle size={14} /> : <CheckCircle size={14} />}
+    <div className={`${styles.toast} ${clase}`} role="status">
+      {esError || esAviso ? <AlertCircle size={14} /> : <CheckCircle size={14} />}
       {toast.texto}
     </div>
   );

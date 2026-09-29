@@ -1,28 +1,34 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
   fetchResumenIndicadores,
-  fetchIndicatorHistory,
-  fetchIndicatorDaily,
-  fetchIndicatorWeekly,
-  fetchIndicatorMonthly,
-  calculateIndicators,
+  fetchSerieActividadComercial,
+  descargarSerieDiariaExcel,
+  descargarTPDPorPedidoExcel,
   evaluarUmbral,
   generarInterpretacion,
   generarConclusion,
   INDICADORES_DEF,
+  formatearMinutos,
 } from './indicatorsService';
 
-const CAMPO_VALOR = {
-  NEPP: 'valor_nepp',
-  PFCC: 'valor_pfcc',
-  NTDC: 'valor_ntdc',
+const CAMPO_SERIE = {
+  NSC: 'solicitudes',
+  NPP: 'pedidos',
+  TPD: 'tiempo_promedio_decision_minutos',
 };
 
-function mapearSeriePeriodo(sigla, puntos) {
-  const campo = CAMPO_VALOR[sigla];
+function formatearConteo(valor, unidad) {
+  return `${valor} ${unidad}`;
+}
+
+function mapearSerie(sigla, puntos) {
+  const campo = CAMPO_SERIE[sigla];
   return {
     labels: (puntos || []).map((p) => p.label),
-    valores: (puntos || []).map((p) => parseFloat(p[campo] || 0)),
+    valores: (puntos || []).map((p) => {
+      const v = p[campo];
+      return v === null || v === undefined ? 0 : parseFloat(v);
+    }),
   };
 }
 
@@ -36,25 +42,28 @@ export function useIndicadorDetalle(sigla) {
     setCargando(true);
     Promise.all([
       fetchResumenIndicadores(),
-      fetchIndicatorDaily(),
-      fetchIndicatorWeekly(),
-      fetchIndicatorMonthly(),
+      fetchSerieActividadComercial(15),
     ])
-      .then(([resumen, diario, semanal, mensual]) => {
+      .then(([resumen, serie]) => {
         const ind = resumen[sigla];
         if (ind) {
-          const serieDiaria = mapearSeriePeriodo(sigla, diario);
-          const serieSemanal = mapearSeriePeriodo(sigla, semanal);
-          const serieMensual = mapearSeriePeriodo(sigla, mensual);
+          const serieMapeada = mapearSerie(sigla, serie);
+          const n = serieMapeada.valores.length;
+          let acumulado = 0;
+          const serieAcumulada = serieMapeada.valores.map((v) => (acumulado += v));
           setDatos({
             ...ind.datos,
             valorCalculado: ind.valor,
-            labelsDiario: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
-            historicoDiario: serieDiaria.valores,
-            labelsSemanal: serieSemanal.labels,
-            historicoSemanal: serieSemanal.valores,
-            labelsMensual: serieMensual.labels,
-            historicoMensual: serieMensual.valores,
+            serieLabels: serieMapeada.labels,
+            serieValores: serieMapeada.valores,
+            serieAcumulada,
+            sumaAcumulada: acumulado,
+            comparativoLabels: n >= 2
+              ? [serieMapeada.labels[n - 2], serieMapeada.labels[n - 1]]
+              : serieMapeada.labels,
+            comparativoValores: n >= 2
+              ? [serieMapeada.valores[n - 2], serieMapeada.valores[n - 1]]
+              : serieMapeada.valores,
           });
         }
       })
@@ -68,9 +77,27 @@ export function useIndicadorDetalle(sigla) {
   const interpretacion = datos && def && umbral ? generarInterpretacion(sigla, valor, datos, umbral) : '';
   const conclusion = datos && def && umbral ? generarConclusion(sigla, valor, datos, umbral) : '';
 
+  const [exportando, setExportando] = useState(false);
+
   const handleExportar = useCallback(() => {
     window.print();
   }, []);
+
+  const handleExportarExcel = useCallback(async () => {
+    if (!sigla) return;
+    setExportando(true);
+    try {
+      if (sigla === 'TPD') {
+        await descargarTPDPorPedidoExcel();
+      } else {
+        await descargarSerieDiariaExcel(sigla, 15);
+      }
+    } catch {
+      setError('No se pudo descargar el reporte en Excel.');
+    } finally {
+      setExportando(false);
+    }
+  }, [sigla]);
 
   return {
     datos,
@@ -82,6 +109,8 @@ export function useIndicadorDetalle(sigla) {
     interpretacion,
     conclusion,
     handleExportar,
+    handleExportarExcel,
+    exportando,
   };
 }
 
@@ -89,48 +118,21 @@ export function useIndicators() {
   const [cargando, setCargando] = useState(true);
   const [recalculando, setRecalculando] = useState(false);
   const [error, setError] = useState(null);
-  const [tabActivo, setTabActivo] = useState('NEPP');
+  const [tabActivo, setTabActivo] = useState('NSC');
   const [datosReales, setDatosReales] = useState(null);
-  const [historico, setHistorico] = useState(null);
 
   const [pasosAbiertos, setPasosAbiertos] = useState({
-    NEPP: { 0: true, 1: true, 2: true },
-    PFCC: { 0: true, 1: true, 2: true },
-    NTDC: { 0: true, 1: true, 2: true },
+    NSC: { 0: true, 1: true, 2: true },
+    NPP: { 0: true, 1: true, 2: true },
+    TPD: { 0: true, 1: true, 2: true },
   });
 
   const cargarDatos = useCallback(async () => {
     try {
       setCargando(true);
       setError(null);
-      const [resumen, histLogs] = await Promise.all([
-        fetchResumenIndicadores(),
-        fetchIndicatorHistory(7),
-      ]);
-
+      const resumen = await fetchResumenIndicadores();
       setDatosReales(resumen);
-
-      const logsOrdenados = [...histLogs].reverse();
-      const labels = logsOrdenados.length > 0
-        ? logsOrdenados.map((l) => new Date(l.fecha_calculo).toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit' }))
-        : ['Actual'];
-
-      const histData = {
-        NEPP: labels.map((dia, i) => ({
-          dia,
-          valor: logsOrdenados[i] ? parseFloat(logsOrdenados[i].valor_nepp || 0) : resumen.NEPP.valor,
-        })),
-        PFCC: labels.map((dia, i) => ({
-          dia,
-          valor: logsOrdenados[i] ? parseFloat(logsOrdenados[i].valor_pfcc || 0) : resumen.PFCC.valor,
-        })),
-        NTDC: labels.map((dia, i) => ({
-          dia,
-          valor: logsOrdenados[i] ? parseFloat(logsOrdenados[i].valor_ntdc || 0) : resumen.NTDC.valor,
-        })),
-      };
-
-      setHistorico(histData);
     } catch {
       setError('Error al sincronizar los indicadores comerciales.');
     } finally {
@@ -145,10 +147,9 @@ export function useIndicators() {
   const ejecutarRecalculo = useCallback(async () => {
     try {
       setRecalculando(true);
-      await calculateIndicators('Recálculo manual desde panel');
       await cargarDatos();
     } catch {
-      setError('No se pudo ejecutar el recálculo.');
+      setError('No se pudo actualizar los indicadores.');
     } finally {
       setRecalculando(false);
     }
@@ -168,21 +169,21 @@ export function useIndicators() {
     const def = INDICADORES_DEF[sigla];
     const umbral = evaluarUmbral(valor, def.umbrales);
 
-    if (sigla === 'NEPP') {
+    if (sigla === 'NSC') {
       return [
         {
           titulo: 'Paso 1: Identificación de variables',
           tabla: [
-            { dato: 'Ítems con error (TEPP)', valor: datos.TEPP, fuente: 'detalles_pedido.tiene_error' },
-            { dato: 'Total de ítems pedidos (TPP)', valor: datos.TPP, fuente: 'detalles_pedido.count' },
+            { dato: 'Solicitudes día actual (SA)', valor: datos.SA, fuente: `solicitudes_cliente — ${datos.diaActual}` },
+            { dato: 'Solicitudes día anterior (SP)', valor: datos.SP, fuente: `solicitudes_cliente — ${datos.diaAnterior}` },
           ],
         },
         {
           titulo: 'Paso 2: Aplicación de la fórmula',
           calculo: [
-            `NEPP = TEPP ÷ TPP`,
-            `NEPP = ${datos.TEPP} ÷ ${datos.TPP}`,
-            `NEPP = ${(valor * 100).toFixed(2)}% (${valor.toFixed(4)})`,
+            'NSC = Σ Solicitudes Atendidas',
+            `NSC (${datos.diaActual}) = ${datos.SA} solicitud(es)`,
+            `Referencia: día anterior (${datos.diaAnterior}) = ${datos.SP} solicitud(es), variación ${datos.variacionPct > 0 ? '+' : ''}${datos.variacionPct?.toFixed(1) ?? '0.0'}%`,
           ],
         },
         {
@@ -192,35 +193,32 @@ export function useIndicators() {
           rangoLabel: umbral.rango,
           texto: generarInterpretacion(sigla, valor, datos, umbral),
           tablaDetalle: {
-            titulo: 'Distribución de errores en pedidos',
-            columnas: ['Concepto', 'Cantidad', 'Participación'],
+            titulo: 'Comparativo de solicitudes por día',
+            columnas: ['Concepto', 'Cantidad', 'Día'],
             filas: [
-              {
-                col1: 'Ítems con error detectado',
-                col2: `${datos.TEPP} unid.`,
-                col3: datos.TPP > 0 ? `${((datos.TEPP / datos.TPP) * 100).toFixed(1)}%` : '0%',
-              },
+              { col1: 'Solicitudes día actual', col2: `${datos.SA} unid.`, col3: datos.diaActual },
+              { col1: 'Solicitudes día anterior', col2: `${datos.SP} unid.`, col3: datos.diaAnterior },
             ],
           },
         },
       ];
     }
 
-    if (sigla === 'PFCC') {
+    if (sigla === 'NPP') {
       return [
         {
           titulo: 'Paso 1: Identificación de variables',
           tabla: [
-            { dato: 'Condiciones fallidas (TCCF)', valor: datos.TCCF, fuente: 'condiciones_comerciales.tiene_falla' },
-            { dato: 'Total condiciones pactadas (TCCD)', valor: datos.TCCD, fuente: 'condiciones_comerciales.count' },
+            { dato: 'Pedidos día actual (PA)', valor: datos.PA, fuente: `pedidos — ${datos.diaActual}` },
+            { dato: 'Pedidos día anterior (PP)', valor: datos.PP, fuente: `pedidos — ${datos.diaAnterior}` },
           ],
         },
         {
           titulo: 'Paso 2: Aplicación de la fórmula',
           calculo: [
-            `PFCC = (TCCF ÷ TCCD) × 100`,
-            `PFCC = (${datos.TCCF} ÷ ${datos.TCCD}) × 100`,
-            `PFCC = ${valor.toFixed(2)}%`,
+            'NPP = Σ Pedidos Procesados',
+            `NPP (${datos.diaActual}) = ${datos.PA} pedido(s)`,
+            `Referencia: día anterior (${datos.diaAnterior}) = ${datos.PP} pedido(s), variación ${datos.variacionPct > 0 ? '+' : ''}${datos.variacionPct?.toFixed(1) ?? '0.0'}%`,
           ],
         },
         {
@@ -230,14 +228,11 @@ export function useIndicators() {
           rangoLabel: umbral.rango,
           texto: generarInterpretacion(sigla, valor, datos, umbral),
           tablaDetalle: {
-            titulo: 'Distribución de fallas en condiciones',
-            columnas: ['Concepto', 'Cantidad', 'Participación'],
+            titulo: 'Comparativo de pedidos por día',
+            columnas: ['Concepto', 'Cantidad', 'Día'],
             filas: [
-              {
-                col1: 'Condiciones con falla',
-                col2: `${datos.TCCF} cond.`,
-                col3: datos.TCCD > 0 ? `${((datos.TCCF / datos.TCCD) * 100).toFixed(1)}%` : '0%',
-              },
+              { col1: 'Pedidos día actual', col2: `${datos.PA} unid.`, col3: datos.diaActual },
+              { col1: 'Pedidos día anterior', col2: `${datos.PP} unid.`, col3: datos.diaAnterior },
             ],
           },
         },
@@ -248,17 +243,16 @@ export function useIndicators() {
       {
         titulo: 'Paso 1: Identificación de variables',
         tabla: [
-          { dato: 'Decisiones efectivas (TDCE)', valor: datos.TDCE, fuente: 'decisiones_comerciales.es_efectiva' },
-          { dato: 'Total decisiones evaluadas (TDCT)', valor: datos.TDCT, fuente: 'decisiones_comerciales.count' },
+          { dato: 'Fecha de aprobación del pedido (FP)', valor: '—', fuente: 'pedidos.fecha_aprobacion' },
+          { dato: 'Hora de apertura del registro de solicitud (FS)', valor: '—', fuente: 'solicitudes_cliente.hora_apertura_modal' },
+          { dato: 'Número de pedidos (N)', valor: '—', fuente: 'pedidos aprobados el día actual con solicitud vinculada' },
         ],
       },
       {
         titulo: 'Paso 2: Aplicación de la fórmula',
-        calculo: [
-          `NTDC = (TDCE ÷ TDCT) × 100`,
-          `NTDC = (${datos.TDCE} ÷ ${datos.TDCT}) × 100`,
-          `NTDC = ${valor.toFixed(2)}%`,
-        ],
+        calculo: datos.sinDatos
+          ? ['TPD = Σ(FP − FS) ÷ N', 'Sin pedidos vinculados a una solicitud en el historial disponible']
+          : ['TPD = Σ(FP − FS) ÷ N', `TPD (${datos.diaActual}) = ${formatearMinutos(valor)} minutos`],
       },
       {
         titulo: 'Paso 3: Evaluación y diagnóstico',
@@ -267,23 +261,18 @@ export function useIndicators() {
         rangoLabel: umbral.rango,
         texto: generarInterpretacion(sigla, valor, datos, umbral),
         tablaDetalle: {
-          titulo: 'Distribución de efectividad en decisiones',
-          columnas: ['Concepto', 'Cantidad', 'Participación'],
+          titulo: 'Referencia de tiempos de decisión',
+          columnas: ['Concepto', 'Valor', 'Día'],
           filas: [
             {
-              col1: 'Decisiones efectivas',
-              col2: `${datos.TDCE} dec.`,
-              col3: datos.TDCT > 0 ? `${((datos.TDCE / datos.TDCT) * 100).toFixed(1)}%` : '0%',
+              col1: 'Tiempo promedio (día actual)',
+              col2: datos.tpdActual !== null ? `${formatearMinutos(datos.tpdActual)} min` : '—',
+              col3: datos.diaActual,
             },
             {
-              col1: 'Con incidencia sin resolver',
-              col2: `${Math.max(0, datos.TDCT - datos.TDCE)} dec.`,
-              col3: datos.TDCT > 0 ? `${(((datos.TDCT - datos.TDCE) / datos.TDCT) * 100).toFixed(1)}%` : '0%',
-            },
-            {
-              col1: 'Corregidas tras incidencia inicial',
-              col2: `${datos.decisionesCorregidas || 0} dec.`,
-              col3: datos.TDCT > 0 ? `${(((datos.decisionesCorregidas || 0) / datos.TDCT) * 100).toFixed(1)}%` : '0%',
+              col1: 'Promedio histórico general',
+              col2: datos.tpdGeneral !== null ? `${formatearMinutos(datos.tpdGeneral)} min` : '—',
+              col3: 'Histórico',
             },
           ],
         },
@@ -293,30 +282,30 @@ export function useIndicators() {
 
   const resultados = datosReales
     ? {
-      NEPP: {
-        valor: datosReales.NEPP.valor,
-        valorFormateado: datosReales.NEPP.valor.toFixed(3),
-        interpretacion: evaluarUmbral(datosReales.NEPP.valor, INDICADORES_DEF.NEPP.umbrales),
-        pasos: construirPasos('NEPP', datosReales.NEPP.datos, datosReales.NEPP.valor),
+      NSC: {
+        valor: datosReales.NSC.valor,
+        valorFormateado: formatearConteo(datosReales.NSC.valor, 'solicitudes'),
+        interpretacion: evaluarUmbral(datosReales.NSC.valor, INDICADORES_DEF.NSC.umbrales),
+        pasos: construirPasos('NSC', datosReales.NSC.datos, datosReales.NSC.valor),
       },
-      PFCC: {
-        valor: datosReales.PFCC.valor,
-        valorFormateado: `${datosReales.PFCC.valor.toFixed(1)}%`,
-        interpretacion: evaluarUmbral(datosReales.PFCC.valor, INDICADORES_DEF.PFCC.umbrales),
-        pasos: construirPasos('PFCC', datosReales.PFCC.datos, datosReales.PFCC.valor),
+      NPP: {
+        valor: datosReales.NPP.valor,
+        valorFormateado: formatearConteo(datosReales.NPP.valor, 'pedidos'),
+        interpretacion: evaluarUmbral(datosReales.NPP.valor, INDICADORES_DEF.NPP.umbrales),
+        pasos: construirPasos('NPP', datosReales.NPP.datos, datosReales.NPP.valor),
       },
-      NTDC: {
-        valor: datosReales.NTDC.valor,
-        valorFormateado: `${datosReales.NTDC.valor.toFixed(1)}%`,
-        interpretacion: evaluarUmbral(datosReales.NTDC.valor, INDICADORES_DEF.NTDC.umbrales),
-        pasos: construirPasos('NTDC', datosReales.NTDC.datos, datosReales.NTDC.valor),
+      TPD: {
+        valor: datosReales.TPD.valor,
+        valorFormateado: datosReales.TPD.datos.sinDatos ? '—' : `${formatearMinutos(datosReales.TPD.valor)} min`,
+        sinDatos: datosReales.TPD.datos.sinDatos,
+        interpretacion: evaluarUmbral(datosReales.TPD.valor, INDICADORES_DEF.TPD.umbrales),
+        pasos: construirPasos('TPD', datosReales.TPD.datos, datosReales.TPD.valor),
       },
     }
     : null;
 
   return {
     resultados,
-    historico,
     cargando,
     recalculando,
     error,

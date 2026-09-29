@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { ChevronLeft, Download, AlertCircle } from 'lucide-react';
+import { ChevronLeft, Download, FileSpreadsheet, AlertCircle } from 'lucide-react';
 import { useIndicadorDetalle } from './useIndicators';
 import { usePagination } from '../../hooks/usePagination';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
@@ -82,7 +82,7 @@ export function TablaErrores({ filas = [], columnas = [], claves = [] }) {
             {filas.length === 0 ? (
               <tr>
                 <td colSpan={columnas.length} style={{ padding: '16px', textAlign: 'center', color: '#94a3b8' }}>
-                  Sin registros de incidencias para este periodo.
+                  Sin registros para este periodo.
                 </td>
               </tr>
             ) : (
@@ -90,14 +90,7 @@ export function TablaErrores({ filas = [], columnas = [], claves = [] }) {
                 <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
                   {claves.map((k, ci) => (
                     <td key={k} data-label={columnas[ci]} data-primary={ci === 0 ? '' : undefined} style={{ padding: '8px 10px', color: '#0f172a' }}>
-                      {k === 'error' || k === 'resultado' ? (
-                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 4, background: '#fef2f2', color: '#b91c1c', fontSize: '0.75rem', fontWeight: 500, border: '1px solid #fecaca' }}>
-                          <AlertCircle size={11} aria-hidden="true" />
-                          {f[k]}
-                        </span>
-                      ) : (
-                        f[k]
-                      )}
+                      {f[k]}
                     </td>
                   ))}
                 </tr>
@@ -114,7 +107,7 @@ export function TablaErrores({ filas = [], columnas = [], claves = [] }) {
         onIrA={irAPagina}
         onAnterior={paginaAnterior}
         onSiguiente={paginaSiguiente}
-        etiqueta="incidencias"
+        etiqueta="registros"
       />
     </div>
   );
@@ -130,6 +123,29 @@ export function GraficoLinea({ titulo, labels = [], data = [], color = '#1E3A8A'
       if (chartRef.current) chartRef.current.destroy();
       const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       const gc = isDark ? '#2c2c2a' : '#e2e8f0';
+      const textoMuted = isDark ? '#cbd5e1' : '#334155';
+      const superficie = isDark ? '#111827' : '#ffffff';
+
+      const valorFinalPlugin = {
+        id: 'valorFinalLinea',
+        afterDatasetsDraw(chart) {
+          const meta = chart.getDatasetMeta(0);
+          const puntos = meta.data;
+          if (!puntos || puntos.length === 0) return;
+          const idx = puntos.length - 1;
+          const valor = chart.data.datasets[0].data[idx];
+          if (valor === null || valor === undefined) return;
+          const punto = puntos[idx];
+          const { ctx } = chart;
+          ctx.save();
+          ctx.font = '600 11px sans-serif';
+          ctx.fillStyle = textoMuted;
+          ctx.textAlign = 'center';
+          ctx.fillText(String(valor), punto.x, punto.y - 12);
+          ctx.restore();
+        },
+      };
+
       chartRef.current = new Chart(ref.current, {
         type: 'line',
         data: {
@@ -137,10 +153,22 @@ export function GraficoLinea({ titulo, labels = [], data = [], color = '#1E3A8A'
           datasets: [{
             data,
             borderColor: color,
-            backgroundColor: color + '15',
-            borderWidth: 1.5,
-            pointRadius: 3,
+            backgroundColor: (chartCtx) => {
+              const { chart } = chartCtx;
+              const { ctx, chartArea } = chart;
+              if (!chartArea) return color + '22';
+              const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+              gradient.addColorStop(0, color + '40');
+              gradient.addColorStop(1, color + '00');
+              return gradient;
+            },
+            borderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            pointHitRadius: 12,
             pointBackgroundColor: color,
+            pointBorderColor: superficie,
+            pointBorderWidth: 2,
             fill: true,
             tension: 0.35,
           }],
@@ -148,12 +176,28 @@ export function GraficoLinea({ titulo, labels = [], data = [], color = '#1E3A8A'
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
+          layout: { padding: { top: 22 } },
+          animation: { duration: 900, easing: 'easeOutQuart' },
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: isDark ? '#020617' : '#1e293b',
+              titleColor: '#f8fafc',
+              bodyColor: '#f8fafc',
+              bodyFont: { size: 12, weight: '600' },
+              padding: 10,
+              cornerRadius: 8,
+              displayColors: false,
+              caretSize: 5,
+            },
+          },
           scales: {
             x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } }, border: { color: gc } },
-            y: { grid: { color: gc, lineWidth: 0.5 }, ticks: { color: '#94a3b8', font: { size: 10 }, callback: (v) => v.toFixed(2) }, border: { display: false }, suggestedMin: 0, suggestedMax: 0.15 },
+            y: { grid: { color: gc, lineWidth: 0.5 }, ticks: { color: '#94a3b8', font: { size: 10 } }, border: { display: false }, suggestedMin: 0 },
           },
         },
+        plugins: [valorFinalPlugin],
       });
     });
     const handlePrintResize = () => chartRef.current?.resize();
@@ -169,7 +213,7 @@ export function GraficoLinea({ titulo, labels = [], data = [], color = '#1E3A8A'
   return (
     <div style={{ border: '1px solid #e2e8f0', borderRadius: '0.5rem', padding: '12px', breakInside: 'avoid', pageBreakInside: 'avoid' }}>
       <p style={{ fontSize: '0.6875rem', color: '#94a3b8', marginBottom: 8 }}>{titulo}</p>
-      <div style={{ position: 'relative', height: 100 }}>
+      <div style={{ position: 'relative', height: 170 }}>
         <canvas ref={ref} role="img" aria-label={titulo} />
       </div>
     </div>
@@ -186,28 +230,73 @@ export function GraficoBarras({ titulo, labels = [], data = [], color = '#1E3A8A
       if (chartRef.current) chartRef.current.destroy();
       const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       const gc = isDark ? '#2c2c2a' : '#e2e8f0';
+      const textoMuted = isDark ? '#cbd5e1' : '#334155';
+
+      const valoresPlugin = {
+        id: 'valoresBarras',
+        afterDatasetsDraw(chart) {
+          const meta = chart.getDatasetMeta(0);
+          const { ctx } = chart;
+          ctx.save();
+          ctx.font = '600 10px sans-serif';
+          ctx.fillStyle = textoMuted;
+          ctx.textAlign = 'center';
+          meta.data.forEach((barra, i) => {
+            const valor = chart.data.datasets[0].data[i];
+            if (valor === null || valor === undefined) return;
+            ctx.fillText(String(valor), barra.x, barra.y - 6);
+          });
+          ctx.restore();
+        },
+      };
+
       chartRef.current = new Chart(ref.current, {
         type: 'bar',
         data: {
           labels,
           datasets: [{
             data,
-            backgroundColor: color + 'aa',
-            borderColor: color,
-            borderWidth: 1,
-            borderRadius: 3,
-            borderSkipped: false,
+            backgroundColor: (chartCtx) => {
+              const { chart } = chartCtx;
+              const { ctx, chartArea } = chart;
+              if (!chartArea) return color + 'cc';
+              const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+              gradient.addColorStop(0, color + 'ee');
+              gradient.addColorStop(1, color + '88');
+              return gradient;
+            },
+            borderRadius: 4,
+            borderSkipped: 'bottom',
+            barPercentage: 0.6,
+            categoryPercentage: 0.7,
+            hoverBackgroundColor: color,
           }],
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
+          layout: { padding: { top: 22 } },
+          animation: { duration: 900, easing: 'easeOutQuart' },
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: isDark ? '#020617' : '#1e293b',
+              titleColor: '#f8fafc',
+              bodyColor: '#f8fafc',
+              bodyFont: { size: 12, weight: '600' },
+              padding: 10,
+              cornerRadius: 8,
+              displayColors: false,
+              caretSize: 5,
+            },
+          },
           scales: {
             x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } }, border: { color: gc } },
-            y: { grid: { color: gc, lineWidth: 0.5 }, ticks: { color: '#94a3b8', font: { size: 10 }, callback: (v) => v.toFixed(2) }, border: { display: false }, suggestedMin: 0, suggestedMax: 0.15 },
+            y: { grid: { color: gc, lineWidth: 0.5 }, ticks: { color: '#94a3b8', font: { size: 10 } }, border: { display: false }, suggestedMin: 0 },
           },
         },
+        plugins: [valoresPlugin],
       });
     });
     const handlePrintResize = () => chartRef.current?.resize();
@@ -223,7 +312,7 @@ export function GraficoBarras({ titulo, labels = [], data = [], color = '#1E3A8A
   return (
     <div style={{ border: '1px solid #e2e8f0', borderRadius: '0.5rem', padding: '12px', breakInside: 'avoid', pageBreakInside: 'avoid' }}>
       <p style={{ fontSize: '0.6875rem', color: '#94a3b8', marginBottom: 8 }}>{titulo}</p>
-      <div style={{ position: 'relative', height: 100 }}>
+      <div style={{ position: 'relative', height: 170 }}>
         <canvas ref={ref} role="img" aria-label={titulo} />
       </div>
     </div>
@@ -283,7 +372,7 @@ export function GraficoPie({ titulo, labels = [], data = [], colores = [] }) {
   );
 }
 
-export default function NEPPIndicator({ onVolver }) {
+export default function NSCIndicator({ onVolver }) {
   const {
     datos,
     cargando,
@@ -294,7 +383,9 @@ export default function NEPPIndicator({ onVolver }) {
     interpretacion,
     conclusion,
     handleExportar,
-  } = useIndicadorDetalle('NEPP');
+    handleExportarExcel,
+    exportando,
+  } = useIndicadorDetalle('NSC');
 
   if (cargando) return <CargandoView />;
   if (error || !datos || !umbral) return <ErrorView mensaje={error} />;
@@ -318,29 +409,38 @@ export default function NEPPIndicator({ onVolver }) {
           </div>
           <h1 className={styles.detalleTitle}>{def.nombre}</h1>
           <p className={styles.detalleSub}>
-            Periodo de cálculo: {datos.periodoCalculo} · Actualizado a las {datos.horaActualizacion} hrs.
+            Día actual: {datos.diaActual} · Día anterior: {datos.diaAnterior}
           </p>
         </div>
-        <button onClick={handleExportar} className={styles.exportBtn}>
-          <Download size={14} aria-hidden="true" /> Exportar informe
-        </button>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button onClick={handleExportarExcel} className={styles.exportBtn} disabled={exportando}>
+            <FileSpreadsheet size={14} aria-hidden="true" /> {exportando ? 'Generando...' : 'Descargar por día (Excel)'}
+          </button>
+          <button onClick={handleExportar} className={styles.exportBtn}>
+            <Download size={14} aria-hidden="true" /> Exportar informe
+          </button>
+        </div>
       </div>
 
       <SeccionCard numero="1" titulo="Sección 1: Datos utilizados">
         <div className={styles.datosGrid}>
           <DatoCard
-            sigla="TEPP"
-            nombre="Total de errores en productos pedidos"
-            valor={datos.TEPP}
-            desc="Ítems con error detectado en el periodo"
-            desglose={datos.desgloseTEPP.map((d) => ({ label: d.tipo, valor: `${d.cantidad} unid.` }))}
+            sigla="SA"
+            nombre="Solicitudes día actual"
+            valor={datos.SA}
+            desc="Solicitudes atendidas y auditadas por el agente de IA en el día en curso"
+            desglose={[
+              { label: datos.diaActual, valor: `${datos.SA} solic.` },
+              { label: 'Conformes', valor: `${datos.conformes} solic.` },
+              { label: 'Con observaciones', valor: `${datos.conObservaciones} solic.` },
+            ]}
           />
           <DatoCard
-            sigla="TPP"
-            nombre="Total de productos pedidos"
-            valor={datos.TPP}
-            desc="Total de productos registrados en pedidos del periodo"
-            desglose={datos.desgloseTPP.map((d) => ({ label: d.label, valor: `${d.valor}${d.unidad ? ' ' + d.unidad : ''}` }))}
+            sigla="Σ"
+            nombre="Acumulado del periodo"
+            valor={datos.sumaAcumulada}
+            desc="Suma de solicitudes registradas en todos los días disponibles del historial (fórmula NSC = Σ Solicitudes Atendidas)"
+            desglose={[{ label: `${datos.serieLabels?.length || 0} día(s) registrados`, valor: `${datos.sumaAcumulada} solic.` }]}
           />
         </div>
       </SeccionCard>
@@ -353,9 +453,9 @@ export default function NEPPIndicator({ onVolver }) {
           >
             <p className={styles.resLabel}>Resultado</p>
             <p className={styles.resValor} style={{ color: umbral.color }}>
-              {valor.toFixed(3)}
+              {valor}
             </p>
-            <p className={styles.resUnidad}>errores por producto pedido</p>
+            <p className={styles.resUnidad}>solicitudes atendidas en el día actual ({datos.diaActual})</p>
           </div>
 
           <div className={styles.interpCard}>
@@ -394,55 +494,56 @@ export default function NEPPIndicator({ onVolver }) {
       <SeccionCard numero="3" titulo="Sección 3: Dashboard del indicador">
         <div className={styles.dashGrid}>
           <GraficoLinea
-            titulo="Evolución diaria (NEPP)"
-            labels={datos.labelsDiario}
-            data={datos.historicoDiario}
+            titulo="Evolución de solicitudes por día (histórico)"
+            labels={datos.serieLabels}
+            data={datos.serieValores}
             color="#1E3A8A"
           />
           <GraficoBarras
-            titulo="Comparación semanal (NEPP)"
-            labels={datos.labelsSemanal}
-            data={datos.historicoSemanal}
+            titulo="Día actual vs. día anterior"
+            labels={datos.comparativoLabels}
+            data={datos.comparativoValores}
+            color="#1E3A8A"
+          />
+          <DatoCard
+            sigla="Comparativo"
+            nombre="Solicitudes por día"
+            valor={`${datos.SP} → ${datos.SA}`}
+            desc="Referencia visual del día anterior frente al día actual"
+            desglose={[
+              { label: datos.diaAnterior, valor: `${datos.SP} solic.` },
+              { label: datos.diaActual, valor: `${datos.SA} solic.` },
+            ]}
+          />
+          <GraficoBarras
+            titulo="Solicitudes registradas por día"
+            labels={datos.serieLabels}
+            data={datos.serieValores}
             color="#1E3A8A"
           />
           <GraficoLinea
-            titulo="Evolución mensual (NEPP)"
-            labels={datos.labelsMensual}
-            data={datos.historicoMensual}
-            color="#1E3A8A"
+            titulo="Acumulado de solicitudes (Σ)"
+            labels={datos.serieLabels}
+            data={datos.serieAcumulada}
+            color="#0f766e"
           />
         </div>
 
-        <div className={styles.bottomGrid}>
-          <GraficoPie
-            titulo="Distribución de errores"
-            labels={datos.desgloseTEPP.map((d) => d.tipo)}
-            data={datos.desgloseTEPP.map((d) => d.cantidad)}
-            colores={['#1e3a8a', '#3b82f6', '#ea580c', '#dc2626']}
-          />
+        <div className={styles.bottomGrid} style={{ gridTemplateColumns: '1fr' }}>
           <div
             className={styles.conclusionCard}
-            style={{ background: '#fff7ed', border: '1px solid #fed7aa' }}
+            style={{ background: '#eff6ff', border: '1px solid #bfdbfe' }}
           >
-            <p className={styles.conclusionTitulo} style={{ color: '#c2410c' }}>
+            <p className={styles.conclusionTitulo} style={{ color: '#1d4ed8' }}>
               Conclusión automática
             </p>
             <p
               className={styles.conclusionTexto}
-              style={{ color: '#92400e' }}
+              style={{ color: '#1e3a8a' }}
               dangerouslySetInnerHTML={{ __html: conclusion }}
             />
           </div>
         </div>
-
-        <p className={styles.tablaSubtitulo}>
-          Tabla de incidencias utilizadas en el cálculo (TEPP = {datos.TEPP})
-        </p>
-        <TablaErrores
-          filas={datos.tablaErrores}
-          columnas={['N.° Pedido', 'Cliente', 'Producto', 'Error detectado', 'Fecha', 'Vendedor']}
-          claves={['numero', 'cliente', 'producto', 'error', 'fecha', 'vendedor']}
-        />
       </SeccionCard>
     </div>
   );

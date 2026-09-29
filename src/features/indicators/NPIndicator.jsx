@@ -1,18 +1,16 @@
-import { ChevronLeft, Download } from 'lucide-react';
+import { ChevronLeft, Download, FileSpreadsheet } from 'lucide-react';
 import { useIndicadorDetalle } from './useIndicators';
 import {
   CargandoView,
   ErrorView,
   SeccionCard,
   DatoCard,
-  TablaErrores,
   GraficoLinea,
   GraficoBarras,
-  GraficoPie,
-} from './NEPPIndicator';
+} from './NSCIndicator';
 import styles from './indicators.module.css';
 
-export default function NTDCIndicator({ onVolver }) {
+export default function NPIndicator({ onVolver }) {
   const {
     datos,
     cargando,
@@ -23,7 +21,9 @@ export default function NTDCIndicator({ onVolver }) {
     interpretacion,
     conclusion,
     handleExportar,
-  } = useIndicadorDetalle('NTDC');
+    handleExportarExcel,
+    exportando,
+  } = useIndicadorDetalle('NPP');
 
   if (cargando) return <CargandoView />;
   if (error || !datos || !umbral) return <ErrorView mensaje={error} />;
@@ -47,29 +47,38 @@ export default function NTDCIndicator({ onVolver }) {
           </div>
           <h1 className={styles.detalleTitle}>{def.nombre}</h1>
           <p className={styles.detalleSub}>
-            Periodo de cálculo: {datos.periodoCalculo} · Actualizado a las {datos.horaActualizacion} hrs.
+            Día actual: {datos.diaActual} · Día anterior: {datos.diaAnterior}
           </p>
         </div>
-        <button onClick={handleExportar} className={styles.exportBtn}>
-          <Download size={14} aria-hidden="true" /> Exportar informe
-        </button>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button onClick={handleExportarExcel} className={styles.exportBtn} disabled={exportando}>
+            <FileSpreadsheet size={14} aria-hidden="true" /> {exportando ? 'Generando...' : 'Descargar por día (Excel)'}
+          </button>
+          <button onClick={handleExportar} className={styles.exportBtn}>
+            <Download size={14} aria-hidden="true" /> Exportar informe
+          </button>
+        </div>
       </div>
 
       <SeccionCard numero="1" titulo="Sección 1: Datos utilizados">
         <div className={styles.datosGrid}>
           <DatoCard
-            sigla="TDCE"
-            nombre="Total de decisiones comerciales efectivas"
-            valor={datos.TDCE}
-            desc="Decisiones que derivaron en resultado positivo o correcto"
-            desglose={datos.desgloseTDCE.map((d) => ({ label: d.tipo, valor: `${d.cantidad} dec.` }))}
+            sigla="PA"
+            nombre="Pedidos día actual"
+            valor={datos.PA}
+            desc="Pedidos aprobados o entregados y auditados por el agente de IA en el día en curso"
+            desglose={[
+              { label: datos.diaActual, valor: `${datos.PA} ped.` },
+              { label: 'Conformes', valor: `${datos.conformes} ped.` },
+              { label: 'Con observaciones', valor: `${datos.conObservaciones} ped.` },
+            ]}
           />
           <DatoCard
-            sigla="TDCT"
-            nombre="Total de decisiones comerciales tomadas"
-            valor={datos.TDCT}
-            desc="Toda orden registrada en el periodo (excepto las canceladas) cuenta como una decisión comercial"
-            desglose={datos.desgloseTDCT.map((d) => ({ label: d.label, valor: `${d.valor}${d.unidad ? ' ' + d.unidad : ''}` }))}
+            sigla="Σ"
+            nombre="Acumulado del periodo"
+            valor={datos.sumaAcumulada}
+            desc="Suma de pedidos procesados en todos los días disponibles del historial (fórmula NPP = Σ Pedidos Procesados)"
+            desglose={[{ label: `${datos.serieLabels?.length || 0} día(s) registrados`, valor: `${datos.sumaAcumulada} ped.` }]}
           />
         </div>
       </SeccionCard>
@@ -81,8 +90,10 @@ export default function NTDCIndicator({ onVolver }) {
             style={{ background: umbral.bg, border: `1px solid ${umbral.border}` }}
           >
             <p className={styles.resLabel}>Resultado</p>
-            <p className={styles.resValor} style={{ color: umbral.color }}>{valor.toFixed(2)}%</p>
-            <p className={styles.resUnidad}>decisiones efectivas por cada 100 tomadas</p>
+            <p className={styles.resValor} style={{ color: umbral.color }}>
+              {valor}
+            </p>
+            <p className={styles.resUnidad}>pedidos procesados en el día actual ({datos.diaActual})</p>
           </div>
 
           <div className={styles.interpCard}>
@@ -121,53 +132,54 @@ export default function NTDCIndicator({ onVolver }) {
       <SeccionCard numero="3" titulo="Sección 3: Dashboard del indicador">
         <div className={styles.dashGrid}>
           <GraficoLinea
-            titulo="Evolución diaria (NTDC)"
-            labels={datos.labelsDiario}
-            data={datos.historicoDiario}
-            color="#085041"
+            titulo="Evolución de pedidos por día (histórico)"
+            labels={datos.serieLabels}
+            data={datos.serieValores}
+            color="#854f0b"
           />
           <GraficoBarras
-            titulo="Comparación semanal (NTDC)"
-            labels={datos.labelsSemanal}
-            data={datos.historicoSemanal}
-            color="#085041"
+            titulo="Día actual vs. día anterior"
+            labels={datos.comparativoLabels}
+            data={datos.comparativoValores}
+            color="#854f0b"
+          />
+          <DatoCard
+            sigla="Comparativo"
+            nombre="Pedidos por día"
+            valor={`${datos.PP} → ${datos.PA}`}
+            desc="Referencia visual del día anterior frente al día actual"
+            desglose={[
+              { label: datos.diaAnterior, valor: `${datos.PP} ped.` },
+              { label: datos.diaActual, valor: `${datos.PA} ped.` },
+            ]}
+          />
+          <GraficoBarras
+            titulo="Pedidos procesados por día"
+            labels={datos.serieLabels}
+            data={datos.serieValores}
+            color="#854f0b"
           />
           <GraficoLinea
-            titulo="Evolución mensual (NTDC)"
-            labels={datos.labelsMensual}
-            data={datos.historicoMensual}
-            color="#085041"
+            titulo="Acumulado de pedidos (Σ)"
+            labels={datos.serieLabels}
+            data={datos.serieAcumulada}
+            color="#0f766e"
           />
         </div>
 
-        <div className={styles.bottomGrid}>
-          <GraficoPie
-            titulo="Distribución de decisiones efectivas por tipo"
-            labels={datos.desgloseTDCE.map((d) => d.tipo)}
-            data={datos.desgloseTDCE.map((d) => d.cantidad)}
-            colores={['#085041', '#0d9488', '#1E3A8A', '#3b82f6']}
-          />
+        <div className={styles.bottomGrid} style={{ gridTemplateColumns: '1fr' }}>
           <div
             className={styles.conclusionCard}
-            style={{ background: '#f0fdf4', border: '1px solid #bbf7d0' }}
+            style={{ background: '#fff7ed', border: '1px solid #fed7aa' }}
           >
-            <p className={styles.conclusionTitulo} style={{ color: '#15803d' }}>Conclusión automática</p>
+            <p className={styles.conclusionTitulo} style={{ color: '#c2410c' }}>Conclusión automática</p>
             <p
               className={styles.conclusionTexto}
-              style={{ color: '#166534' }}
+              style={{ color: '#92400e' }}
               dangerouslySetInnerHTML={{ __html: conclusion }}
             />
           </div>
         </div>
-
-        <p className={styles.tablaSubtitulo}>
-          Tabla de decisiones no efectivas utilizadas en el análisis (Total no efectivas = {Math.max(0, datos.TDCT - datos.TDCE)})
-        </p>
-        <TablaErrores
-          filas={datos.tablaErrores}
-          columnas={['N.° Decisión', 'Cliente', 'Decisión tomada', 'Resultado', 'Fecha', 'Vendedor']}
-          claves={['numero', 'cliente', 'decision', 'resultado', 'fecha', 'vendedor']}
-        />
       </SeccionCard>
     </div>
   );

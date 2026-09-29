@@ -152,7 +152,7 @@ export const REPORTES_DISPONIBLES = [
   {
     id: 'indicators',
     nombre: 'Indicadores Comerciales',
-    descripcion: 'Cálculo consolidado de indicadores oficiales: NEPP, PFCC y NTDC.',
+    descripcion: 'Cálculo consolidado de indicadores comerciales: NSC, NPP y TPD.',
     icono: 'report-analytics',
     colorBg: '#f0fdf4',
     colorIcon: '#15803d',
@@ -183,76 +183,77 @@ export const METAS_COMERCIALES = {
 };
 
 export const INDICADORES_META = {
-  NEPP: {
-    nombre: 'Número de errores en los productos pedidos',
+  NSC: {
+    nombre: 'Número de Solicitudes de Clientes',
     color: '#1E3A8A',
-    metaTexto: 'Meta: < 0.05',
-    tipo: 'ratio',
-    maxEscala: 0.15,
-  },
-  PFCC: {
-    nombre: 'Porcentaje de fallas al definir condiciones comerciales',
-    color: '#854f0b',
-    metaTexto: 'Meta: < 10%',
-    tipo: 'porcentaje_falla',
+    metaTexto: 'Meta: ≥ 15/día',
+    tipo: 'conteo',
     maxEscala: 30,
   },
-  NTDC: {
-    nombre: 'Nivel de toma de decisiones comerciales',
+  NPP: {
+    nombre: 'Número de Pedidos Procesados',
+    color: '#854f0b',
+    metaTexto: 'Meta: ≥ 15/día',
+    tipo: 'conteo',
+    maxEscala: 30,
+  },
+  TPD: {
+    nombre: 'Tiempo Promedio de Decisión',
     color: '#085041',
-    metaTexto: 'Meta: ≥ 75%',
-    tipo: 'porcentaje_exito',
-    maxEscala: 100,
+    metaTexto: 'Meta: ≤ 240 min',
+    tipo: 'tiempo_respuesta',
+    maxEscala: 720,
   },
 };
 
 export const INDICADORES_DEF = {
-  NEPP: {
+  NSC: {
     numero: '01',
-    sigla: 'NEPP',
-    nombre: 'Número de errores en los productos pedidos',
-    descripcion: 'Mide la tasa de errores detectados en los productos registrados dentro de los pedidos del periodo.',
-    formula: 'NEPP = TEPP ÷ TPP',
+    sigla: 'NSC',
+    nombre: 'Número de Solicitudes de Clientes',
+    descripcion: 'Mide el número de solicitudes de clientes atendidas y auditadas por el agente de IA en el día actual, evaluando si se alcanza la meta mínima diaria establecida.',
+    formula: 'NSC = Σ Solicitudes Atendidas',
     variables: [
-      { clave: 'TEPP', nombre: 'Total de errores en productos pedidos', desc: 'Productos con error detectado en el periodo' },
-      { clave: 'TPP', nombre: 'Total de productos pedidos', desc: 'Total de productos registrados en pedidos del periodo' },
+      { clave: 'SA', nombre: 'Solicitudes día actual', desc: 'Solicitudes atendidas y auditadas por el agente de IA en el día en curso' },
+      { clave: 'SP', nombre: 'Solicitudes día anterior', desc: 'Solicitudes atendidas y auditadas por el agente de IA en el día calendario anterior' },
     ],
     umbrales: [
-      { nivel: 'bueno', label: 'Bueno', rango: 'NEPP < 0.05', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: null, max: 0.05 },
-      { nivel: 'regular', label: 'Regular', rango: '0.05 – 0.10', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 0.05, max: 0.10 },
-      { nivel: 'critico', label: 'Crítico', rango: 'NEPP > 0.10', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: 0.10, max: null },
+      { nivel: 'bueno', label: 'Bueno', rango: 'NSC ≥ 15', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: 15, max: null },
+      { nivel: 'regular', label: 'Regular', rango: '8 a 14', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 8, max: 15 },
+      { nivel: 'critico', label: 'Crítico', rango: 'NSC < 8', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: null, max: 8 },
     ],
   },
-  PFCC: {
+  NPP: {
     numero: '02',
-    sigla: 'PFCC',
-    nombre: 'Porcentaje de fallas al definir condiciones comerciales',
-    descripcion: 'Mide el porcentaje de condiciones comerciales que fueron definidas de forma incorrecta o incompleta respecto al total de condiciones definidas en el periodo.',
-    formula: 'PFCC = (TCCF ÷ TCCD) × 100',
+    sigla: 'NPP',
+    nombre: 'Número de Pedidos Procesados',
+    descripcion: 'Mide el número de pedidos procesados (aprobados o entregados) y auditados por el agente de IA en el día actual, evaluando si se alcanza la meta mínima diaria establecida.',
+    formula: 'NPP = Σ Pedidos Procesados',
     variables: [
-      { clave: 'TCCF', nombre: 'Total de condiciones comerciales fallidas', desc: 'Condiciones con error o inconsistencia detectada' },
-      { clave: 'TCCD', nombre: 'Total de condiciones comerciales definidas', desc: 'Total de condiciones registradas en el periodo' },
+      { clave: 'PA', nombre: 'Pedidos día actual', desc: 'Pedidos aprobados o entregados y auditados por el agente de IA en el día en curso' },
+      { clave: 'PP', nombre: 'Pedidos día anterior', desc: 'Pedidos aprobados o entregados y auditados por el agente de IA en el día calendario anterior' },
     ],
     umbrales: [
-      { nivel: 'bueno', label: 'Bueno', rango: 'PFCC < 10%', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: null, max: 10 },
-      { nivel: 'regular', label: 'Regular', rango: '10% – 25%', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 10, max: 25 },
-      { nivel: 'critico', label: 'Crítico', rango: 'PFCC > 25%', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: 25, max: null },
+      { nivel: 'bueno', label: 'Bueno', rango: 'NPP ≥ 15', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: 15, max: null },
+      { nivel: 'regular', label: 'Regular', rango: '8 a 14', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 8, max: 15 },
+      { nivel: 'critico', label: 'Crítico', rango: 'NPP < 8', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: null, max: 8 },
     ],
   },
-  NTDC: {
+  TPD: {
     numero: '03',
-    sigla: 'NTDC',
-    nombre: 'Nivel de toma de decisiones comerciales',
-    descripcion: 'Mide la proporción de decisiones comerciales efectivas respecto al total tomadas. Cada pedido registrado (salvo los cancelados) es una decisión: es efectiva cuando no mantiene errores de ítem ni fallas de condición comercial. Se recalcula en vivo, por lo que una decisión corregida pasa a contar como efectiva.',
-    formula: 'NTDC = (TDCE ÷ TDCT) × 100',
+    sigla: 'TPD',
+    nombre: 'Tiempo Promedio de Decisión',
+    descripcion: 'Mide el tiempo promedio, en minutos, que transcurre entre la apertura del registro de solicitud de un cliente (apertura del modal) y la aprobación del pedido correspondiente (tras el registro y la auditoría de la IA), evaluando la rapidez del asesor comercial en la toma de decisiones. La espera de la auditoría del agente de IA al guardar (unos segundos) forma parte de este tiempo y debe considerarse al comparar con el grupo de control.',
+    formula: 'TPD = Σ(Fecha de aprobación del pedido − Hora de apertura del registro de solicitud) ÷ N',
     variables: [
-      { clave: 'TDCE', nombre: 'Total de decisiones comerciales efectivas', desc: 'Pedidos sin errores de ítem ni fallas de condición comercial al momento del cálculo' },
-      { clave: 'TDCT', nombre: 'Total de decisiones comerciales tomadas', desc: 'Pedidos registrados en el periodo, excluyendo los cancelados' },
+      { clave: 'FP', nombre: 'Fecha de aprobación del pedido', desc: 'Momento en que el pedido queda marcado como Aprobado, tras el registro y la auditoría de la IA' },
+      { clave: 'FS', nombre: 'Hora de apertura del registro de solicitud', desc: 'Momento en que el asesor abre el modal para registrar la solicitud del cliente' },
+      { clave: 'N', nombre: 'Número de pedidos', desc: 'Cantidad de pedidos aprobados considerados en el promedio (los del día actual)' },
     ],
     umbrales: [
-      { nivel: 'bueno', label: 'Bueno', rango: 'NTDC ≥ 75%', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: 75, max: null },
-      { nivel: 'regular', label: 'Regular', rango: '50% – 74%', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 50, max: 75 },
-      { nivel: 'critico', label: 'Crítico', rango: 'NTDC < 50%', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: null, max: 50 },
+      { nivel: 'bueno', label: 'Bueno', rango: 'TPD ≤ 240 min', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: null, max: 240, maxIncl: true },
+      { nivel: 'regular', label: 'Regular', rango: '240 a 720 min', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 240, max: 720, maxIncl: true },
+      { nivel: 'critico', label: 'Crítico', rango: 'TPD > 720 min', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: 720, max: null },
     ],
   },
 };

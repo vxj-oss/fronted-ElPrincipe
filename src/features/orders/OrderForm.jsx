@@ -70,15 +70,18 @@ export default function OrderForm({
               name="solicitud_id"
               value={form.solicitud_id || ''}
               onChange={onChange}
-              className={styles.fieldInput}
+              className={`${styles.fieldInput} ${formErrors.solicitud_id ? styles.fieldInputError : ''}`}
             >
-              <option value="">-- Sin solicitud (Pedido directo) --</option>
+              <option value="">-- Selecciona una solicitud --</option>
               {solicitudesPendientes.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.codigo_solicitud} — {s.cliente?.razon_social || s.cliente?.nombre || `Cliente #${s.cliente_id}`} ({s.detalles?.length || 0} ítems)
                 </option>
               ))}
             </select>
+            {formErrors.solicitud_id && (
+              <p className={styles.fieldError} role="alert">{formErrors.solicitud_id}</p>
+            )}
           </div>
         )}
 
