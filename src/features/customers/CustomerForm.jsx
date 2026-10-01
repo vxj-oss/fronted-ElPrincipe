@@ -34,7 +34,7 @@ export default function CustomerForm({
                 </div>
 
                 <div className={styles.field}>
-                    <label htmlFor="f-ruc" className={styles.fieldLabel}>RUC / DNI</label>
+                    <label htmlFor="f-ruc" className={styles.fieldLabel}>RUC / DNI (opcional)</label>
                     <input
                         id="f-ruc"
                         name="ruc"
