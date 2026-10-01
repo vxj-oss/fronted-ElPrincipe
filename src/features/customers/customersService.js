@@ -32,7 +32,7 @@ function transformCustomerToBackend(data) {
   const payload = {};
 
   if (data.nombre !== undefined) payload.razon_social = data.nombre.trim();
-  if (data.ruc !== undefined) payload.ruc_dni = data.ruc.trim();
+  if (data.ruc !== undefined) payload.ruc_dni = data.ruc.trim() || null;
   if (data.tipo !== undefined) payload.tipo_cliente = data.tipo;
   if (data.distrito !== undefined) payload.distrito = data.distrito;
   if (data.telefono !== undefined) payload.telefono = data.telefono?.trim() || null;

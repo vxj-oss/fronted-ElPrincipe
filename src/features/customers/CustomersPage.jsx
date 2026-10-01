@@ -89,7 +89,7 @@ function DetallePanel({ cliente, onCerrar, onEditar }) {
       <dl className={styles.detalleGrid}>
         <div className={styles.detalleItem}>
           <dt><CreditCard size={13} aria-hidden="true" /> RUC / DNI</dt>
-          <dd className={styles.mono}>{cliente.ruc}</dd>
+          <dd className={styles.mono}>{cliente.ruc || '—'}</dd>
         </div>
         <div className={styles.detalleItem}>
           <dt><MapPin size={13} aria-hidden="true" /> Distrito</dt>
@@ -364,7 +364,7 @@ export default function CustomersPage() {
                         {c.clasificacion === 'VIP' && <span className={styles.vipBadge}> · VIP</span>}
                       </span>
                     </td>
-                    <td data-label="RUC / DNI" className={styles.mono}>{c.ruc}</td>
+                    <td data-label="RUC / DNI" className={styles.mono}>{c.ruc || '—'}</td>
                     <td data-label="Distrito" className={styles.tdSecundario}>{c.distrito}</td>
                     <td data-label="Compras S/">S/ {c.comprasTotal.toLocaleString('es-PE', { maximumFractionDigits: 0 })}</td>
                     <td data-label="Estado"><PillEstado activo={c.activo} /></td>

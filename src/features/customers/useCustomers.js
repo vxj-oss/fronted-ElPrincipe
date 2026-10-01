@@ -34,8 +34,7 @@ function validarEmail(valor) {
 function validarForm(form) {
   const errs = {};
   if (!form.nombre?.trim()) errs.nombre = 'La razón social o nombre es requerido.';
-  if (!form.ruc?.trim()) errs.ruc = 'El RUC o DNI es requerido.';
-  else if (!validarRucDni(form.ruc.trim())) errs.ruc = 'RUC debe tener 11 dígitos, DNI 8 dígitos.';
+  if (form.ruc?.trim() && !validarRucDni(form.ruc.trim())) errs.ruc = 'RUC debe tener 11 dígitos, DNI 8 dígitos.';
   if (!form.tipo) errs.tipo = 'Selecciona el tipo de cliente.';
   if (!form.distrito) errs.distrito = 'Selecciona el distrito.';
   if (form.email?.trim() && !validarEmail(form.email.trim())) errs.email = 'Ingresa un correo válido.';
