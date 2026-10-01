@@ -24,7 +24,7 @@ export default function TPDIndicator({ onVolver }) {
     handleExportar,
     handleExportarExcel,
     exportando,
-  } = useIndicadorDetalle('TPD');
+  } = useIndicadorDetalle('TPTD');
 
   if (cargando) return <CargandoView />;
   if (error || !datos || !umbral) return <ErrorView mensaje={error} />;
@@ -75,22 +75,22 @@ export default function TPDIndicator({ onVolver }) {
       <SeccionCard numero="1" titulo="Sección 1: Datos utilizados">
         <div className={styles.datosGrid}>
           <DatoCard
-            sigla="TPD actual"
-            nombre="Tiempo promedio de decisión (día actual)"
+            sigla="TPTD actual"
+            nombre="Tiempo promedio de toma de decisión (día actual)"
             valor={datos.tpdActual !== null ? `${formatearMinutos(datos.tpdActual)} min` : '—'}
-            desc="Promedio de minutos entre la apertura del registro de solicitud y la aprobación del pedido en el día actual"
+            desc="Promedio de minutos entre la apertura del registro de cotización y la aprobación del pedido en el día actual"
             desglose={[{ label: datos.diaActual, valor: datos.tpdActual !== null ? `${formatearMinutos(datos.tpdActual)} min` : '—' }]}
           />
           <DatoCard
-            sigla="TPD general"
+            sigla="TPTD general"
             nombre="Promedio histórico general"
             valor={datos.tpdGeneral !== null ? `${formatearMinutos(datos.tpdGeneral)} min` : '—'}
-            desc="Promedio de respaldo usado cuando no hay pedidos aprobados vinculados a una solicitud en el día actual"
+            desc="Promedio de respaldo usado cuando no hay pedidos aprobados vinculados a una cotización en el día actual"
             desglose={[{ label: 'Histórico', valor: datos.tpdGeneral !== null ? `${formatearMinutos(datos.tpdGeneral)} min` : '—' }]}
           />
         </div>
         <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: 12, lineHeight: 1.5 }}>
-          Nota: la auditoría del agente de IA agrega unos segundos de espera al guardar la solicitud y el pedido. 
+          Nota: la auditoría del agente de IA agrega unos segundos de espera al guardar la cotización y el pedido. 
         </p>
       </SeccionCard>
 
@@ -104,7 +104,7 @@ export default function TPDIndicator({ onVolver }) {
             <p className={styles.resValor} style={{ color: sinDatos ? '#64748b' : umbral.color }}>
               {sinDatos ? '—' : `${formatearMinutos(valor)} min`}
             </p>
-            <p className={styles.resUnidad}>minutos promedio entre la apertura del registro de solicitud y la aprobación del pedido{datos.usaHistorico ? ' (sin aprobaciones hoy: se muestra el promedio histórico)' : ''}</p>
+            <p className={styles.resUnidad}>minutos promedio entre la apertura del registro de cotización y la aprobación del pedido{datos.usaHistorico ? ' (sin aprobaciones hoy: se muestra el promedio histórico)' : ''}</p>
           </div>
 
           <div className={styles.interpCard}>
@@ -152,7 +152,7 @@ export default function TPDIndicator({ onVolver }) {
       <SeccionCard numero="3" titulo="Sección 3: Dashboard del indicador">
         <div className={styles.dashGrid}>
           <GraficoLinea
-            titulo="Evolución del tiempo de decisión por día (histórico)"
+            titulo="Evolución del tiempo de toma de decisión por día (histórico)"
             labels={datos.serieLabels}
             data={datos.serieValores}
             color="#085041"

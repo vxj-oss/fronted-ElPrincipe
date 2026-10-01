@@ -385,7 +385,7 @@ export default function NSCIndicator({ onVolver }) {
     handleExportar,
     handleExportarExcel,
     exportando,
-  } = useIndicadorDetalle('NSC');
+  } = useIndicadorDetalle('NCCA');
 
   if (cargando) return <CargandoView />;
   if (error || !datos || !umbral) return <ErrorView mensaje={error} />;
@@ -426,9 +426,9 @@ export default function NSCIndicator({ onVolver }) {
         <div className={styles.datosGrid}>
           <DatoCard
             sigla="SA"
-            nombre="Solicitudes día actual"
+            nombre="Cotizaciones día actual"
             valor={datos.SA}
-            desc="Solicitudes atendidas y auditadas por el agente de IA en el día en curso"
+            desc="Cotizaciones atendidas y auditadas por el agente de IA en el día en curso"
             desglose={[
               { label: datos.diaActual, valor: `${datos.SA} solic.` },
               { label: 'Conformes', valor: `${datos.conformes} solic.` },
@@ -439,7 +439,7 @@ export default function NSCIndicator({ onVolver }) {
             sigla="Σ"
             nombre="Acumulado del periodo"
             valor={datos.sumaAcumulada}
-            desc="Suma de solicitudes registradas en todos los días disponibles del historial (fórmula NSC = Σ Solicitudes Atendidas)"
+            desc="Suma de cotizaciones registradas en todos los días disponibles del historial (fórmula NCCA = Σ Cotizaciones Atendidas)"
             desglose={[{ label: `${datos.serieLabels?.length || 0} día(s) registrados`, valor: `${datos.sumaAcumulada} solic.` }]}
           />
         </div>
@@ -455,7 +455,7 @@ export default function NSCIndicator({ onVolver }) {
             <p className={styles.resValor} style={{ color: umbral.color }}>
               {valor}
             </p>
-            <p className={styles.resUnidad}>solicitudes atendidas en el día actual ({datos.diaActual})</p>
+            <p className={styles.resUnidad}>cotizaciones atendidas en el día actual ({datos.diaActual})</p>
           </div>
 
           <div className={styles.interpCard}>
@@ -494,7 +494,7 @@ export default function NSCIndicator({ onVolver }) {
       <SeccionCard numero="3" titulo="Sección 3: Dashboard del indicador">
         <div className={styles.dashGrid}>
           <GraficoLinea
-            titulo="Evolución de solicitudes por día (histórico)"
+            titulo="Evolución de cotizaciones por día (histórico)"
             labels={datos.serieLabels}
             data={datos.serieValores}
             color="#1E3A8A"
@@ -507,7 +507,7 @@ export default function NSCIndicator({ onVolver }) {
           />
           <DatoCard
             sigla="Comparativo"
-            nombre="Solicitudes por día"
+            nombre="Cotizaciones por día"
             valor={`${datos.SP} → ${datos.SA}`}
             desc="Referencia visual del día anterior frente al día actual"
             desglose={[
@@ -516,13 +516,13 @@ export default function NSCIndicator({ onVolver }) {
             ]}
           />
           <GraficoBarras
-            titulo="Solicitudes registradas por día"
+            titulo="Cotizaciones registradas por día"
             labels={datos.serieLabels}
             data={datos.serieValores}
             color="#1E3A8A"
           />
           <GraficoLinea
-            titulo="Acumulado de solicitudes (Σ)"
+            titulo="Acumulado de cotizaciones (Σ)"
             labels={datos.serieLabels}
             data={datos.serieAcumulada}
             color="#0f766e"

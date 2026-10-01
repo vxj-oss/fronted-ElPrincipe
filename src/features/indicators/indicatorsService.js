@@ -17,55 +17,55 @@ export function evaluarUmbral(valor, umbrales) {
 }
 
 export function generarInterpretacion(sigla, valor, datos, umbral) {
-  if (sigla === 'NSC') {
+  if (sigla === 'NCCA') {
     if (umbral.nivel === 'bueno') {
-      return `Se registraron <strong>${valor} solicitudes</strong> de clientes en el día actual (${datos.diaActual}). La demanda comercial alcanza la meta mínima diaria (NSC ≥ 15).`;
+      return `Se registraron <strong>${valor} ${valor === 1 ? 'cotización' : 'cotizaciones'}</strong> de clientes en el día actual (${datos.diaActual}). La demanda comercial alcanza la meta mínima diaria (NCCA ≥ 15).`;
     }
     if (umbral.nivel === 'regular') {
-      return `Se registraron <strong>${valor} solicitudes</strong> de clientes en el día actual (${datos.diaActual}). La demanda comercial es moderada, por debajo de la meta diaria (NSC ≥ 15).`;
+      return `Se registraron <strong>${valor} ${valor === 1 ? 'cotización' : 'cotizaciones'}</strong> de clientes en el día actual (${datos.diaActual}). La demanda comercial es moderada, por debajo de la meta diaria (NCCA ≥ 15).`;
     }
-    return `Se registraron <strong>${valor} solicitudes</strong> de clientes en el día actual (${datos.diaActual}). La demanda comercial está por debajo de lo esperado, lo cual requiere atención.`;
+    return `Se registraron <strong>${valor} ${valor === 1 ? 'cotización' : 'cotizaciones'}</strong> de clientes en el día actual (${datos.diaActual}). La demanda comercial está por debajo de lo esperado, lo cual requiere atención.`;
   }
 
   if (sigla === 'NPP') {
     if (umbral.nivel === 'bueno') {
-      return `Se registraron <strong>${valor} pedidos</strong> procesados en el día actual (${datos.diaActual}). La conversión comercial alcanza la meta mínima diaria (NPP ≥ 15).`;
+      return `Se registraron <strong>${valor} ${valor === 1 ? 'pedido' : 'pedidos'}</strong> procesados en el día actual (${datos.diaActual}). La conversión comercial alcanza la meta mínima diaria (NPP ≥ 15).`;
     }
     if (umbral.nivel === 'regular') {
-      return `Se registraron <strong>${valor} pedidos</strong> procesados en el día actual (${datos.diaActual}). La conversión comercial es moderada, por debajo de la meta diaria (NPP ≥ 15).`;
+      return `Se registraron <strong>${valor} ${valor === 1 ? 'pedido' : 'pedidos'}</strong> procesados en el día actual (${datos.diaActual}). La conversión comercial es moderada, por debajo de la meta diaria (NPP ≥ 15).`;
     }
-    return `Se registraron <strong>${valor} pedidos</strong> procesados en el día actual (${datos.diaActual}). La conversión comercial está por debajo de lo esperado, lo cual requiere atención.`;
+    return `Se registraron <strong>${valor} ${valor === 1 ? 'pedido' : 'pedidos'}</strong> procesados en el día actual (${datos.diaActual}). La conversión comercial está por debajo de lo esperado, lo cual requiere atención.`;
   }
 
-  if (sigla === 'TPD') {
+  if (sigla === 'TPTD') {
     if (datos.sinDatos) {
-      return 'Aún no se registran pedidos aprobados vinculados a una solicitud, por lo que no es posible calcular el tiempo promedio de decisión.';
+      return 'Aún no se registran pedidos aprobados vinculados a una cotización, por lo que no es posible calcular el tiempo promedio de toma de decisión.';
     }
     const minutos = formatearMinutos(valor);
     if (umbral.nivel === 'bueno') {
-      return `El asesor comercial demora en promedio <strong>${minutos} minutos</strong> en aprobar el pedido derivado de una solicitud. El tiempo de respuesta es óptimo (TPD ≤ 240 min).`;
+      return `El asesor comercial demora en promedio <strong>${minutos} minutos</strong> en aprobar el pedido derivado de una cotización. El tiempo de respuesta es óptimo (TPTD ≤ 240 min).`;
     }
     if (umbral.nivel === 'regular') {
-      return `El asesor comercial demora en promedio <strong>${minutos} minutos</strong> en aprobar el pedido derivado de una solicitud. El tiempo de respuesta se ubica en un rango moderado (240 min – 720 min).`;
+      return `El asesor comercial demora en promedio <strong>${minutos} minutos</strong> en aprobar el pedido derivado de una cotización. El tiempo de respuesta se ubica en un rango moderado (240 min – 720 min).`;
     }
-    return `El asesor comercial demora en promedio <strong>${minutos} minutos</strong> en aprobar el pedido derivado de una solicitud. El tiempo de respuesta es crítico (&gt; 720 min) y afecta la experiencia del cliente.`;
+    return `El asesor comercial demora en promedio <strong>${minutos} minutos</strong> en aprobar el pedido derivado de una cotización. El tiempo de respuesta es crítico (&gt; 720 min) y afecta la experiencia del cliente.`;
   }
 
   return '';
 }
 
 export function generarConclusion(sigla, valor, datos, umbral) {
-  if (sigla === 'NSC') {
-    return `El NSC de <strong>${valor} solicitudes</strong> califica como <strong>${umbral.label}</strong> en captación de solicitudes. Día actual (${datos.diaActual}): ${datos.SA} solicitud(es); día anterior (${datos.diaAnterior}): ${datos.SP} solicitud(es).`;
+  if (sigla === 'NCCA') {
+    return `El NCCA de <strong>${valor} ${valor === 1 ? 'cotización' : 'cotizaciones'}</strong> califica como <strong>${umbral.label}</strong> en captación de cotizaciones. Día actual (${datos.diaActual}): ${datos.SA} cotizacion(es); día anterior (${datos.diaAnterior}): ${datos.SP} cotizacion(es).`;
   }
   if (sigla === 'NPP') {
-    return `El NPP de <strong>${valor} pedidos</strong> califica como <strong>${umbral.label}</strong> en conversión de pedidos. Día actual (${datos.diaActual}): ${datos.PA} pedido(s); día anterior (${datos.diaAnterior}): ${datos.PP} pedido(s).`;
+    return `El NPP de <strong>${valor} ${valor === 1 ? 'pedido' : 'pedidos'}</strong> califica como <strong>${umbral.label}</strong> en conversión de pedidos. Día actual (${datos.diaActual}): ${datos.PA} pedido(s); día anterior (${datos.diaAnterior}): ${datos.PP} pedido(s).`;
   }
-  if (sigla === 'TPD') {
+  if (sigla === 'TPTD') {
     if (datos.sinDatos) {
-      return 'No hay pedidos vinculados a solicitudes registrados aún, por lo que el indicador TPD no cuenta con datos suficientes para una conclusión.';
+      return 'No hay pedidos vinculados a cotizaciones registrados aún, por lo que el indicador TPTD no cuenta con datos suficientes para una conclusión.';
     }
-    return `El TPD de <strong>${formatearMinutos(valor)} minutos</strong> indica un tiempo de decisión <strong>${umbral.label}</strong> por parte del asesor comercial.`;
+    return `El TPTD de <strong>${formatearMinutos(valor)} minutos</strong> indica un tiempo de toma de decisión <strong>${umbral.label}</strong> por parte del asesor comercial.`;
   }
   return '';
 }
@@ -134,7 +134,7 @@ export async function fetchResumenIndicadores() {
 
   return {
     raw: data,
-    NSC: {
+    NCCA: {
       valor: nscVal,
       datos: {
         SA: solicitudesActual,
@@ -158,7 +158,7 @@ export async function fetchResumenIndicadores() {
         diaAnterior,
       },
     },
-    TPD: {
+    TPTD: {
       valor: tpdVal,
       datos: {
         tpdActual,

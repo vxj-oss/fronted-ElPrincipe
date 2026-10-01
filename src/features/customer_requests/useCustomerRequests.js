@@ -66,7 +66,7 @@ export function useCustomerRequests() {
       setClientes(cliData.filter((c) => c.activo));
       setProductos(prodData);
     } catch {
-      setError('No se pudieron sincronizar las solicitudes.');
+      setError('No se pudieron sincronizar las cotizaciones.');
     } finally {
       setCargando(false);
     }
@@ -179,15 +179,15 @@ export function useCustomerRequests() {
       limpiarInicioAtencion();
       setSolicitudes((prev) => [nueva, ...prev]);
       if (nueva.resultadoAuditoria === 'Con_Observaciones') {
-        setToastMsg({ tipo: 'warning', texto: `Solicitud ${nueva.codigo} registrada con observaciones de la IA: ${nueva.descripcionAuditoria}` });
+        setToastMsg({ tipo: 'warning', texto: `Cotización ${nueva.codigo} registrada con observaciones de la IA: ${nueva.descripcionAuditoria}` });
       } else if (nueva.resultadoAuditoria === 'No_Disponible') {
-        setToastMsg({ tipo: 'warning', texto: `Solicitud ${nueva.codigo} registrada. La auditoría de la IA no estuvo disponible.` });
+        setToastMsg({ tipo: 'warning', texto: `Cotización ${nueva.codigo} registrada. La auditoría de la IA no estuvo disponible.` });
       } else {
-        setToastMsg({ tipo: 'success', texto: `Solicitud ${nueva.codigo} registrada y auditada por la IA.` });
+        setToastMsg({ tipo: 'success', texto: `Cotización ${nueva.codigo} registrada y auditada por la IA.` });
       }
       cerrarModal();
     } catch (err) {
-      setToastMsg({ tipo: 'error', texto: err.message || 'Error al guardar la solicitud.' });
+      setToastMsg({ tipo: 'error', texto: err.message || 'Error al guardar la cotización.' });
     } finally {
       setGuardando(false);
     }
@@ -206,9 +206,9 @@ export function useCustomerRequests() {
       await eliminarSolicitud(confirmDelete);
       setSolicitudes((prev) => prev.filter((s) => s.id !== confirmDelete));
       setSolicitudDetalle((prev) => (prev?.id === confirmDelete ? null : prev));
-      setToastMsg({ tipo: 'success', texto: 'Solicitud eliminada.' });
+      setToastMsg({ tipo: 'success', texto: 'Cotización eliminada.' });
     } catch (err) {
-      setToastMsg({ tipo: 'error', texto: err.message || 'No se pudo eliminar la solicitud.' });
+      setToastMsg({ tipo: 'error', texto: err.message || 'No se pudo eliminar la cotización.' });
     } finally {
       setEliminando(false);
       setConfirmDelete(null);

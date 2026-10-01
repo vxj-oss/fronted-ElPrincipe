@@ -47,7 +47,7 @@ function DetallePanel({ solicitud, onCerrar, onEliminar }) {
           <button
             onClick={() => onEliminar(solicitud.id)}
             className={`${styles.btnIcono} ${styles.btnIconoDanger}`}
-            aria-label="Eliminar solicitud"
+            aria-label="Eliminar cotización"
             title="Eliminar"
           >
             <Trash2 size={14} />
@@ -108,13 +108,13 @@ function ConfirmDeleteModal({ solicitud, guardando, onConfirm, onCancel }) {
     <div className={styles.overlay} role="dialog" aria-modal="true" aria-label="Confirmar eliminación">
       <div className={`${styles.modal} ${styles.modalSmall}`}>
         <div className={styles.modalHeader}>
-          <h2 className={styles.modalTitle}>Eliminar solicitud</h2>
+          <h2 className={styles.modalTitle}>Eliminar cotización</h2>
           <button onClick={onCancel} className={styles.modalClose} aria-label="Cerrar">×</button>
         </div>
         <div className={styles.confirmBody}>
           <AlertCircle size={32} className={styles.confirmIcon} aria-hidden="true" />
           <p className={styles.confirmText}>
-            ¿Eliminar la solicitud <strong>{solicitud.codigo}</strong> de {solicitud.cliente}? Esta acción no se puede deshacer.
+            ¿Eliminar la cotización <strong>{solicitud.codigo}</strong> de {solicitud.cliente}? Esta acción no se puede deshacer.
           </p>
         </div>
         <div className={styles.modalFooter}>
@@ -159,7 +159,7 @@ export default function CustomerRequestsPage() {
     return (
       <div className={styles.estadoCentro}>
         <div className={styles.spinner} />
-        <p className={styles.estadoTexto}>Cargando solicitudes...</p>
+        <p className={styles.estadoTexto}>Cargando cotizaciones...</p>
       </div>
     );
   }
@@ -180,16 +180,16 @@ export default function CustomerRequestsPage() {
       <div className={styles.mainArea}>
         <header className={styles.pageHeader}>
           <div>
-            <h1 className={styles.pageTitle}>Solicitudes de Clientes</h1>
+            <h1 className={styles.pageTitle}>Cotizaciones de Clientes</h1>
             <p className={styles.pageSub}>Registro de pedidos entrantes antes de confirmación comercial</p>
           </div>
           <button onClick={abrirCrear} className={styles.btnPrimary}>
-            <Plus size={15} /> Nueva Solicitud
+            <Plus size={15} /> Nueva Cotización
           </button>
         </header>
 
         <section className={styles.kpiGrid}>
-          <KPICard label="Total Solicitudes" value={kpis.total} note="registradas" />
+          <KPICard label="Total Cotizaciones" value={kpis.total} note="registradas" />
           <KPICard label="Pendientes de Pedido" value={kpis.pendientes} note="por auditar" color="#C2410C" />
           <KPICard label="Atendidas" value={kpis.atendidas} note="convertidas a pedido" color="#15803D" />
         </section>
@@ -231,9 +231,9 @@ export default function CustomerRequestsPage() {
           {solicitudesFiltradas.length === 0 ? (
             <div className={styles.emptyState}>
               <MessageSquare size={36} color="#94A3B8" />
-              <p className={styles.emptyTitle}>Sin solicitudes registradas</p>
+              <p className={styles.emptyTitle}>Sin cotizaciones registradas</p>
               <button onClick={abrirCrear} className={styles.btnPrimary}>
-                <Plus size={14} /> Registrar primera solicitud
+                <Plus size={14} /> Registrar primera cotización
               </button>
             </div>
           ) : (
@@ -270,7 +270,7 @@ export default function CustomerRequestsPage() {
                         <button
                           onClick={() => pedirConfirmarEliminar(s.id)}
                           className={`${styles.btnIcono} ${styles.btnIconoDanger}`}
-                          aria-label={`Eliminar solicitud ${s.codigo}`}
+                          aria-label={`Eliminar cotización ${s.codigo}`}
                           title="Eliminar"
                         >
                           <Trash2 size={13} />
@@ -290,7 +290,7 @@ export default function CustomerRequestsPage() {
             onIrA={irAPagina}
             onAnterior={paginaAnterior}
             onSiguiente={paginaSiguiente}
-            etiqueta="solicitudes"
+            etiqueta="cotizaciones"
           />
         </section>
       </div>
@@ -308,7 +308,7 @@ export default function CustomerRequestsPage() {
         <div className={styles.overlay} role="dialog" aria-modal="true">
           <div className={styles.modal}>
             <div className={styles.modalHeader}>
-              <h2 className={styles.modalTitle}>Nueva Solicitud de Cliente</h2>
+              <h2 className={styles.modalTitle}>Nueva Cotización de Cliente</h2>
               <button onClick={cerrarModal} className={styles.modalClose}>×</button>
             </div>
             <CustomerRequestForm
