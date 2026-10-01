@@ -39,7 +39,7 @@ const FORM_INICIAL = () => ({
 
 function validarForm(form, items, esEdicion = false) {
   const errs = {};
-  if (!esEdicion && !form.solicitud_id) errs.solicitud_id = 'Selecciona la solicitud del cliente para crear el pedido.';
+  if (!esEdicion && !form.solicitud_id) errs.solicitud_id = 'Selecciona la cotización del cliente para crear el pedido.';
   if (!form.cliente_id) errs.cliente_id = 'Selecciona un cliente.';
   if (!form.fecha) errs.fecha = 'La fecha es requerida.';
   if (items.length === 0) errs.items = 'Agrega al menos una línea de pedido.';
@@ -407,6 +407,9 @@ export function useOrders() {
           setPedidos((prev) => [resultado, ...prev]);
           setSolicitudesPendientes((prev) => prev.filter((s) => s.id !== form.solicitud_id));
           setToastMsg({ tipo: 'success', texto: `Pedido ${resultado.numero} procesado con éxito.` });
+        }
+        if (!editandoId && resultado.ventaAdicional) {
+          setToastMsg({ tipo: 'success', texto: `Pedido ${resultado.numero} procesado. Venta adicional: ${resultado.ventaAdicional}` });
         }
         const aviso = avisoStockBajo(resultado.alertasStock);
         if (aviso) setToastMsg(aviso);

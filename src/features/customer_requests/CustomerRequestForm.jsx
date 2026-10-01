@@ -143,7 +143,7 @@ export default function CustomerRequestForm({
           Cancelar
         </button>
         <button type="submit" disabled={guardando} className={styles.btnPrimary}>
-          {guardando ? 'Guardando...' : 'Registrar Solicitud'}
+          {guardando ? 'Guardando...' : 'Registrar Cotización'}
         </button>
       </div>
     </form>

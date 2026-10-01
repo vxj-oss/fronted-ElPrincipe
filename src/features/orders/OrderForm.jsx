@@ -63,7 +63,7 @@ export default function OrderForm({
         {!editandoId && (
           <div className={`${styles.field} ${styles.fieldFull}`}>
             <label htmlFor="f-solicitud" className={styles.fieldLabel}>
-              Vincular con Solicitud de Cliente
+              Vincular con Cotización de Cliente
             </label>
             <select
               id="f-solicitud"
@@ -72,7 +72,7 @@ export default function OrderForm({
               onChange={onChange}
               className={`${styles.fieldInput} ${formErrors.solicitud_id ? styles.fieldInputError : ''}`}
             >
-              <option value="">-- Selecciona una solicitud --</option>
+              <option value="">-- Selecciona una cotización --</option>
               {solicitudesPendientes.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.codigo_solicitud} — {s.cliente?.razon_social || s.cliente?.nombre || `Cliente #${s.cliente_id}`} ({s.detalles?.length || 0} ítems)

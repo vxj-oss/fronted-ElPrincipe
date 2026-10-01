@@ -152,7 +152,7 @@ export const REPORTES_DISPONIBLES = [
   {
     id: 'indicators',
     nombre: 'Indicadores Comerciales',
-    descripcion: 'Cálculo consolidado de indicadores comerciales: NSC, NPP y TPD.',
+    descripcion: 'Cálculo consolidado de indicadores comerciales: NCCA, NPP y TPTD.',
     icono: 'report-analytics',
     colorBg: '#f0fdf4',
     colorIcon: '#15803d',
@@ -183,8 +183,8 @@ export const METAS_COMERCIALES = {
 };
 
 export const INDICADORES_META = {
-  NSC: {
-    nombre: 'Número de Solicitudes de Clientes',
+  NCCA: {
+    nombre: 'Número de Cotizaciones de Clientes Atendidas',
     color: '#1E3A8A',
     metaTexto: 'Meta: ≥ 15/día',
     tipo: 'conteo',
@@ -197,8 +197,8 @@ export const INDICADORES_META = {
     tipo: 'conteo',
     maxEscala: 30,
   },
-  TPD: {
-    nombre: 'Tiempo Promedio de Decisión',
+  TPTD: {
+    nombre: 'Tiempo Promedio de Toma de Decisión',
     color: '#085041',
     metaTexto: 'Meta: ≤ 240 min',
     tipo: 'tiempo_respuesta',
@@ -207,20 +207,20 @@ export const INDICADORES_META = {
 };
 
 export const INDICADORES_DEF = {
-  NSC: {
+  NCCA: {
     numero: '01',
-    sigla: 'NSC',
-    nombre: 'Número de Solicitudes de Clientes',
-    descripcion: 'Mide el número de solicitudes de clientes atendidas y auditadas por el agente de IA en el día actual, evaluando si se alcanza la meta mínima diaria establecida.',
-    formula: 'NSC = Σ Solicitudes Atendidas',
+    sigla: 'NCCA',
+    nombre: 'Número de Cotizaciones de Clientes Atendidas',
+    descripcion: 'Mide el número de cotizaciones de clientes atendidas atendidas y auditadas por el agente de IA en el día actual, evaluando si se alcanza la meta mínima diaria establecida.',
+    formula: 'NCCA = Σ Cotizaciones Atendidas',
     variables: [
-      { clave: 'SA', nombre: 'Solicitudes día actual', desc: 'Solicitudes atendidas y auditadas por el agente de IA en el día en curso' },
-      { clave: 'SP', nombre: 'Solicitudes día anterior', desc: 'Solicitudes atendidas y auditadas por el agente de IA en el día calendario anterior' },
+      { clave: 'SA', nombre: 'Cotizaciones día actual', desc: 'Cotizaciones atendidas y auditadas por el agente de IA en el día en curso' },
+      { clave: 'SP', nombre: 'Cotizaciones día anterior', desc: 'Cotizaciones atendidas y auditadas por el agente de IA en el día calendario anterior' },
     ],
     umbrales: [
-      { nivel: 'bueno', label: 'Bueno', rango: 'NSC ≥ 15', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: 15, max: null },
+      { nivel: 'bueno', label: 'Bueno', rango: 'NCCA ≥ 15', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: 15, max: null },
       { nivel: 'regular', label: 'Regular', rango: '8 a 14', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 8, max: 15 },
-      { nivel: 'critico', label: 'Crítico', rango: 'NSC < 8', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: null, max: 8 },
+      { nivel: 'critico', label: 'Crítico', rango: 'NCCA < 8', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: null, max: 8 },
     ],
   },
   NPP: {
@@ -239,21 +239,21 @@ export const INDICADORES_DEF = {
       { nivel: 'critico', label: 'Crítico', rango: 'NPP < 8', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: null, max: 8 },
     ],
   },
-  TPD: {
+  TPTD: {
     numero: '03',
-    sigla: 'TPD',
-    nombre: 'Tiempo Promedio de Decisión',
-    descripcion: 'Mide el tiempo promedio, en minutos, que transcurre entre la apertura del registro de solicitud de un cliente (apertura del modal) y la aprobación del pedido correspondiente (tras el registro y la auditoría de la IA), evaluando la rapidez del asesor comercial en la toma de decisiones. La espera de la auditoría del agente de IA al guardar (unos segundos) forma parte de este tiempo y debe considerarse al comparar con el grupo de control.',
-    formula: 'TPD = Σ(Fecha de aprobación del pedido − Hora de apertura del registro de solicitud) ÷ N',
+    sigla: 'TPTD',
+    nombre: 'Tiempo Promedio de Toma de Decisión',
+    descripcion: 'Mide el tiempo promedio, en minutos, que transcurre entre la apertura del registro de cotización de un cliente (apertura del modal) y la aprobación del pedido correspondiente (tras el registro y la auditoría de la IA), evaluando la rapidez del asesor comercial en la toma de decisiones. La espera de la auditoría del agente de IA al guardar (unos segundos) forma parte de este tiempo y debe considerarse al comparar con el grupo de control.',
+    formula: 'TPTD = Σ(Fecha de aprobación del pedido − Hora de apertura del registro de cotización) ÷ N',
     variables: [
       { clave: 'FP', nombre: 'Fecha de aprobación del pedido', desc: 'Momento en que el pedido queda marcado como Aprobado, tras el registro y la auditoría de la IA' },
-      { clave: 'FS', nombre: 'Hora de apertura del registro de solicitud', desc: 'Momento en que el asesor abre el modal para registrar la solicitud del cliente' },
+      { clave: 'FS', nombre: 'Hora de apertura del registro de cotización', desc: 'Momento en que el asesor abre el modal para registrar la cotización del cliente' },
       { clave: 'N', nombre: 'Número de pedidos', desc: 'Cantidad de pedidos aprobados considerados en el promedio (los del día actual)' },
     ],
     umbrales: [
-      { nivel: 'bueno', label: 'Bueno', rango: 'TPD ≤ 240 min', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: null, max: 240, maxIncl: true },
+      { nivel: 'bueno', label: 'Bueno', rango: 'TPTD ≤ 240 min', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: null, max: 240, maxIncl: true },
       { nivel: 'regular', label: 'Regular', rango: '240 a 720 min', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 240, max: 720, maxIncl: true },
-      { nivel: 'critico', label: 'Crítico', rango: 'TPD > 720 min', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: 720, max: null },
+      { nivel: 'critico', label: 'Crítico', rango: 'TPTD > 720 min', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: 720, max: null },
     ],
   },
 };

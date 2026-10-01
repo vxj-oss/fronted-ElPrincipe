@@ -25,7 +25,7 @@ const MENU_ITEMS = [
   { to: '/agente',        label: 'Agente IA',     icon: Bot,             cap: 'agente.usar' },
   { to: '/productos',     label: 'Productos',     icon: Package,         cap: 'productos.ver' },
   { to: '/clientes',      label: 'Clientes',      icon: Users,           cap: 'clientes.ver' },
-  { to: '/solicitudes',   label: 'Solicitudes',   icon: FileSpreadsheet, cap: 'solicitudes.ver' },
+  { to: '/solicitudes',   label: 'Cotizaciones',   icon: FileSpreadsheet, cap: 'solicitudes.ver' },
   { to: '/pedidos',       label: 'Pedidos',       icon: ShoppingCart,    cap: 'pedidos.ver' },
   { to: '/condiciones',   label: 'Condiciones',   icon: Scale,           cap: 'condiciones.ver' },
   { to: '/indicadores',   label: 'Indicadores',   icon: TrendingUp,      cap: 'indicadores.ver' },

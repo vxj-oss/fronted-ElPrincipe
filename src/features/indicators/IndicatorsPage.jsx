@@ -91,7 +91,7 @@ export default function IndicatorPage() {
     ejecutarRecalculo,
   } = useIndicators();
 
-  if (indicadorActivo === 'NSC') {
+  if (indicadorActivo === 'NCCA') {
     return <NSCIndicator onVolver={() => setIndicadorActivo(null)} />;
   }
 
@@ -99,7 +99,7 @@ export default function IndicatorPage() {
     return <NPIndicator onVolver={() => setIndicadorActivo(null)} />;
   }
 
-  if (indicadorActivo === 'TPD') {
+  if (indicadorActivo === 'TPTD') {
     return <TPDIndicator onVolver={() => setIndicadorActivo(null)} />;
   }
 
@@ -121,14 +121,14 @@ export default function IndicatorPage() {
     );
   }
 
-  const siglas = ['NSC', 'NPP', 'TPD'];
+  const siglas = ['NCCA', 'NPP', 'TPTD'];
 
   return (
     <div className={styles.page}>
       <header className={styles.pageHeader}>
         <div>
           <h1 className={styles.pageTitle}>Indicadores comerciales</h1>
-          <p className={styles.pageSub}>NSC · NPP · TPD — Panel de actividad comercial por día</p>
+          <p className={styles.pageSub}>NCCA · NPP · TPTD — Panel de actividad comercial por día</p>
         </div>
         <button
           onClick={ejecutarRecalculo}
@@ -177,7 +177,7 @@ export default function IndicatorPage() {
                   <tr key={s}>
                     <td data-label="Sigla" data-primary><strong style={{ color: meta.color }}>{s}</strong></td>
                     <td data-label="Nombre del Indicador">{meta.nombre}</td>
-                    <td data-label="Fórmula"><code>{s === 'NSC' ? 'Σ Solicitudes Atendidas' : s === 'NPP' ? 'Σ Pedidos Procesados' : 'Σ(FP − FS) ÷ N'}</code></td>
+                    <td data-label="Fórmula"><code>{s === 'NCCA' ? 'Σ Cotizaciones Atendidas' : s === 'NPP' ? 'Σ Pedidos Procesados' : 'Σ(FP − FS) ÷ N'}</code></td>
                     <td data-label="Resultado Actual"><strong style={{ color: res?.sinDatos ? '#64748b' : res?.interpretacion?.color }}>{res ? res.valorFormateado : '—'}</strong></td>
                     <td data-label="Umbral Meta"><span style={{ fontSize: '0.75rem', color: '#64748b' }}>{meta.metaTexto}</span></td>
                     <td data-label="Estado">

@@ -12,13 +12,13 @@ import {
 } from './indicatorsService';
 
 const CAMPO_SERIE = {
-  NSC: 'solicitudes',
+  NCCA: 'solicitudes',
   NPP: 'pedidos',
-  TPD: 'tiempo_promedio_decision_minutos',
+  TPTD: 'tiempo_promedio_decision_minutos',
 };
 
-function formatearConteo(valor, unidad) {
-  return `${valor} ${unidad}`;
+function formatearConteo(valor, singular, plural) {
+  return `${valor} ${valor === 1 ? singular : plural}`;
 }
 
 function mapearSerie(sigla, puntos) {
@@ -87,7 +87,7 @@ export function useIndicadorDetalle(sigla) {
     if (!sigla) return;
     setExportando(true);
     try {
-      if (sigla === 'TPD') {
+      if (sigla === 'TPTD') {
         await descargarTPDPorPedidoExcel();
       } else {
         await descargarSerieDiariaExcel(sigla, 15);
@@ -118,13 +118,13 @@ export function useIndicators() {
   const [cargando, setCargando] = useState(true);
   const [recalculando, setRecalculando] = useState(false);
   const [error, setError] = useState(null);
-  const [tabActivo, setTabActivo] = useState('NSC');
+  const [tabActivo, setTabActivo] = useState('NCCA');
   const [datosReales, setDatosReales] = useState(null);
 
   const [pasosAbiertos, setPasosAbiertos] = useState({
-    NSC: { 0: true, 1: true, 2: true },
+    NCCA: { 0: true, 1: true, 2: true },
     NPP: { 0: true, 1: true, 2: true },
-    TPD: { 0: true, 1: true, 2: true },
+    TPTD: { 0: true, 1: true, 2: true },
   });
 
   const cargarDatos = useCallback(async () => {
@@ -169,21 +169,21 @@ export function useIndicators() {
     const def = INDICADORES_DEF[sigla];
     const umbral = evaluarUmbral(valor, def.umbrales);
 
-    if (sigla === 'NSC') {
+    if (sigla === 'NCCA') {
       return [
         {
           titulo: 'Paso 1: Identificación de variables',
           tabla: [
-            { dato: 'Solicitudes día actual (SA)', valor: datos.SA, fuente: `solicitudes_cliente — ${datos.diaActual}` },
-            { dato: 'Solicitudes día anterior (SP)', valor: datos.SP, fuente: `solicitudes_cliente — ${datos.diaAnterior}` },
+            { dato: 'Cotizaciones día actual (CA)', valor: datos.SA, fuente: `solicitudes_cliente — ${datos.diaActual}` },
+            { dato: 'Cotizaciones día anterior (CP)', valor: datos.SP, fuente: `solicitudes_cliente — ${datos.diaAnterior}` },
           ],
         },
         {
           titulo: 'Paso 2: Aplicación de la fórmula',
           calculo: [
-            'NSC = Σ Solicitudes Atendidas',
-            `NSC (${datos.diaActual}) = ${datos.SA} solicitud(es)`,
-            `Referencia: día anterior (${datos.diaAnterior}) = ${datos.SP} solicitud(es), variación ${datos.variacionPct > 0 ? '+' : ''}${datos.variacionPct?.toFixed(1) ?? '0.0'}%`,
+            'NCCA = Σ Cotizaciones Atendidas',
+            `NCCA (${datos.diaActual}) = ${datos.SA} cotizacion(es)`,
+            `Referencia: día anterior (${datos.diaAnterior}) = ${datos.SP} cotizacion(es), variación ${datos.variacionPct > 0 ? '+' : ''}${datos.variacionPct?.toFixed(1) ?? '0.0'}%`,
           ],
         },
         {
@@ -193,11 +193,11 @@ export function useIndicators() {
           rangoLabel: umbral.rango,
           texto: generarInterpretacion(sigla, valor, datos, umbral),
           tablaDetalle: {
-            titulo: 'Comparativo de solicitudes por día',
+            titulo: 'Comparativo de cotizaciones por día',
             columnas: ['Concepto', 'Cantidad', 'Día'],
             filas: [
-              { col1: 'Solicitudes día actual', col2: `${datos.SA} unid.`, col3: datos.diaActual },
-              { col1: 'Solicitudes día anterior', col2: `${datos.SP} unid.`, col3: datos.diaAnterior },
+              { col1: 'Cotizaciones día actual', col2: `${datos.SA} unid.`, col3: datos.diaActual },
+              { col1: 'Cotizaciones día anterior', col2: `${datos.SP} unid.`, col3: datos.diaAnterior },
             ],
           },
         },
@@ -244,15 +244,15 @@ export function useIndicators() {
         titulo: 'Paso 1: Identificación de variables',
         tabla: [
           { dato: 'Fecha de aprobación del pedido (FP)', valor: '—', fuente: 'pedidos.fecha_aprobacion' },
-          { dato: 'Hora de apertura del registro de solicitud (FS)', valor: '—', fuente: 'solicitudes_cliente.hora_apertura_modal' },
-          { dato: 'Número de pedidos (N)', valor: '—', fuente: 'pedidos aprobados el día actual con solicitud vinculada' },
+          { dato: 'Hora de apertura del registro de cotización (FS)', valor: '—', fuente: 'solicitudes_cliente.hora_apertura_modal' },
+          { dato: 'Número de pedidos (N)', valor: '—', fuente: 'pedidos aprobados el día actual con cotización vinculada' },
         ],
       },
       {
         titulo: 'Paso 2: Aplicación de la fórmula',
         calculo: datos.sinDatos
-          ? ['TPD = Σ(FP − FS) ÷ N', 'Sin pedidos vinculados a una solicitud en el historial disponible']
-          : ['TPD = Σ(FP − FS) ÷ N', `TPD (${datos.diaActual}) = ${formatearMinutos(valor)} minutos`],
+          ? ['TPTD = Σ(FP − FS) ÷ N', 'Sin pedidos vinculados a una cotización en el historial disponible']
+          : ['TPTD = Σ(FP − FS) ÷ N', `TPTD (${datos.diaActual}) = ${formatearMinutos(valor)} minutos`],
       },
       {
         titulo: 'Paso 3: Evaluación y diagnóstico',
@@ -282,24 +282,24 @@ export function useIndicators() {
 
   const resultados = datosReales
     ? {
-      NSC: {
-        valor: datosReales.NSC.valor,
-        valorFormateado: formatearConteo(datosReales.NSC.valor, 'solicitudes'),
-        interpretacion: evaluarUmbral(datosReales.NSC.valor, INDICADORES_DEF.NSC.umbrales),
-        pasos: construirPasos('NSC', datosReales.NSC.datos, datosReales.NSC.valor),
+      NCCA: {
+        valor: datosReales.NCCA.valor,
+        valorFormateado: formatearConteo(datosReales.NCCA.valor, 'cotización', 'cotizaciones'),
+        interpretacion: evaluarUmbral(datosReales.NCCA.valor, INDICADORES_DEF.NCCA.umbrales),
+        pasos: construirPasos('NCCA', datosReales.NCCA.datos, datosReales.NCCA.valor),
       },
       NPP: {
         valor: datosReales.NPP.valor,
-        valorFormateado: formatearConteo(datosReales.NPP.valor, 'pedidos'),
+        valorFormateado: formatearConteo(datosReales.NPP.valor, 'pedido', 'pedidos'),
         interpretacion: evaluarUmbral(datosReales.NPP.valor, INDICADORES_DEF.NPP.umbrales),
         pasos: construirPasos('NPP', datosReales.NPP.datos, datosReales.NPP.valor),
       },
-      TPD: {
-        valor: datosReales.TPD.valor,
-        valorFormateado: datosReales.TPD.datos.sinDatos ? '—' : `${formatearMinutos(datosReales.TPD.valor)} min`,
-        sinDatos: datosReales.TPD.datos.sinDatos,
-        interpretacion: evaluarUmbral(datosReales.TPD.valor, INDICADORES_DEF.TPD.umbrales),
-        pasos: construirPasos('TPD', datosReales.TPD.datos, datosReales.TPD.valor),
+      TPTD: {
+        valor: datosReales.TPTD.valor,
+        valorFormateado: datosReales.TPTD.datos.sinDatos ? '—' : `${formatearMinutos(datosReales.TPTD.valor)} min`,
+        sinDatos: datosReales.TPTD.datos.sinDatos,
+        interpretacion: evaluarUmbral(datosReales.TPTD.valor, INDICADORES_DEF.TPTD.umbrales),
+        pasos: construirPasos('TPTD', datosReales.TPTD.datos, datosReales.TPTD.valor),
       },
     }
     : null;

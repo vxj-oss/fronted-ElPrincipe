@@ -114,6 +114,22 @@ function DetallePanel({ pedido, onCerrar, onEditar, onConfirmar }) {
         </div>
       )}
 
+      {pedido.ventaAdicional && (
+        <div style={{
+          margin: '12px 0',
+          padding: '12px',
+          borderRadius: '8px',
+          backgroundColor: '#EFF6FF',
+          border: '1px solid #BFDBFE',
+          color: '#1E3A8A',
+          fontSize: '0.8125rem',
+          lineHeight: 1.5,
+        }}>
+          <strong>Venta adicional detectada</strong>
+          <p style={{ margin: '4px 0 0' }}>{pedido.ventaAdicional}</p>
+        </div>
+      )}
+
       {cond && (
         <div style={{
           margin: '12px 0',
