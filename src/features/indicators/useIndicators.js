@@ -42,7 +42,7 @@ export function useIndicadorDetalle(sigla) {
     setCargando(true);
     Promise.all([
       fetchResumenIndicadores(),
-      fetchSerieActividadComercial(15),
+      fetchSerieActividadComercial(),
     ])
       .then(([resumen, serie]) => {
         const ind = resumen[sigla];
@@ -90,7 +90,7 @@ export function useIndicadorDetalle(sigla) {
       if (sigla === 'TPTD') {
         await descargarTPDPorPedidoExcel();
       } else {
-        await descargarSerieDiariaExcel(sigla, 15);
+        await descargarSerieDiariaExcel(sigla);
       }
     } catch {
       setError('No se pudo descargar el reporte en Excel.');
