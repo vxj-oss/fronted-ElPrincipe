@@ -428,7 +428,7 @@ export default function NSCIndicator({ onVolver }) {
             sigla="SA"
             nombre="Cotizaciones día actual"
             valor={datos.SA}
-            desc="Cotizaciones atendidas y auditadas por el agente de IA en el día en curso"
+            desc="Cotizaciones atendidas (hayan derivado o no en pedido) y auditadas por el agente de IA en el día en curso"
             desglose={[
               { label: datos.diaActual, valor: `${datos.SA} solic.` },
               { label: 'Conformes', valor: `${datos.conformes} solic.` },

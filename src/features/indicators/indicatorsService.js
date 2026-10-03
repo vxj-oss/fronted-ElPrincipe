@@ -19,20 +19,20 @@ export function evaluarUmbral(valor, umbrales) {
 export function generarInterpretacion(sigla, valor, datos, umbral) {
   if (sigla === 'NCCA') {
     if (umbral.nivel === 'bueno') {
-      return `Se registraron <strong>${valor} ${valor === 1 ? 'cotización' : 'cotizaciones'}</strong> de clientes en el día actual (${datos.diaActual}). La demanda comercial alcanza la meta mínima diaria (NCCA ≥ 15).`;
+      return `Se registraron <strong>${valor} ${valor === 1 ? 'cotización' : 'cotizaciones'}</strong> de clientes en el día actual (${datos.diaActual}). La demanda comercial alcanza la meta mínima diaria (NCCA ≥ 13).`;
     }
     if (umbral.nivel === 'regular') {
-      return `Se registraron <strong>${valor} ${valor === 1 ? 'cotización' : 'cotizaciones'}</strong> de clientes en el día actual (${datos.diaActual}). La demanda comercial es moderada, por debajo de la meta diaria (NCCA ≥ 15).`;
+      return `Se registraron <strong>${valor} ${valor === 1 ? 'cotización' : 'cotizaciones'}</strong> de clientes en el día actual (${datos.diaActual}). La demanda comercial es moderada, por debajo de la meta diaria (NCCA ≥ 13).`;
     }
     return `Se registraron <strong>${valor} ${valor === 1 ? 'cotización' : 'cotizaciones'}</strong> de clientes en el día actual (${datos.diaActual}). La demanda comercial está por debajo de lo esperado, lo cual requiere atención.`;
   }
 
   if (sigla === 'NPP') {
     if (umbral.nivel === 'bueno') {
-      return `Se registraron <strong>${valor} ${valor === 1 ? 'pedido' : 'pedidos'}</strong> procesados en el día actual (${datos.diaActual}). La conversión comercial alcanza la meta mínima diaria (NPP ≥ 15).`;
+      return `Se registraron <strong>${valor} ${valor === 1 ? 'pedido' : 'pedidos'}</strong> procesados en el día actual (${datos.diaActual}). La conversión comercial alcanza la meta mínima diaria (NPP ≥ 13).`;
     }
     if (umbral.nivel === 'regular') {
-      return `Se registraron <strong>${valor} ${valor === 1 ? 'pedido' : 'pedidos'}</strong> procesados en el día actual (${datos.diaActual}). La conversión comercial es moderada, por debajo de la meta diaria (NPP ≥ 15).`;
+      return `Se registraron <strong>${valor} ${valor === 1 ? 'pedido' : 'pedidos'}</strong> procesados en el día actual (${datos.diaActual}). La conversión comercial es moderada, por debajo de la meta diaria (NPP ≥ 13).`;
     }
     return `Se registraron <strong>${valor} ${valor === 1 ? 'pedido' : 'pedidos'}</strong> procesados en el día actual (${datos.diaActual}). La conversión comercial está por debajo de lo esperado, lo cual requiere atención.`;
   }
@@ -75,8 +75,9 @@ export async function fetchActividadComercial() {
   return data;
 }
 
-export async function fetchSerieActividadComercial(dias = 15) {
-  const data = await apiRequest(`/indicators/actividad-comercial/serie?dias=${dias}`);
+export async function fetchSerieActividadComercial(dias) {
+  const query = dias ? `?dias=${dias}` : '';
+  const data = await apiRequest(`/indicators/actividad-comercial/serie${query}`);
   return data;
 }
 
@@ -99,9 +100,10 @@ async function descargarArchivo(endpoint, nombreArchivo) {
   URL.revokeObjectURL(url);
 }
 
-export async function descargarSerieDiariaExcel(sigla, dias = 15) {
+export async function descargarSerieDiariaExcel(sigla, dias) {
+  const query = dias ? `&dias=${dias}` : '';
   await descargarArchivo(
-    `/reports/indicators/actividad/excel?indicador=${sigla}&dias=${dias}`,
+    `/reports/indicators/actividad/excel?indicador=${sigla}${query}`,
     `${sigla.toLowerCase()}_por_dia.xlsx`
   );
 }

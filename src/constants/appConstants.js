@@ -186,14 +186,14 @@ export const INDICADORES_META = {
   NCCA: {
     nombre: 'Número de Cotizaciones de Clientes Atendidas',
     color: '#1E3A8A',
-    metaTexto: 'Meta: ≥ 15/día',
+    metaTexto: 'Meta: ≥ 13/día',
     tipo: 'conteo',
     maxEscala: 30,
   },
   NPP: {
     nombre: 'Número de Pedidos Procesados',
     color: '#854f0b',
-    metaTexto: 'Meta: ≥ 15/día',
+    metaTexto: 'Meta: ≥ 13/día',
     tipo: 'conteo',
     maxEscala: 30,
   },
@@ -211,16 +211,16 @@ export const INDICADORES_DEF = {
     numero: '01',
     sigla: 'NCCA',
     nombre: 'Número de Cotizaciones de Clientes Atendidas',
-    descripcion: 'Mide el número de cotizaciones de clientes atendidas atendidas y auditadas por el agente de IA en el día actual, evaluando si se alcanza la meta mínima diaria establecida.',
+    descripcion: 'Mide el número de cotizaciones de clientes atendidas (registradas y auditadas por el agente de IA) en el día actual, hayan derivado o no en un pedido, evaluando si se alcanza la meta mínima diaria establecida.',
     formula: 'NCCA = Σ Cotizaciones Atendidas',
     variables: [
-      { clave: 'SA', nombre: 'Cotizaciones día actual', desc: 'Cotizaciones atendidas y auditadas por el agente de IA en el día en curso' },
-      { clave: 'SP', nombre: 'Cotizaciones día anterior', desc: 'Cotizaciones atendidas y auditadas por el agente de IA en el día calendario anterior' },
+      { clave: 'CA', nombre: 'Cotizaciones día actual', desc: 'Cotizaciones atendidas (hayan derivado o no en pedido) y auditadas por el agente de IA en el día en curso' },
+      { clave: 'CP', nombre: 'Cotizaciones día anterior', desc: 'Cotizaciones atendidas (hayan derivado o no en pedido) y auditadas por el agente de IA en el día calendario anterior' },
     ],
     umbrales: [
-      { nivel: 'bueno', label: 'Bueno', rango: 'NCCA ≥ 15', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: 15, max: null },
-      { nivel: 'regular', label: 'Regular', rango: '8 a 14', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 8, max: 15 },
-      { nivel: 'critico', label: 'Crítico', rango: 'NCCA < 8', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: null, max: 8 },
+      { nivel: 'bueno', label: 'Bueno', rango: 'NCCA ≥ 13', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: 13, max: null },
+      { nivel: 'regular', label: 'Regular', rango: '7 a 12', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 7, max: 13 },
+      { nivel: 'critico', label: 'Crítico', rango: 'NCCA < 7', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: null, max: 7 },
     ],
   },
   NPP: {
@@ -234,9 +234,9 @@ export const INDICADORES_DEF = {
       { clave: 'PP', nombre: 'Pedidos día anterior', desc: 'Pedidos aprobados o entregados y auditados por el agente de IA en el día calendario anterior' },
     ],
     umbrales: [
-      { nivel: 'bueno', label: 'Bueno', rango: 'NPP ≥ 15', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: 15, max: null },
-      { nivel: 'regular', label: 'Regular', rango: '8 a 14', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 8, max: 15 },
-      { nivel: 'critico', label: 'Crítico', rango: 'NPP < 8', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: null, max: 8 },
+      { nivel: 'bueno', label: 'Bueno', rango: 'NPP ≥ 13', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: 13, max: null },
+      { nivel: 'regular', label: 'Regular', rango: '7 a 12', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 7, max: 13 },
+      { nivel: 'critico', label: 'Crítico', rango: 'NPP < 7', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: null, max: 7 },
     ],
   },
   TPTD: {
