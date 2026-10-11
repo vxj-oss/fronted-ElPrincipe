@@ -186,23 +186,23 @@ export const INDICADORES_META = {
   NCCA: {
     nombre: 'Número de Cotizaciones de Clientes Atendidas',
     color: '#1E3A8A',
-    metaTexto: 'Meta: ≥ 13/día',
+    metaTexto: 'Meta: ≥ 12/día',
     tipo: 'conteo',
     maxEscala: 30,
   },
   NPP: {
     nombre: 'Número de Pedidos Procesados',
     color: '#854f0b',
-    metaTexto: 'Meta: ≥ 13/día',
+    metaTexto: 'Meta: ≥ 11/día',
     tipo: 'conteo',
     maxEscala: 30,
   },
   TPTD: {
     nombre: 'Tiempo Promedio de Toma de Decisión',
     color: '#085041',
-    metaTexto: 'Meta: ≤ 240 min',
+    metaTexto: 'Meta: < 3 min',
     tipo: 'tiempo_respuesta',
-    maxEscala: 720,
+    maxEscala: 6,
   },
 };
 
@@ -218,9 +218,9 @@ export const INDICADORES_DEF = {
       { clave: 'CP', nombre: 'Cotizaciones día anterior', desc: 'Cotizaciones atendidas (hayan derivado o no en pedido) y auditadas por el agente de IA en el día calendario anterior' },
     ],
     umbrales: [
-      { nivel: 'bueno', label: 'Bueno', rango: 'NCCA ≥ 13', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: 13, max: null },
-      { nivel: 'regular', label: 'Regular', rango: '7 a 12', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 7, max: 13 },
-      { nivel: 'critico', label: 'Crítico', rango: 'NCCA < 7', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: null, max: 7 },
+      { nivel: 'bueno', rango: 'NCCA ≥ 12', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: 12, max: null },
+      { nivel: 'regular', rango: '7 a 11', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 7, max: 12 },
+      { nivel: 'critico', rango: 'NCCA < 7', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: null, max: 7 },
     ],
   },
   NPP: {
@@ -234,9 +234,9 @@ export const INDICADORES_DEF = {
       { clave: 'PP', nombre: 'Pedidos día anterior', desc: 'Pedidos aprobados o entregados y auditados por el agente de IA en el día calendario anterior' },
     ],
     umbrales: [
-      { nivel: 'bueno', label: 'Bueno', rango: 'NPP ≥ 13', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: 13, max: null },
-      { nivel: 'regular', label: 'Regular', rango: '7 a 12', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 7, max: 13 },
-      { nivel: 'critico', label: 'Crítico', rango: 'NPP < 7', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: null, max: 7 },
+      { nivel: 'bueno', rango: 'NPP ≥ 11', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: 11, max: null },
+      { nivel: 'regular', rango: '7 a 10', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 7, max: 11 },
+      { nivel: 'critico', rango: 'NPP < 7', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: null, max: 7 },
     ],
   },
   TPTD: {
@@ -251,9 +251,9 @@ export const INDICADORES_DEF = {
       { clave: 'N', nombre: 'Número de pedidos', desc: 'Cantidad de pedidos aprobados considerados en el promedio (los del día actual)' },
     ],
     umbrales: [
-      { nivel: 'bueno', label: 'Bueno', rango: 'TPTD ≤ 240 min', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: null, max: 240, maxIncl: true },
-      { nivel: 'regular', label: 'Regular', rango: '240 a 720 min', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 240, max: 720, maxIncl: true },
-      { nivel: 'critico', label: 'Crítico', rango: 'TPTD > 720 min', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: 720, max: null },
+      { nivel: 'bueno', rango: 'TPTD < 3 min', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: null, max: 3 },
+      { nivel: 'regular', rango: '3 a 6 min', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 3, max: 6, maxIncl: true },
+      { nivel: 'critico', rango: 'TPTD > 6 min', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: 6, minExcl: true, max: null },
     ],
   },
 };

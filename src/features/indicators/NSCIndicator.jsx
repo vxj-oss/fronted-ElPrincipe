@@ -404,7 +404,7 @@ export default function NSCIndicator({ onVolver }) {
               className={styles.estadoBadge}
               style={{ color: umbral.color, background: umbral.bg, border: `1px solid ${umbral.border}` }}
             >
-              {umbral.label}
+              <span className={styles.puntoEstado} />
             </span>
           </div>
           <h1 className={styles.detalleTitle}>{def.nombre}</h1>
@@ -473,7 +473,7 @@ export default function NSCIndicator({ onVolver }) {
                 className={styles.estadoBadge}
                 style={{ color: umbral.color, background: umbral.bg, border: `1px solid ${umbral.border}` }}
               >
-                {umbral.label}
+                <span className={styles.puntoEstado} />
               </span>
             </div>
             <div className={styles.umbralList}>
@@ -481,7 +481,7 @@ export default function NSCIndicator({ onVolver }) {
                 <div key={u.nivel} className={styles.umbralRow}>
                   <span className={styles.umbralNombre}>
                     <span className={styles.umbralDot} style={{ background: u.color }} />
-                    {u.label}{u.nivel === umbral.nivel ? ' —' : ''}
+                    {u.nivel === umbral.nivel ? 'Actual' : ''}
                   </span>
                   <span className={styles.umbralRango}>{u.rango}</span>
                 </div>

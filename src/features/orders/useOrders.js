@@ -21,7 +21,14 @@ import { fetchOpcionesCondicionAgrupadas } from '../commercial_terms/condicionOp
 import { fetchClientes } from '../customers/customersService';
 import { fetchProductos } from '../products/productsService';
 import { apiRequest } from '../../utils/api';
-import { fechaHoyLima } from '../../utils/fechas';
+import { fechaHoyLima, fechaLimaDeISO } from '../../utils/fechas';
+
+const solicitudesPendientesDelDia = (solicitudes) => {
+  const hoy = fechaHoyLima();
+  return (solicitudes || []).filter(
+    (s) => s.estado === 'Pendiente' && s.fecha_solicitud && fechaLimaDeISO(s.fecha_solicitud) === hoy
+  );
+};
 
 const ITEM_VACIO = () => ({ producto: '', cant: 1, precio: 0, producto_id: null });
 
@@ -135,7 +142,7 @@ export function useOrders() {
       setPedidos(pedidosData);
       setClientesCatalogo(clientesData.filter((c) => c.activo));
       setProductosCatalogo(productosData);
-      setSolicitudesPendientes(solicitudesData.filter((s) => s.estado === 'Pendiente'));
+      setSolicitudesPendientes(solicitudesPendientesDelDia(solicitudesData));
       setCondicionesCatalogo(condicionesData);
       setOpcionesCondicion(opciones);
     } catch {
@@ -498,7 +505,7 @@ export function useOrders() {
         fetchProductos().then(setProductosCatalogo).catch(() => {});
         if (nuevoEstado === 'Cancelado') {
           apiRequest('/customer-requests/')
-            .then((data) => setSolicitudesPendientes((data || []).filter((s) => s.estado === 'Pendiente')))
+            .then((data) => setSolicitudesPendientes(solicitudesPendientesDelDia(data)))
             .catch(() => {});
         }
       } catch {
@@ -523,7 +530,7 @@ export function useOrders() {
       setToastMsg({ tipo: 'success', texto: 'Pedido eliminado de la lista.' });
       fetchProductos().then(setProductosCatalogo).catch(() => {});
       apiRequest('/customer-requests/')
-        .then((data) => setSolicitudesPendientes((data || []).filter((s) => s.estado === 'Pendiente')))
+        .then((data) => setSolicitudesPendientes(solicitudesPendientesDelDia(data)))
         .catch(() => {});
     } catch (err) {
       setToastMsg({ tipo: 'error', texto: err.message || 'No se pudo eliminar el pedido.' });

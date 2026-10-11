@@ -10,7 +10,7 @@ export function formatearMinutos(valor) {
 
 export function evaluarUmbral(valor, umbrales) {
   return umbrales.find((u) => {
-    const bajoMin = u.min === null || valor >= u.min;
+    const bajoMin = u.min === null || (u.minExcl ? valor > u.min : valor >= u.min);
     const bajoMax = u.max === null || (u.maxIncl ? valor <= u.max : valor < u.max);
     return bajoMin && bajoMax;
   }) ?? umbrales[umbrales.length - 1];
@@ -19,36 +19,36 @@ export function evaluarUmbral(valor, umbrales) {
 export function generarInterpretacion(sigla, valor, datos, umbral) {
   if (sigla === 'NCCA') {
     if (umbral.nivel === 'bueno') {
-      return `Se registraron <strong>${valor} ${valor === 1 ? 'cotización' : 'cotizaciones'}</strong> de clientes en el día actual (${datos.diaActual}). La demanda comercial alcanza la meta mínima diaria (NCCA ≥ 13).`;
+      return `Se registraron <strong>${valor} ${valor === 1 ? 'cotización' : 'cotizaciones'}</strong> de clientes en el día actual (${datos.diaActual}). La demanda comercial alcanza la meta diaria (NCCA ≥ 12).`;
     }
     if (umbral.nivel === 'regular') {
-      return `Se registraron <strong>${valor} ${valor === 1 ? 'cotización' : 'cotizaciones'}</strong> de clientes en el día actual (${datos.diaActual}). La demanda comercial es moderada, por debajo de la meta diaria (NCCA ≥ 13).`;
+      return `Se registraron <strong>${valor} ${valor === 1 ? 'cotización' : 'cotizaciones'}</strong> de clientes en el día actual (${datos.diaActual}). La cantidad se ubica entre 7 y 11, por debajo de la meta diaria (NCCA ≥ 12).`;
     }
-    return `Se registraron <strong>${valor} ${valor === 1 ? 'cotización' : 'cotizaciones'}</strong> de clientes en el día actual (${datos.diaActual}). La demanda comercial está por debajo de lo esperado, lo cual requiere atención.`;
+    return `Se registraron <strong>${valor} ${valor === 1 ? 'cotización' : 'cotizaciones'}</strong> de clientes en el día actual (${datos.diaActual}). La cantidad es menor a 7, muy por debajo de la meta diaria (NCCA ≥ 12).`;
   }
 
   if (sigla === 'NPP') {
     if (umbral.nivel === 'bueno') {
-      return `Se registraron <strong>${valor} ${valor === 1 ? 'pedido' : 'pedidos'}</strong> procesados en el día actual (${datos.diaActual}). La conversión comercial alcanza la meta mínima diaria (NPP ≥ 13).`;
+      return `Se registraron <strong>${valor} ${valor === 1 ? 'pedido' : 'pedidos'}</strong> procesados en el día actual (${datos.diaActual}). La conversión comercial alcanza la meta diaria (NPP ≥ 11).`;
     }
     if (umbral.nivel === 'regular') {
-      return `Se registraron <strong>${valor} ${valor === 1 ? 'pedido' : 'pedidos'}</strong> procesados en el día actual (${datos.diaActual}). La conversión comercial es moderada, por debajo de la meta diaria (NPP ≥ 13).`;
+      return `Se registraron <strong>${valor} ${valor === 1 ? 'pedido' : 'pedidos'}</strong> procesados en el día actual (${datos.diaActual}). La cantidad se ubica entre 7 y 10, por debajo de la meta diaria (NPP ≥ 11).`;
     }
-    return `Se registraron <strong>${valor} ${valor === 1 ? 'pedido' : 'pedidos'}</strong> procesados en el día actual (${datos.diaActual}). La conversión comercial está por debajo de lo esperado, lo cual requiere atención.`;
+    return `Se registraron <strong>${valor} ${valor === 1 ? 'pedido' : 'pedidos'}</strong> procesados en el día actual (${datos.diaActual}). La cantidad es menor a 7, muy por debajo de la meta diaria (NPP ≥ 11).`;
   }
 
   if (sigla === 'TPTD') {
     if (datos.sinDatos) {
-      return 'Aún no se registran pedidos aprobados vinculados a una cotización, por lo que no es posible calcular el tiempo promedio de toma de decisión.';
+      return 'Aún no se registran pedidos aprobados vinculados a una cotización en el día actual, por lo que no es posible calcular el tiempo promedio de toma de decisión.';
     }
     const minutos = formatearMinutos(valor);
     if (umbral.nivel === 'bueno') {
-      return `El asesor comercial demora en promedio <strong>${minutos} minutos</strong> en aprobar el pedido derivado de una cotización. El tiempo de respuesta es óptimo (TPTD ≤ 240 min).`;
+      return `El asesor comercial demora en promedio <strong>${minutos} minutos</strong> en aprobar el pedido derivado de una cotización. El tiempo de respuesta está dentro de la meta (TPTD &lt; 3 min).`;
     }
     if (umbral.nivel === 'regular') {
-      return `El asesor comercial demora en promedio <strong>${minutos} minutos</strong> en aprobar el pedido derivado de una cotización. El tiempo de respuesta se ubica en un rango moderado (240 min – 720 min).`;
+      return `El asesor comercial demora en promedio <strong>${minutos} minutos</strong> en aprobar el pedido derivado de una cotización. El tiempo de respuesta se ubica entre 3 y 6 min, por encima de la meta (TPTD &lt; 3 min).`;
     }
-    return `El asesor comercial demora en promedio <strong>${minutos} minutos</strong> en aprobar el pedido derivado de una cotización. El tiempo de respuesta es crítico (&gt; 720 min) y afecta la experiencia del cliente.`;
+    return `El asesor comercial demora en promedio <strong>${minutos} minutos</strong> en aprobar el pedido derivado de una cotización. El tiempo de respuesta supera los 6 min y afecta la experiencia del cliente.`;
   }
 
   return '';
@@ -56,16 +56,16 @@ export function generarInterpretacion(sigla, valor, datos, umbral) {
 
 export function generarConclusion(sigla, valor, datos, umbral) {
   if (sigla === 'NCCA') {
-    return `El NCCA de <strong>${valor} ${valor === 1 ? 'cotización' : 'cotizaciones'}</strong> califica como <strong>${umbral.label}</strong> en captación de cotizaciones. Día actual (${datos.diaActual}): ${datos.SA} cotizacion(es); día anterior (${datos.diaAnterior}): ${datos.SP} cotizacion(es).`;
+    return `El NCCA de <strong>${valor} ${valor === 1 ? 'cotización' : 'cotizaciones'}</strong> corresponde al día actual. Día actual (${datos.diaActual}): ${datos.SA} cotizacion(es); día anterior (${datos.diaAnterior}): ${datos.SP} cotizacion(es).`;
   }
   if (sigla === 'NPP') {
-    return `El NPP de <strong>${valor} ${valor === 1 ? 'pedido' : 'pedidos'}</strong> califica como <strong>${umbral.label}</strong> en conversión de pedidos. Día actual (${datos.diaActual}): ${datos.PA} pedido(s); día anterior (${datos.diaAnterior}): ${datos.PP} pedido(s).`;
+    return `El NPP de <strong>${valor} ${valor === 1 ? 'pedido' : 'pedidos'}</strong> corresponde al día actual. Día actual (${datos.diaActual}): ${datos.PA} pedido(s); día anterior (${datos.diaAnterior}): ${datos.PP} pedido(s).`;
   }
   if (sigla === 'TPTD') {
     if (datos.sinDatos) {
-      return 'No hay pedidos vinculados a cotizaciones registrados aún, por lo que el indicador TPTD no cuenta con datos suficientes para una conclusión.';
+      return 'No hay pedidos aprobados vinculados a cotizaciones en el día actual, por lo que el indicador TPTD no cuenta con datos suficientes para una conclusión.';
     }
-    return `El TPTD de <strong>${formatearMinutos(valor)} minutos</strong> indica un tiempo de toma de decisión <strong>${umbral.label}</strong> por parte del asesor comercial.`;
+    return `El TPTD de <strong>${formatearMinutos(valor)} minutos</strong> es el tiempo promedio de toma de decisión del asesor comercial en el día actual.`;
   }
   return '';
 }
@@ -130,9 +130,8 @@ export async function fetchResumenIndicadores() {
 
   const tpdActual = data.tiempo_promedio_decision_minutos ?? null;
   const tpdGeneral = data.tiempo_promedio_decision_minutos_general ?? null;
-  const tpdDisponible = tpdActual !== null ? tpdActual : tpdGeneral;
-  const tpdSinDatos = tpdDisponible === null;
-  const tpdVal = tpdSinDatos ? 0 : parseFloat(tpdDisponible);
+  const tpdSinDatos = tpdActual === null;
+  const tpdVal = tpdSinDatos ? 0 : parseFloat(tpdActual);
 
   return {
     raw: data,
@@ -165,8 +164,8 @@ export async function fetchResumenIndicadores() {
       datos: {
         tpdActual,
         tpdGeneral,
+        pedidosN: data.pedidos_con_decision_dia_actual || 0,
         sinDatos: tpdSinDatos,
-        usaHistorico: tpdActual === null && tpdGeneral !== null,
         diaActual,
         diaAnterior,
       },
