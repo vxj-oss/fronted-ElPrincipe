@@ -41,7 +41,7 @@ function KPIResumenCard({ sigla, resultado, meta, onVerDetalle }) {
             className={styles.kpiBadgeEstado}
             style={{ color: interpretacion.color, background: interpretacion.bg, border: `1px solid ${interpretacion.border}` }}
           >
-            {interpretacion.label}
+            <span className={styles.puntoEstado} />
           </span>
         )}
       </div>
@@ -188,7 +188,7 @@ export default function IndicatorPage() {
                             ? { color: '#64748b', background: '#f1f5f9', border: '1px solid #e2e8f0' }
                             : { color: res.interpretacion.color, background: res.interpretacion.bg, border: `1px solid ${res.interpretacion.border}` }}
                         >
-                          {res.sinDatos ? 'Sin datos' : res.interpretacion.label}
+                          {res.sinDatos ? 'Sin datos' : <span className={styles.puntoEstado} />}
                         </span>
                       )}
                     </td>

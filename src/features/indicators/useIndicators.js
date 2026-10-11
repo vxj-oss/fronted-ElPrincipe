@@ -27,7 +27,8 @@ function mapearSerie(sigla, puntos) {
     labels: (puntos || []).map((p) => p.label),
     valores: (puntos || []).map((p) => {
       const v = p[campo];
-      return v === null || v === undefined ? 0 : parseFloat(v);
+      if (v === null || v === undefined) return sigla === 'TPTD' ? null : 0;
+      return parseFloat(v);
     }),
   };
 }
@@ -50,7 +51,7 @@ export function useIndicadorDetalle(sigla) {
           const serieMapeada = mapearSerie(sigla, serie);
           const n = serieMapeada.valores.length;
           let acumulado = 0;
-          const serieAcumulada = serieMapeada.valores.map((v) => (acumulado += v));
+          const serieAcumulada = serieMapeada.valores.map((v) => (acumulado += v ?? 0));
           setDatos({
             ...ind.datos,
             valorCalculado: ind.valor,
@@ -99,6 +100,18 @@ export function useIndicadorDetalle(sigla) {
     }
   }, [sigla]);
 
+  const handleExportarExcelPorDia = useCallback(async () => {
+    if (!sigla) return;
+    setExportando(true);
+    try {
+      await descargarSerieDiariaExcel(sigla);
+    } catch {
+      setError('No se pudo descargar el reporte en Excel.');
+    } finally {
+      setExportando(false);
+    }
+  }, [sigla]);
+
   return {
     datos,
     cargando,
@@ -110,6 +123,7 @@ export function useIndicadorDetalle(sigla) {
     conclusion,
     handleExportar,
     handleExportarExcel,
+    handleExportarExcelPorDia,
     exportando,
   };
 }
@@ -243,15 +257,15 @@ export function useIndicators() {
       {
         titulo: 'Paso 1: Identificación de variables',
         tabla: [
-          { dato: 'Fecha de aprobación del pedido (FP)', valor: '—', fuente: 'pedidos.fecha_aprobacion' },
-          { dato: 'Hora de apertura del registro de cotización (FS)', valor: '—', fuente: 'solicitudes_cliente.hora_apertura_modal' },
-          { dato: 'Número de pedidos (N)', valor: '—', fuente: 'pedidos aprobados el día actual con cotización vinculada' },
+          { dato: 'Fecha de aprobación del pedido (FP)', valor: 'Una por pedido', fuente: 'pedidos.fecha_aprobacion' },
+          { dato: 'Hora de apertura del registro de cotización (FS)', valor: 'Una por pedido', fuente: 'solicitudes_cliente.hora_apertura_modal' },
+          { dato: 'Número de pedidos (N)', valor: datos.pedidosN, fuente: `pedidos aprobados el ${datos.diaActual} con cotización vinculada` },
         ],
       },
       {
         titulo: 'Paso 2: Aplicación de la fórmula',
         calculo: datos.sinDatos
-          ? ['TPTD = Σ(FP − FS) ÷ N', 'Sin pedidos vinculados a una cotización en el historial disponible']
+          ? ['TPTD = Σ(FP − FS) ÷ N', `Sin pedidos aprobados vinculados a una cotización en el día actual (${datos.diaActual})`]
           : ['TPTD = Σ(FP − FS) ÷ N', `TPTD (${datos.diaActual}) = ${formatearMinutos(valor)} minutos`],
       },
       {

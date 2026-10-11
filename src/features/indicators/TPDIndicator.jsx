@@ -23,6 +23,7 @@ export default function TPDIndicator({ onVolver }) {
     conclusion,
     handleExportar,
     handleExportarExcel,
+    handleExportarExcelPorDia,
     exportando,
   } = useIndicadorDetalle('TPTD');
 
@@ -53,7 +54,7 @@ export default function TPDIndicator({ onVolver }) {
                 className={styles.estadoBadge}
                 style={{ color: umbral.color, background: umbral.bg, border: `1px solid ${umbral.border}` }}
               >
-                {umbral.label}
+                <span className={styles.puntoEstado} />
               </span>
             )}
           </div>
@@ -63,6 +64,9 @@ export default function TPDIndicator({ onVolver }) {
           </p>
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
+          <button onClick={handleExportarExcelPorDia} className={styles.exportBtn} disabled={exportando}>
+            <FileSpreadsheet size={14} aria-hidden="true" /> {exportando ? 'Generando...' : 'Descargar por día (Excel)'}
+          </button>
           <button onClick={handleExportarExcel} className={styles.exportBtn} disabled={exportando}>
             <FileSpreadsheet size={14} aria-hidden="true" /> {exportando ? 'Generando...' : 'Descargar por pedido (Excel)'}
           </button>
@@ -85,7 +89,7 @@ export default function TPDIndicator({ onVolver }) {
             sigla="TPTD general"
             nombre="Promedio histórico general"
             valor={datos.tpdGeneral !== null ? `${formatearMinutos(datos.tpdGeneral)} min` : '—'}
-            desc="Promedio de respaldo usado cuando no hay pedidos aprobados vinculados a una cotización en el día actual"
+            desc="Promedio de todos los pedidos aprobados vinculados a una cotización, usado solo como referencia"
             desglose={[{ label: 'Histórico', valor: datos.tpdGeneral !== null ? `${formatearMinutos(datos.tpdGeneral)} min` : '—' }]}
           />
         </div>
@@ -104,7 +108,7 @@ export default function TPDIndicator({ onVolver }) {
             <p className={styles.resValor} style={{ color: sinDatos ? '#64748b' : umbral.color }}>
               {sinDatos ? '—' : `${formatearMinutos(valor)} min`}
             </p>
-            <p className={styles.resUnidad}>minutos promedio entre la apertura del registro de cotización y la aprobación del pedido{datos.usaHistorico ? ' (sin aprobaciones hoy: se muestra el promedio histórico)' : ''}</p>
+            <p className={styles.resUnidad}>minutos promedio entre la apertura del registro de cotización y la aprobación del pedido{sinDatos ? ' (sin aprobaciones en el día actual)' : ''}</p>
           </div>
 
           <div className={styles.interpCard}>
@@ -130,7 +134,7 @@ export default function TPDIndicator({ onVolver }) {
                   className={styles.estadoBadge}
                   style={{ color: umbral.color, background: umbral.bg, border: `1px solid ${umbral.border}` }}
                 >
-                  {umbral.label}
+                  <span className={styles.puntoEstado} />
                 </span>
               )}
             </div>
@@ -139,7 +143,7 @@ export default function TPDIndicator({ onVolver }) {
                 <div key={u.nivel} className={styles.umbralRow}>
                   <span className={styles.umbralNombre}>
                     <span className={styles.umbralDot} style={{ background: u.color }} />
-                    {u.label}{!sinDatos && u.nivel === umbral.nivel ? ' —' : ''}
+                    {!sinDatos && u.nivel === umbral.nivel ? 'Actual' : ''}
                   </span>
                   <span className={styles.umbralRango}>{u.rango}</span>
                 </div>
