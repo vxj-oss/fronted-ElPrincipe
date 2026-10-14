@@ -1,6 +1,6 @@
 import { ChevronLeft, Download, FileSpreadsheet } from 'lucide-react';
 import { useIndicadorDetalle } from './useIndicators';
-import { formatearMinutos } from './indicatorsService';
+import { formatearSegundos } from './indicatorsService';
 import {
   CargandoView,
   ErrorView,
@@ -81,16 +81,16 @@ export default function TPDIndicator({ onVolver }) {
           <DatoCard
             sigla="TPTD actual"
             nombre="Tiempo promedio de toma de decisión (día actual)"
-            valor={datos.tpdActual !== null ? `${formatearMinutos(datos.tpdActual)} min` : '—'}
-            desc="Promedio de minutos entre la apertura del registro de cotización y la aprobación del pedido en el día actual"
-            desglose={[{ label: datos.diaActual, valor: datos.tpdActual !== null ? `${formatearMinutos(datos.tpdActual)} min` : '—' }]}
+            valor={datos.tpdActual !== null ? `${formatearSegundos(datos.tpdActual)} s` : '—'}
+            desc="Promedio de segundos entre la apertura del registro de cotización y la aprobación del pedido en el día actual"
+            desglose={[{ label: datos.diaActual, valor: datos.tpdActual !== null ? `${formatearSegundos(datos.tpdActual)} s` : '—' }]}
           />
           <DatoCard
             sigla="TPTD general"
             nombre="Promedio histórico general"
-            valor={datos.tpdGeneral !== null ? `${formatearMinutos(datos.tpdGeneral)} min` : '—'}
+            valor={datos.tpdGeneral !== null ? `${formatearSegundos(datos.tpdGeneral)} s` : '—'}
             desc="Promedio de todos los pedidos aprobados vinculados a una cotización, usado solo como referencia"
-            desglose={[{ label: 'Histórico', valor: datos.tpdGeneral !== null ? `${formatearMinutos(datos.tpdGeneral)} min` : '—' }]}
+            desglose={[{ label: 'Histórico', valor: datos.tpdGeneral !== null ? `${formatearSegundos(datos.tpdGeneral)} s` : '—' }]}
           />
         </div>
         <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: 12, lineHeight: 1.5 }}>
@@ -106,9 +106,9 @@ export default function TPDIndicator({ onVolver }) {
           >
             <p className={styles.resLabel}>Resultado</p>
             <p className={styles.resValor} style={{ color: sinDatos ? '#64748b' : umbral.color }}>
-              {sinDatos ? '—' : `${formatearMinutos(valor)} min`}
+              {sinDatos ? '—' : `${formatearSegundos(valor)} s`}
             </p>
-            <p className={styles.resUnidad}>minutos promedio entre la apertura del registro de cotización y la aprobación del pedido{sinDatos ? ' (sin aprobaciones en el día actual)' : ''}</p>
+            <p className={styles.resUnidad}>segundos promedio entre la apertura del registro de cotización y la aprobación del pedido{sinDatos ? ' (sin aprobaciones en el día actual)' : ''}</p>
           </div>
 
           <div className={styles.interpCard}>
@@ -170,11 +170,11 @@ export default function TPDIndicator({ onVolver }) {
           <DatoCard
             sigla="Comparativo"
             nombre="Tiempo de decisión (día actual vs. general)"
-            valor={sinDatos ? '—' : `${formatearMinutos(valor)} min`}
+            valor={sinDatos ? '—' : `${formatearSegundos(valor)} s`}
             desc="Referencia entre el promedio del día actual y el promedio histórico"
             desglose={[
-              { label: 'Día actual', valor: datos.tpdActual !== null ? `${formatearMinutos(datos.tpdActual)} min` : '—' },
-              { label: 'Histórico general', valor: datos.tpdGeneral !== null ? `${formatearMinutos(datos.tpdGeneral)} min` : '—' },
+              { label: 'Día actual', valor: datos.tpdActual !== null ? `${formatearSegundos(datos.tpdActual)} s` : '—' },
+              { label: 'Histórico general', valor: datos.tpdGeneral !== null ? `${formatearSegundos(datos.tpdGeneral)} s` : '—' },
             ]}
           />
         </div>

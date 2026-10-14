@@ -138,7 +138,9 @@ export default function OrderForm({
             name="cliente_id"
             value={form.cliente_id || ''}
             onChange={onChange}
+            disabled={Boolean(form.solicitud_id)}
             className={`${styles.fieldInput} ${formErrors.cliente_id ? styles.fieldInputError : ''}`}
+            style={form.solicitud_id ? { cursor: 'not-allowed', opacity: 0.8 } : undefined}
           >
             <option value="">Seleccionar cliente...</option>
             {clientesCatalogo.map((c) => (

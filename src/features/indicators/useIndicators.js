@@ -8,13 +8,13 @@ import {
   generarInterpretacion,
   generarConclusion,
   INDICADORES_DEF,
-  formatearMinutos,
+  formatearSegundos,
 } from './indicatorsService';
 
 const CAMPO_SERIE = {
   NCCA: 'solicitudes',
   NPP: 'pedidos',
-  TPTD: 'tiempo_promedio_decision_minutos',
+  TPTD: 'tiempo_promedio_decision_segundos',
 };
 
 function formatearConteo(valor, singular, plural) {
@@ -266,7 +266,7 @@ export function useIndicators() {
         titulo: 'Paso 2: Aplicación de la fórmula',
         calculo: datos.sinDatos
           ? ['TPTD = Σ(FP − FS) ÷ N', `Sin pedidos aprobados vinculados a una cotización en el día actual (${datos.diaActual})`]
-          : ['TPTD = Σ(FP − FS) ÷ N', `TPTD (${datos.diaActual}) = ${formatearMinutos(valor)} minutos`],
+          : ['TPTD = Σ(FP − FS) ÷ N', `TPTD (${datos.diaActual}) = ${formatearSegundos(valor)} segundos`],
       },
       {
         titulo: 'Paso 3: Evaluación y diagnóstico',
@@ -280,12 +280,12 @@ export function useIndicators() {
           filas: [
             {
               col1: 'Tiempo promedio (día actual)',
-              col2: datos.tpdActual !== null ? `${formatearMinutos(datos.tpdActual)} min` : '—',
+              col2: datos.tpdActual !== null ? `${formatearSegundos(datos.tpdActual)} s` : '—',
               col3: datos.diaActual,
             },
             {
               col1: 'Promedio histórico general',
-              col2: datos.tpdGeneral !== null ? `${formatearMinutos(datos.tpdGeneral)} min` : '—',
+              col2: datos.tpdGeneral !== null ? `${formatearSegundos(datos.tpdGeneral)} s` : '—',
               col3: 'Histórico',
             },
           ],
@@ -310,7 +310,7 @@ export function useIndicators() {
       },
       TPTD: {
         valor: datosReales.TPTD.valor,
-        valorFormateado: datosReales.TPTD.datos.sinDatos ? '—' : `${formatearMinutos(datosReales.TPTD.valor)} min`,
+        valorFormateado: datosReales.TPTD.datos.sinDatos ? '—' : `${formatearSegundos(datosReales.TPTD.valor)} s`,
         sinDatos: datosReales.TPTD.datos.sinDatos,
         interpretacion: evaluarUmbral(datosReales.TPTD.valor, INDICADORES_DEF.TPTD.umbrales),
         pasos: construirPasos('TPTD', datosReales.TPTD.datos, datosReales.TPTD.valor),

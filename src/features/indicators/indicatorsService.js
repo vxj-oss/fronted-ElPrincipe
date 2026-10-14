@@ -3,9 +3,8 @@ import { INDICADORES_DEF, INDICADORES_META } from '../../constants/appConstants'
 
 export { INDICADORES_DEF, INDICADORES_META };
 
-export function formatearMinutos(valor) {
-  const n = parseFloat(valor);
-  return n.toFixed(2);
+export function formatearSegundos(valor) {
+  return String(Math.round(parseFloat(valor)));
 }
 
 export function evaluarUmbral(valor, umbrales) {
@@ -41,14 +40,14 @@ export function generarInterpretacion(sigla, valor, datos, umbral) {
     if (datos.sinDatos) {
       return 'Aún no se registran pedidos aprobados vinculados a una cotización en el día actual, por lo que no es posible calcular el tiempo promedio de toma de decisión.';
     }
-    const minutos = formatearMinutos(valor);
+    const segundos = formatearSegundos(valor);
     if (umbral.nivel === 'bueno') {
-      return `El asesor comercial demora en promedio <strong>${minutos} minutos</strong> en aprobar el pedido derivado de una cotización. El tiempo de respuesta está dentro de la meta (TPTD &lt; 3 min).`;
+      return `El asesor comercial demora en promedio <strong>${segundos} segundos</strong> en aprobar el pedido derivado de una cotización. El tiempo de respuesta está dentro de la meta (TPTD &lt; 180 s).`;
     }
     if (umbral.nivel === 'regular') {
-      return `El asesor comercial demora en promedio <strong>${minutos} minutos</strong> en aprobar el pedido derivado de una cotización. El tiempo de respuesta se ubica entre 3 y 6 min, por encima de la meta (TPTD &lt; 3 min).`;
+      return `El asesor comercial demora en promedio <strong>${segundos} segundos</strong> en aprobar el pedido derivado de una cotización. El tiempo de respuesta se ubica entre 180 y 360 s, por encima de la meta (TPTD &lt; 180 s).`;
     }
-    return `El asesor comercial demora en promedio <strong>${minutos} minutos</strong> en aprobar el pedido derivado de una cotización. El tiempo de respuesta supera los 6 min y afecta la experiencia del cliente.`;
+    return `El asesor comercial demora en promedio <strong>${segundos} segundos</strong> en aprobar el pedido derivado de una cotización. El tiempo de respuesta supera los 360 s y afecta la experiencia del cliente.`;
   }
 
   return '';
@@ -65,7 +64,7 @@ export function generarConclusion(sigla, valor, datos, umbral) {
     if (datos.sinDatos) {
       return 'No hay pedidos aprobados vinculados a cotizaciones en el día actual, por lo que el indicador TPTD no cuenta con datos suficientes para una conclusión.';
     }
-    return `El TPTD de <strong>${formatearMinutos(valor)} minutos</strong> es el tiempo promedio de toma de decisión del asesor comercial en el día actual.`;
+    return `El TPTD de <strong>${formatearSegundos(valor)} segundos</strong> es el tiempo promedio de toma de decisión del asesor comercial en el día actual.`;
   }
   return '';
 }
@@ -128,8 +127,8 @@ export async function fetchResumenIndicadores() {
   const npVal = pedidosActual;
   const npVariacionPct = parseFloat(data.variacion_pedidos_pct || 0);
 
-  const tpdActual = data.tiempo_promedio_decision_minutos ?? null;
-  const tpdGeneral = data.tiempo_promedio_decision_minutos_general ?? null;
+  const tpdActual = data.tiempo_promedio_decision_segundos ?? null;
+  const tpdGeneral = data.tiempo_promedio_decision_segundos_general ?? null;
   const tpdSinDatos = tpdActual === null;
   const tpdVal = tpdSinDatos ? 0 : parseFloat(tpdActual);
 
