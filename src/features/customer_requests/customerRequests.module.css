@@ -403,6 +403,27 @@
   background: #f8fafc;
 }
 
+.btnDanger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 16px;
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.btnDanger:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .overlay {
   position: fixed;
   inset: 0;
@@ -567,7 +588,7 @@
 
 .itemsColHeaders {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 80px 100px 28px;
+  grid-template-columns: minmax(0, 1fr) 112px 92px 84px 28px;
   gap: 8px;
   padding: 6px 10px;
   background: #f8fafc;
@@ -582,7 +603,7 @@
 
 .itemRow {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 80px 100px 28px;
+  grid-template-columns: minmax(0, 1fr) 112px 92px 84px 28px;
   gap: 8px;
   padding: 8px 10px;
   border-bottom: 1px solid #f1f5f9;
@@ -609,6 +630,102 @@
 
 .itemInput:focus {
   border-color: #1E3A8A;
+}
+
+.celda {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.celdaEtiqueta {
+  display: none;
+  font-size: 0.625rem;
+  font-weight: 500;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.stepper {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.stepperInput {
+  text-align: center;
+  padding-left: 2px;
+  padding-right: 2px;
+  min-width: 0;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.stepperInput::-webkit-outer-spin-button,
+.stepperInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.btnStep {
+  flex: 0 0 28px;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  color: #334155;
+  font-size: 1rem;
+  line-height: 1;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.btnStep:hover:not(:disabled) {
+  background: #e2e8f0;
+}
+
+.btnStep:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.subtotalItem {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #0f172a;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.totalItems {
+  margin: 8px 2px 0;
+  font-size: 0.8125rem;
+  color: #475569;
+  text-align: right;
+}
+
+:global(.dark) .btnStep,
+:global([data-theme="dark"]) .btnStep {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:global(.dark) .subtotalItem,
+:global([data-theme="dark"]) .subtotalItem,
+:global(.dark) .totalItems strong,
+:global([data-theme="dark"]) .totalItems strong {
+  color: #f8fafc;
+}
+
+:global(.dark) .totalItems,
+:global([data-theme="dark"]) .totalItems {
+  color: #cbd5e1;
 }
 
 .btnQuitarItem {
@@ -986,10 +1103,74 @@
   .modalBody {
     grid-template-columns: minmax(0, 1fr);
   }
-  .itemsColHeaders,
+  .itemsColHeaders {
+    display: none;
+  }
   .itemRow {
-    grid-template-columns: minmax(0, 1fr) 56px 64px 24px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 32px;
+    grid-template-areas:
+      'prod prod prod quitar'
+      'cant cant precio precio'
+      'sub sub sub sub';
+    gap: 14px 12px;
+    padding: 16px 12px;
+  }
+  .celda {
     gap: 6px;
+  }
+  .celdaSubtotal {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 10px;
+    border-top: 1px dashed #e2e8f0;
+  }
+  .celdaQuitar {
+    align-self: end;
+  }
+  .stepper {
+    gap: 6px;
+  }
+  .stepperInput {
+    flex: 1 1 auto;
+    min-width: 36px;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .celdaProducto {
+    grid-area: prod;
+  }
+  .celdaCant {
+    grid-area: cant;
+  }
+  .celdaPrecio {
+    grid-area: precio;
+  }
+  .celdaSubtotal {
+    grid-area: sub;
+  }
+  .celdaQuitar {
+    grid-area: quitar;
+    align-items: center;
+  }
+  .celdaEtiqueta {
+    display: block;
+  }
+  .btnStep {
+    flex-basis: 32px;
+    min-height: 34px;
+  }
+  .itemInput {
+    font-size: 0.875rem;
+    padding: 8px;
+  }
+  .subtotalItem {
+    text-align: right;
+    font-size: 1rem;
+  }
+  .totalItems {
+    margin-top: 12px;
+    font-size: 0.9375rem;
   }
 }
 

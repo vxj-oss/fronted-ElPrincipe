@@ -1,7 +1,10 @@
 import React from 'react';
-import { Plus, X } from 'lucide-react';
+import { Minus, Plus, X } from 'lucide-react';
 import ProductSearchSelect from '../../components/ui/ProductSearchSelect';
 import styles from './customerRequests.module.css';
+
+const subtotalDeItem = (it) => (parseFloat(it.precioEsperado) || 0) * (parseInt(it.cant, 10) || 0);
+const formatoSoles = (valor) => valor.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function CustomerRequestForm({
   form,
@@ -75,49 +78,93 @@ export default function CustomerRequestForm({
             <div className={styles.itemsColHeaders}>
               <span>Producto</span>
               <span>Cant.</span>
-              <span>Precio Aprox. (S/)</span>
+              <span>Precio unit. (S/)</span>
+              <span>Subtotal (S/)</span>
               <span></span>
             </div>
 
             {items.map((it, idx) => (
               <div key={idx} className={styles.itemRow}>
-                <ProductSearchSelect
-                  productos={productos}
-                  productoId={it.producto_id}
-                  nombre={it.nombre}
-                  onChange={(valor) => onCambiarProducto(idx, valor)}
-                  inputClassName={styles.itemInput}
-                />
+                <div className={`${styles.celda} ${styles.celdaProducto}`}>
+                  <span className={styles.celdaEtiqueta}>Producto</span>
+                  <ProductSearchSelect
+                    productos={productos}
+                    productoId={it.producto_id}
+                    nombre={it.nombre}
+                    onChange={(valor) => onCambiarProducto(idx, valor)}
+                    inputClassName={styles.itemInput}
+                  />
+                </div>
 
-                <input
-                  type="number"
-                  min="1"
-                  value={it.cant}
-                  onChange={(e) => onCambiarCant(idx, e.target.value)}
-                  className={styles.itemInput}
-                />
+                <div className={`${styles.celda} ${styles.celdaCant}`}>
+                  <span className={styles.celdaEtiqueta}>Cantidad</span>
+                  <div className={styles.stepper}>
+                    <button
+                      type="button"
+                      onClick={() => onCambiarCant(idx, (parseInt(it.cant, 10) || 1) - 1)}
+                      className={styles.btnStep}
+                      disabled={(parseInt(it.cant, 10) || 1) <= 1}
+                      aria-label="Disminuir cantidad"
+                    >
+                      <Minus size={14} aria-hidden="true" />
+                    </button>
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      min="1"
+                      value={it.cant}
+                      onChange={(e) => onCambiarCant(idx, e.target.value)}
+                      className={`${styles.itemInput} ${styles.stepperInput}`}
+                      aria-label="Cantidad"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => onCambiarCant(idx, (parseInt(it.cant, 10) || 0) + 1)}
+                      className={styles.btnStep}
+                      aria-label="Aumentar cantidad"
+                    >
+                      <Plus size={14} aria-hidden="true" />
+                    </button>
+                  </div>
+                </div>
 
-                <input
-                  type="number"
-                  step="0.01"
-                  value={it.precioEsperado || ''}
-                  onChange={(e) => onCambiarPrecio(idx, e.target.value)}
-                  placeholder="0.00"
-                  className={styles.itemInput}
-                />
+                <div className={`${styles.celda} ${styles.celdaPrecio}`}>
+                  <span className={styles.celdaEtiqueta}>Precio unit. (S/)</span>
+                  <input
+                    type="number"
+                    inputMode="decimal"
+                    step="0.01"
+                    value={it.precioEsperado || ''}
+                    onChange={(e) => onCambiarPrecio(idx, e.target.value)}
+                    placeholder="0.00"
+                    className={styles.itemInput}
+                    aria-label="Precio unitario"
+                  />
+                </div>
 
-                <button
-                  type="button"
-                  onClick={() => onQuitarItem(idx)}
-                  className={styles.btnQuitarItem}
-                  disabled={items.length === 1}
-                  aria-label="Quitar fila"
-                >
-                  <X size={13} aria-hidden="true" />
-                </button>
+                <div className={`${styles.celda} ${styles.celdaSubtotal}`}>
+                  <span className={styles.celdaEtiqueta}>Subtotal (S/)</span>
+                  <span className={styles.subtotalItem}>{formatoSoles(subtotalDeItem(it))}</span>
+                </div>
+
+                <div className={`${styles.celda} ${styles.celdaQuitar}`}>
+                  <button
+                    type="button"
+                    onClick={() => onQuitarItem(idx)}
+                    className={styles.btnQuitarItem}
+                    disabled={items.length === 1}
+                    aria-label="Quitar fila"
+                  >
+                    <X size={13} aria-hidden="true" />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
+
+          <p className={styles.totalItems}>
+            Total aproximado: <strong>S/ {formatoSoles(items.reduce((acc, it) => acc + subtotalDeItem(it), 0))}</strong>
+          </p>
 
           {formErrors.items && (
             <p className={styles.fieldError} role="alert">{formErrors.items}</p>

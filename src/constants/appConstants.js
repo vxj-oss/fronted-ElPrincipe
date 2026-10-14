@@ -200,9 +200,9 @@ export const INDICADORES_META = {
   TPTD: {
     nombre: 'Tiempo Promedio de Toma de Decisión',
     color: '#085041',
-    metaTexto: 'Meta: < 3 min',
+    metaTexto: 'Meta: < 180 s',
     tipo: 'tiempo_respuesta',
-    maxEscala: 6,
+    maxEscala: 360,
   },
 };
 
@@ -243,7 +243,7 @@ export const INDICADORES_DEF = {
     numero: '03',
     sigla: 'TPTD',
     nombre: 'Tiempo Promedio de Toma de Decisión',
-    descripcion: 'Mide el tiempo promedio, en minutos, que transcurre entre la apertura del registro de cotización de un cliente (apertura del modal) y la aprobación del pedido correspondiente (tras el registro y la auditoría de la IA), evaluando la rapidez del asesor comercial en la toma de decisiones. La espera de la auditoría del agente de IA al guardar (unos segundos) forma parte de este tiempo y debe considerarse al comparar con el grupo de control.',
+    descripcion: 'Mide el tiempo promedio, en segundos, que transcurre entre la apertura del registro de cotización de un cliente (apertura del modal) y la aprobación del pedido correspondiente (tras el registro y la auditoría de la IA), evaluando la rapidez del asesor comercial en la toma de decisiones. La espera de la auditoría del agente de IA al guardar (unos segundos) forma parte de este tiempo y debe considerarse al comparar con el grupo de control.',
     formula: 'TPTD = Σ(Fecha de aprobación del pedido − Hora de apertura del registro de cotización) ÷ N',
     variables: [
       { clave: 'FP', nombre: 'Fecha de aprobación del pedido', desc: 'Momento en que el pedido queda marcado como Aprobado, tras el registro y la auditoría de la IA' },
@@ -251,9 +251,9 @@ export const INDICADORES_DEF = {
       { clave: 'N', nombre: 'Número de pedidos', desc: 'Cantidad de pedidos aprobados considerados en el promedio (los del día actual)' },
     ],
     umbrales: [
-      { nivel: 'bueno', rango: 'TPTD < 3 min', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: null, max: 3 },
-      { nivel: 'regular', rango: '3 a 6 min', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 3, max: 6, maxIncl: true },
-      { nivel: 'critico', rango: 'TPTD > 6 min', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: 6, minExcl: true, max: null },
+      { nivel: 'bueno', rango: 'TPTD < 180 s', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: null, max: 180 },
+      { nivel: 'regular', rango: '180 a 360 s', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 180, max: 360, maxIncl: true },
+      { nivel: 'critico', rango: 'TPTD > 360 s', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: 360, minExcl: true, max: null },
     ],
   },
 };
