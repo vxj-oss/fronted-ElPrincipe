@@ -12,6 +12,47 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.headerAcciones {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.btnSecundario {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  background: #fff;
+  color: #1e3a8a;
+  border: 1px solid #bfdbfe;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.btnSecundario:hover:not(:disabled) {
+  background: #eff6ff;
+}
+
+.btnSecundario:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+:global(.dark) .btnSecundario,
+:global([data-theme="dark"]) .btnSecundario {
+  background: #1e293b;
+  border-color: #334155;
+  color: #bfdbfe;
 }
 
 .pageTitle {

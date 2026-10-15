@@ -8,6 +8,8 @@ import { usePagination } from '../../hooks/usePagination'
 import { useMediaQuery } from '../../hooks/useMediaQuery'
 import Pagination from '../../components/ui/Pagination'
 import CustomerForm from './CustomerForm'
+import FichaCliente from './FichaCliente'
+import { etiquetaCliente } from './customersService'
 import styles from './customers.module.css'
 
 function Avatar({ nombre, size = 'md' }) {
@@ -87,26 +89,36 @@ function DetallePanel({ cliente, onCerrar, onEditar }) {
       </div>
 
       <dl className={styles.detalleGrid}>
-        <div className={styles.detalleItem}>
-          <dt><CreditCard size={13} aria-hidden="true" /> RUC / DNI</dt>
-          <dd className={styles.mono}>{cliente.ruc || '—'}</dd>
-        </div>
-        <div className={styles.detalleItem}>
-          <dt><MapPin size={13} aria-hidden="true" /> Distrito</dt>
-          <dd>{cliente.distrito}</dd>
-        </div>
-        <div className={styles.detalleItem}>
-          <dt><Phone size={13} aria-hidden="true" /> Teléfono</dt>
-          <dd>{cliente.telefono || '—'}</dd>
-        </div>
-        <div className={styles.detalleItem}>
-          <dt><Mail size={13} aria-hidden="true" /> Correo</dt>
-          <dd className={styles.detalleEmail}>{cliente.email || '—'}</dd>
-        </div>
-        <div className={`${styles.detalleItem} ${styles.detalleItemFull}`}>
-          <dt><MapPin size={13} aria-hidden="true" /> Dirección</dt>
-          <dd>{cliente.direccion || '—'}</dd>
-        </div>
+        {cliente.ruc && (
+          <div className={styles.detalleItem}>
+            <dt><CreditCard size={13} aria-hidden="true" /> RUC / DNI</dt>
+            <dd className={styles.mono}>{cliente.ruc}</dd>
+          </div>
+        )}
+        {cliente.distrito && (
+          <div className={styles.detalleItem}>
+            <dt><MapPin size={13} aria-hidden="true" /> Distrito</dt>
+            <dd>{cliente.distrito}</dd>
+          </div>
+        )}
+        {cliente.telefono && (
+          <div className={styles.detalleItem}>
+            <dt><Phone size={13} aria-hidden="true" /> Teléfono</dt>
+            <dd>{cliente.telefono}</dd>
+          </div>
+        )}
+        {cliente.email && (
+          <div className={styles.detalleItem}>
+            <dt><Mail size={13} aria-hidden="true" /> Correo</dt>
+            <dd className={styles.detalleEmail}>{cliente.email}</dd>
+          </div>
+        )}
+        {cliente.direccion && (
+          <div className={`${styles.detalleItem} ${styles.detalleItemFull}`}>
+            <dt><MapPin size={13} aria-hidden="true" /> Dirección</dt>
+            <dd>{cliente.direccion}</dd>
+          </div>
+        )}
         <div className={styles.detalleItem}>
           <dt>Compras totales</dt>
           <dd style={{ color: '#1E3A8A', fontWeight: 600 }}>
@@ -120,6 +132,8 @@ function DetallePanel({ cliente, onCerrar, onEditar }) {
           })}</dd>
         </div>
       </dl>
+
+      <FichaCliente clienteId={cliente.id} telefono={cliente.telefono} />
 
       <div className={styles.detallePanelFooter}>
         <button
@@ -363,6 +377,12 @@ export default function CustomersPage() {
                         {c.tipo}
                         {c.clasificacion === 'VIP' && <span className={styles.vipBadge}> · VIP</span>}
                       </span>
+                      {(() => {
+                        const etiqueta = etiquetaCliente(c)
+                        if (!etiqueta) return null
+                        const clase = { nuevo: styles.etiquetaNuevo, riesgo: styles.etiquetaRiesgo, sinCompras: styles.etiquetaSinCompras }[etiqueta.tipo]
+                        return <span className={`${styles.etiqueta} ${clase}`}>{etiqueta.texto}</span>
+                      })()}
                     </td>
                     <td data-label="RUC / DNI" className={styles.mono}>{c.ruc || '—'}</td>
                     <td data-label="Distrito" className={styles.tdSecundario}>{c.distrito}</td>

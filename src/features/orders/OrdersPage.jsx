@@ -2,14 +2,16 @@
 import {
   Plus, Search, Pencil, Trash2, Eye,
   AlertTriangle, AlertCircle, CheckCircle,
-  X, ShoppingBag, ShieldAlert, ShieldCheck,
+  X, ShoppingBag, ShieldAlert, ShieldCheck, FileDown, Share2, Receipt,
 } from 'lucide-react';
 import { useOrders } from './useOrders';
 import { calcularTotal, formatearFecha } from './ordersService';
 import { EMPRESA } from '../../constants/appConstants';
+import { descargarArchivo, compartirArchivo, puedeCompartirArchivos } from '../../utils/descargas';
 import { usePagination } from '../../hooks/usePagination';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import Pagination from '../../components/ui/Pagination';
+import SnackbarDeshacer from '../../components/ui/SnackbarDeshacer';
 import Modal from '../../components/ui/Modal';
 import Button from '../../components/ui/Button';
 import OrderForm from './OrderForm';
@@ -81,6 +83,9 @@ function Toast({ toast }) {
   );
 }
 
+const descargarPedidoPdf = (pedido) =>
+  descargarArchivo(`/orders/${pedido.id}/pdf`, `${pedido.numero}.pdf`).catch(() => {});
+
 function DetallePanel({ pedido, onCerrar, onEditar, onConfirmar }) {
   if (!pedido) return null;
   const total = calcularTotal(pedido.items);
@@ -95,6 +100,29 @@ function DetallePanel({ pedido, onCerrar, onEditar, onConfirmar }) {
         <button onClick={onCerrar} className={styles.btnIcono} aria-label="Cerrar">
           <X size={14} aria-hidden="true" />
         </button>
+      </div>
+
+      <div className={styles.detalleAcciones}>
+        <button onClick={() => descargarPedidoPdf(pedido)} className={styles.btnPdf}>
+          <FileDown size={13} aria-hidden="true" /> PDF
+        </button>
+        <button
+          onClick={() => descargarArchivo(`/orders/${pedido.id}/ticket`, `${pedido.numero}-ticket.pdf`).catch(() => {})}
+          className={styles.btnPdf}
+          title="Ticket de 80 mm para impresora térmica"
+        >
+          <Receipt size={13} aria-hidden="true" /> Ticket
+        </button>
+        {puedeCompartirArchivos() && (
+          <button
+            onClick={() =>
+              compartirArchivo(`/orders/${pedido.id}/pdf`, `${pedido.numero}.pdf`, `Pedido ${pedido.numero}`).catch(() => {})
+            }
+            className={styles.btnPdf}
+          >
+            <Share2 size={13} aria-hidden="true" /> Compartir
+          </button>
+        )}
       </div>
 
       {pedido.tieneError && (
@@ -332,7 +360,7 @@ function ConfirmDeleteModal({ pedidoId, pedidos, onConfirm, onCancel }) {
         <div className={styles.confirmBody}>
           <AlertCircle size={32} className={styles.confirmIcon} aria-hidden="true" />
           <p className={styles.confirmText}>
-            ¿Eliminar el pedido <strong>{pedido?.numero}</strong>? Esta acción no se puede deshacer.
+            ¿Eliminar el pedido <strong>{pedido?.numero}</strong>? Podrás deshacerlo durante unos segundos.
           </p>
         </div>
         <div className={styles.modalFooter}>
@@ -363,6 +391,7 @@ export default function OrdersPage() {
     agregarItem, quitarItem,
     cambiarProductoItem, cambiarCantItem, cambiarPrecioItem,
     verDetalle, cerrarDetalle,
+    eliminacionPendiente, deshacerEliminacion, retardoEliminacion,
   } = useOrders();
 
   const esMovilVertical = useMediaQuery('(max-width: 768px)');
@@ -524,6 +553,14 @@ export default function OrdersPage() {
                           <Eye size={13} aria-hidden="true" />
                         </button>
                         <button
+                          onClick={() => descargarPedidoPdf(p)}
+                          className={styles.btnIcono}
+                          aria-label="Descargar PDF"
+                          title="Descargar PDF"
+                        >
+                          <FileDown size={13} aria-hidden="true" />
+                        </button>
+                        <button
                           onClick={() => abrirEditar(p)}
                           className={styles.btnIcono}
                           aria-label="Editar"
@@ -592,6 +629,8 @@ export default function OrdersPage() {
         onCambiarCant={cambiarCantItem}
         onCambiarPrecio={cambiarPrecioItem}
       />
+
+      <SnackbarDeshacer pendiente={eliminacionPendiente} retardoMs={retardoEliminacion} onDeshacer={deshacerEliminacion} />
 
       <ConfirmDeleteModal
         pedidoId={confirmDelete}

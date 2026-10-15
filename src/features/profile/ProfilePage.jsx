@@ -63,7 +63,6 @@ export default function ProfilePage() {
 
   const colorMeta = metaPct >= 80 ? '#16a34a' : metaPct >= 50 ? '#ea580c' : '#dc2626';
   const vHoy = stats ? (stats.ventasHoy >= 1000 ? `S/ ${(stats.ventasHoy / 1000).toFixed(1)}k` : `S/ ${stats.ventasHoy.toFixed(2)}`) : 'S/ 0.00';
-  const vMes = stats ? (stats.ventasMes >= 1000 ? `S/ ${(stats.ventasMes / 1000).toFixed(1)}k` : `S/ ${stats.ventasMes.toFixed(2)}`) : 'S/ 0.00';
 
   const eyeBtn = (campo) => (
     <button type="button" onClick={() => toggleShowPassword(campo)} className={styles.eyeBtn} aria-label="Ver contraseña">
@@ -86,7 +85,6 @@ export default function ProfilePage() {
           <StatCard valor={stats?.pedidosHoy ?? '0'} label="Pedidos hoy" color="#1E3A8A" />
           <StatCard valor={vHoy} label="Ventas hoy" />
           <StatCard valor={stats?.clientesHoy ?? '0'} label="Clientes" />
-          <StatCard valor={vMes} label="Ventas mes" />
         </div>
 
         <div className={styles.metaWrap}>

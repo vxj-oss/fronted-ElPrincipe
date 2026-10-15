@@ -429,3 +429,21 @@ body {
     @apply text-xs font-semibold uppercase tracking-widest text-neutral-muted dark:text-slate-400;
   }
 }
+
+.snackbar-progreso {
+  width: 100%;
+  animation-name: snackbarProgreso;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes snackbarProgreso {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .snackbar-progreso {
+    animation: none;
+  }
+}

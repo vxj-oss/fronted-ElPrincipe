@@ -15,25 +15,65 @@ export function evaluarUmbral(valor, umbrales) {
   }) ?? umbrales[umbrales.length - 1];
 }
 
+export function aplicarMetas(metas) {
+  if (!metas) return;
+
+  [['NCCA', metas.NCCA], ['NPP', metas.NPP]].forEach(([sigla, m]) => {
+    if (!m) return;
+    const def = INDICADORES_DEF[sigla];
+    const [verde, naranja, rojo] = def.umbrales;
+    def.metas = { verdeDesde: m.verde_desde, naranjaDesde: m.naranja_desde };
+    verde.min = m.verde_desde;
+    verde.rango = `${sigla} ≥ ${m.verde_desde}`;
+    naranja.min = m.naranja_desde;
+    naranja.max = m.verde_desde;
+    naranja.rango = `${m.naranja_desde} a ${m.verde_desde - 1}`;
+    rojo.max = m.naranja_desde;
+    rojo.rango = `${sigla} < ${m.naranja_desde}`;
+    INDICADORES_META[sigla].metaTexto = `Meta: ≥ ${m.verde_desde}/día`;
+  });
+
+  const t = metas.TPTD;
+  if (t) {
+    const def = INDICADORES_DEF.TPTD;
+    const [verde, naranja, rojo] = def.umbrales;
+    def.metas = { verdeAntes: t.verde_antes_de, naranjaHasta: t.naranja_hasta };
+    verde.max = t.verde_antes_de;
+    verde.rango = `TPTD < ${t.verde_antes_de} s`;
+    naranja.min = t.verde_antes_de;
+    naranja.max = t.naranja_hasta;
+    naranja.rango = `${t.verde_antes_de} a ${t.naranja_hasta} s`;
+    rojo.min = t.naranja_hasta;
+    rojo.rango = `TPTD > ${t.naranja_hasta} s`;
+    INDICADORES_META.TPTD.metaTexto = `Meta: < ${t.verde_antes_de} s`;
+    INDICADORES_META.TPTD.maxEscala = t.naranja_hasta;
+  }
+}
+
+export async function fetchMetas() {
+  return apiRequest('/indicators/metas');
+}
+
 export function generarInterpretacion(sigla, valor, datos, umbral) {
+  const m = INDICADORES_DEF[sigla]?.metas;
   if (sigla === 'NCCA') {
     if (umbral.nivel === 'bueno') {
-      return `Se registraron <strong>${valor} ${valor === 1 ? 'cotización' : 'cotizaciones'}</strong> de clientes en el día actual (${datos.diaActual}). La demanda comercial alcanza la meta diaria (NCCA ≥ 12).`;
+      return `Se registraron <strong>${valor} ${valor === 1 ? 'cotización' : 'cotizaciones'}</strong> de clientes en el día actual (${datos.diaActual}). La demanda comercial alcanza la meta diaria (NCCA ≥ ${m.verdeDesde}).`;
     }
     if (umbral.nivel === 'regular') {
-      return `Se registraron <strong>${valor} ${valor === 1 ? 'cotización' : 'cotizaciones'}</strong> de clientes en el día actual (${datos.diaActual}). La cantidad se ubica entre 7 y 11, por debajo de la meta diaria (NCCA ≥ 12).`;
+      return `Se registraron <strong>${valor} ${valor === 1 ? 'cotización' : 'cotizaciones'}</strong> de clientes en el día actual (${datos.diaActual}). La cantidad se ubica entre ${m.naranjaDesde} y ${m.verdeDesde - 1}, por debajo de la meta diaria (NCCA ≥ ${m.verdeDesde}).`;
     }
-    return `Se registraron <strong>${valor} ${valor === 1 ? 'cotización' : 'cotizaciones'}</strong> de clientes en el día actual (${datos.diaActual}). La cantidad es menor a 7, muy por debajo de la meta diaria (NCCA ≥ 12).`;
+    return `Se registraron <strong>${valor} ${valor === 1 ? 'cotización' : 'cotizaciones'}</strong> de clientes en el día actual (${datos.diaActual}). La cantidad es menor a ${m.naranjaDesde}, muy por debajo de la meta diaria (NCCA ≥ ${m.verdeDesde}).`;
   }
 
   if (sigla === 'NPP') {
     if (umbral.nivel === 'bueno') {
-      return `Se registraron <strong>${valor} ${valor === 1 ? 'pedido' : 'pedidos'}</strong> procesados en el día actual (${datos.diaActual}). La conversión comercial alcanza la meta diaria (NPP ≥ 11).`;
+      return `Se registraron <strong>${valor} ${valor === 1 ? 'pedido' : 'pedidos'}</strong> procesados en el día actual (${datos.diaActual}). La conversión comercial alcanza la meta diaria (NPP ≥ ${m.verdeDesde}).`;
     }
     if (umbral.nivel === 'regular') {
-      return `Se registraron <strong>${valor} ${valor === 1 ? 'pedido' : 'pedidos'}</strong> procesados en el día actual (${datos.diaActual}). La cantidad se ubica entre 7 y 10, por debajo de la meta diaria (NPP ≥ 11).`;
+      return `Se registraron <strong>${valor} ${valor === 1 ? 'pedido' : 'pedidos'}</strong> procesados en el día actual (${datos.diaActual}). La cantidad se ubica entre ${m.naranjaDesde} y ${m.verdeDesde - 1}, por debajo de la meta diaria (NPP ≥ ${m.verdeDesde}).`;
     }
-    return `Se registraron <strong>${valor} ${valor === 1 ? 'pedido' : 'pedidos'}</strong> procesados en el día actual (${datos.diaActual}). La cantidad es menor a 7, muy por debajo de la meta diaria (NPP ≥ 11).`;
+    return `Se registraron <strong>${valor} ${valor === 1 ? 'pedido' : 'pedidos'}</strong> procesados en el día actual (${datos.diaActual}). La cantidad es menor a ${m.naranjaDesde}, muy por debajo de la meta diaria (NPP ≥ ${m.verdeDesde}).`;
   }
 
   if (sigla === 'TPTD') {
@@ -42,12 +82,12 @@ export function generarInterpretacion(sigla, valor, datos, umbral) {
     }
     const segundos = formatearSegundos(valor);
     if (umbral.nivel === 'bueno') {
-      return `El asesor comercial demora en promedio <strong>${segundos} segundos</strong> en aprobar el pedido derivado de una cotización. El tiempo de respuesta está dentro de la meta (TPTD &lt; 180 s).`;
+      return `El asesor comercial demora en promedio <strong>${segundos} segundos</strong> en aprobar el pedido derivado de una cotización. El tiempo de respuesta está dentro de la meta (TPTD &lt; ${m.verdeAntes} s).`;
     }
     if (umbral.nivel === 'regular') {
-      return `El asesor comercial demora en promedio <strong>${segundos} segundos</strong> en aprobar el pedido derivado de una cotización. El tiempo de respuesta se ubica entre 180 y 360 s, por encima de la meta (TPTD &lt; 180 s).`;
+      return `El asesor comercial demora en promedio <strong>${segundos} segundos</strong> en aprobar el pedido derivado de una cotización. El tiempo de respuesta se ubica entre ${m.verdeAntes} y ${m.naranjaHasta} s, por encima de la meta (TPTD &lt; ${m.verdeAntes} s).`;
     }
-    return `El asesor comercial demora en promedio <strong>${segundos} segundos</strong> en aprobar el pedido derivado de una cotización. El tiempo de respuesta supera los 360 s y afecta la experiencia del cliente.`;
+    return `El asesor comercial demora en promedio <strong>${segundos} segundos</strong> en aprobar el pedido derivado de una cotización. El tiempo de respuesta supera los ${m.naranjaHasta} s y afecta la experiencia del cliente.`;
   }
 
   return '';
@@ -112,6 +152,7 @@ export async function descargarTPDPorPedidoExcel() {
 }
 
 export async function fetchResumenIndicadores() {
+  await fetchMetas().then(aplicarMetas).catch(() => {});
   const data = await fetchActividadComercial().catch(() => ({}));
 
   const diaActual = data.dia_actual || '—';

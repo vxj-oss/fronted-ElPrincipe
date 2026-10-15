@@ -1,10 +1,11 @@
-﻿import { Plus, Send, Bot, AlertCircle, Sparkles } from 'lucide-react';
+﻿import { Plus, Send, Bot, AlertCircle, Sparkles, Mic, Square } from 'lucide-react';
 import { useAgent } from './useAgent';
 import { useAuth } from '../../context/AuthContext';
+import BorradorCotizacion from './BorradorCotizacion';
 import { EMPRESA } from '../../constants/appConstants';
 import styles from './agent.module.css';
 
-function Burbuja({ mensaje, avatarAgente, avatarUsuario }) {
+function Burbuja({ mensaje, avatarAgente, avatarUsuario, inicioAtencion }) {
   const esAgente = mensaje.rol === 'agent';
   const esError = mensaje.tipo === 'error';
 
@@ -30,6 +31,13 @@ function Burbuja({ mensaje, avatarAgente, avatarUsuario }) {
             <p className={styles.bubbleTexto} style={{ whiteSpace: 'pre-line' }}>
               {mensaje.texto}
             </p>
+          )}
+          {esAgente && mensaje.datos_estructurados?.tipo === 'borrador_cotizacion' && (
+            <BorradorCotizacion
+              mensajeId={mensaje.id}
+              datos={mensaje.datos_estructurados}
+              inicioAtencion={inicioAtencion}
+            />
           )}
         </div>
         <span className={styles.bubbleHora}>{hora}</span>
@@ -89,8 +97,13 @@ export default function AgentPage() {
     handleInputChange,
     handleEnviar,
     handleKeyDown,
-    usarPreguntaSugerida,
+    usarSeguimiento,
+    comandosVisibles,
+    comandoActivo,
+    setComandoActivo,
+    seleccionarComando,
     limpiarError,
+    dictado,
   } = useAgent();
 
   const inicialesAgente = <Bot size={16} aria-hidden="true" />;
@@ -164,12 +177,17 @@ export default function AgentPage() {
           aria-live="polite"
           aria-label="Conversación con el agente"
         >
-          {mensajes.map((m) => (
+          {mensajes.map((m, i) => (
             <Burbuja
               key={m.id}
               mensaje={m}
               avatarAgente={inicialesAgente}
               avatarUsuario={inicialesUsuario}
+              inicioAtencion={
+                m.rol === 'agent'
+                  ? mensajes.slice(0, i).reverse().find((x) => x.rol === 'user')?.timestamp
+                  : undefined
+              }
             />
           ))}
 
@@ -180,7 +198,8 @@ export default function AgentPage() {
           {preguntasSugeridas.slice(0, 4).map((p) => (
             <button
               key={p}
-              onClick={() => usarPreguntaSugerida(p)}
+              onClick={() => usarSeguimiento(p)}
+              disabled={enviando}
               className={styles.suggBtn}
             >
               <Sparkles size={12} className="inline mr-1" />
@@ -189,18 +208,58 @@ export default function AgentPage() {
           ))}
         </div>
 
+        {dictado.errorDictado && (
+          <div className={styles.errorBanner} role="alert">
+            <AlertCircle size={14} aria-hidden="true" />
+            {dictado.errorDictado}
+          </div>
+        )}
+
+        {comandosVisibles.length > 0 && (
+          <ul className={styles.comandosMenu} role="listbox" aria-label="Comandos disponibles">
+            {comandosVisibles.map((c, i) => (
+              <li key={c.cmd} role="option" aria-selected={i === comandoActivo}>
+                <button
+                  type="button"
+                  className={`${styles.comandoItem} ${i === comandoActivo ? styles.comandoItemActivo : ''}`}
+                  onMouseEnter={() => setComandoActivo(i)}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    seleccionarComando(c);
+                  }}
+                >
+                  <strong>{c.cmd}</strong>
+                  <span>{c.descripcion}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+
         <div className={styles.inputRow}>
           <textarea
             ref={inputRef}
             value={input}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            placeholder="Pregunta sobre ventas, stock, clientes o cotizaciones..."
+            placeholder="Pregunta sobre ventas, stock, clientes o cotizaciones… (escribe / para ver comandos)"
             className={styles.chatInput}
             rows={1}
             aria-label="Escribe tu mensaje"
             disabled={enviando}
           />
+          {dictado.soportado && (
+            <button
+              type="button"
+              onClick={() => dictado.alternar(input)}
+              disabled={enviando}
+              className={`${styles.micBtn} ${dictado.escuchando ? styles.micBtnActivo : ''}`}
+              aria-label={dictado.escuchando ? 'Detener dictado' : 'Dictar por voz'}
+              title={dictado.escuchando ? 'Detener dictado' : 'Dictar por voz'}
+            >
+              {dictado.escuchando ? <Square size={14} aria-hidden="true" /> : <Mic size={16} aria-hidden="true" />}
+            </button>
+          )}
           <button
             onClick={handleEnviar}
             disabled={!input.trim() || enviando}

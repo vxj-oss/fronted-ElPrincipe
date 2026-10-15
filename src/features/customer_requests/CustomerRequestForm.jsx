@@ -1,6 +1,7 @@
 import React from 'react';
-import { Minus, Plus, X } from 'lucide-react';
+import { AlertTriangle, History, Loader2, Mic, Minus, Plus, Sparkles, Square, X } from 'lucide-react';
 import ProductSearchSelect from '../../components/ui/ProductSearchSelect';
+import { useDictado } from '../../hooks/useDictado';
 import styles from './customerRequests.module.css';
 
 const subtotalDeItem = (it) => (parseFloat(it.precioEsperado) || 0) * (parseInt(it.cant, 10) || 0);
@@ -22,7 +23,18 @@ export default function CustomerRequestForm({
   onCambiarProducto,
   onCambiarCant,
   onCambiarPrecio,
+  onElegirOpcion,
+  ultimaCotizacion,
+  cotizacionRepetida,
+  onCargarUltima,
+  onGenerarDesdeNota,
+  generandoIA,
+  avisoIA,
 }) {
+  const dictado = useDictado((texto) =>
+    onChange({ target: { name: 'observaciones', value: texto } })
+  );
+
   return (
     <form className={styles.modalForm} onSubmit={(e) => { e.preventDefault(); onGuardar(); }}>
       <div className={styles.modalBody}>
@@ -45,6 +57,20 @@ export default function CustomerRequestForm({
           {formErrors.cliente_id && (
             <p className={styles.fieldError} role="alert">{formErrors.cliente_id}</p>
           )}
+          {ultimaCotizacion && (
+            <button type="button" className={styles.btnUltima} onClick={onCargarUltima}>
+              <History size={13} aria-hidden="true" />
+              Cargar la última cotización ({ultimaCotizacion.codigo}, {ultimaCotizacion.detalles.length}{' '}
+              {ultimaCotizacion.detalles.length === 1 ? 'ítem' : 'ítems'})
+            </button>
+          )}
+          {cotizacionRepetida && (
+            <p className={styles.avisoRepetida} role="status">
+              <AlertTriangle size={13} aria-hidden="true" />
+              Este cliente ya tiene una cotización pendiente de las últimas 24 horas (
+              {cotizacionRepetida.codigo}, hace {cotizacionRepetida.horas < 1 ? 'menos de 1' : cotizacionRepetida.horas} h).
+            </p>
+          )}
         </div>
 
         <div className={styles.field}>
@@ -60,6 +86,88 @@ export default function CustomerRequestForm({
               <option key={canal} value={canal}>{canal}</option>
             ))}
           </select>
+        </div>
+
+        <div className={`${styles.field} ${styles.fieldFull}`}>
+          <label htmlFor="f-obs" className={styles.fieldLabel}>Nota del vendedor</label>
+          <div className={`${styles.notaCaja} ${generandoIA ? styles.notaCajaCargando : ''}`}>
+            <textarea
+              id="f-obs"
+              name="observaciones"
+              value={form.observaciones}
+              onChange={onChange}
+              onKeyDown={(e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                  e.preventDefault();
+                  if (!generandoIA && form.observaciones.trim()) onGenerarDesdeNota();
+                }
+              }}
+              placeholder="Escribe aquí lo que necesita el cliente…"
+              className={styles.notaTexto}
+              rows={4}
+              disabled={generandoIA}
+            />
+            <div className={styles.notaBarra}>
+              <div className={styles.notaIzquierda}>
+                {dictado.soportado && (
+                  <button
+                    type="button"
+                    className={`${styles.btnMic} ${dictado.escuchando ? styles.btnMicActivo : ''}`}
+                    onClick={() => dictado.alternar(form.observaciones)}
+                    disabled={generandoIA}
+                    aria-label={dictado.escuchando ? 'Detener dictado' : 'Dictar por voz'}
+                    title={dictado.escuchando ? 'Detener dictado' : 'Dictar por voz'}
+                  >
+                    {dictado.escuchando ? <Square size={13} aria-hidden="true" /> : <Mic size={15} aria-hidden="true" />}
+                  </button>
+                )}
+                {dictado.escuchando && <span className={styles.escuchando}>Escuchando…</span>}
+                {form.observaciones.trim() && !generandoIA && (
+                  <button
+                    type="button"
+                    className={styles.btnLimpiarNota}
+                    onClick={() => onChange({ target: { name: 'observaciones', value: '' } })}
+                  >
+                    Limpiar
+                  </button>
+                )}
+                <span className={styles.notaContador}>{form.observaciones.length}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  dictado.detener();
+                  onGenerarDesdeNota();
+                }}
+                disabled={generandoIA || !form.observaciones.trim()}
+                className={styles.btnIA}
+                title="Ctrl + Enter"
+              >
+                {generandoIA ? (
+                  <Loader2 size={14} className={styles.iconoGirando} aria-hidden="true" />
+                ) : (
+                  <Sparkles size={14} aria-hidden="true" />
+                )}
+                {generandoIA ? 'Analizando…' : 'Armar cotización'}
+              </button>
+            </div>
+          </div>
+          {dictado.errorDictado && (
+            <p className={`${styles.avisoIA} ${styles.avisoIAError}`} role="status">
+              {dictado.errorDictado}
+            </p>
+          )}
+          {avisoIA && (
+            <div
+              className={`${styles.avisoIA} ${avisoIA.tipo === 'error' ? styles.avisoIAError : avisoIA.tipo === 'warning' ? styles.avisoIAAviso : styles.avisoIAOk}`}
+              role="status"
+            >
+              <strong>{avisoIA.texto}</strong>
+              {avisoIA.detalles?.map((d) => (
+                <span key={d} className={styles.avisoIADetalle}>{d}</span>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className={`${styles.field} ${styles.fieldFull}`}>
@@ -84,7 +192,11 @@ export default function CustomerRequestForm({
             </div>
 
             {items.map((it, idx) => (
-              <div key={idx} className={styles.itemRow}>
+              <div
+                key={`${idx}-${it.lote ?? 0}`}
+                className={`${styles.itemRow} ${it.marca === 'ia' ? styles.itemRowIA : ''} ${it.marca === 'revisar' ? styles.itemRowRevisar : ''}`}
+                style={it.marca ? { animationDelay: `${idx * 70}ms` } : undefined}
+              >
                 <div className={`${styles.celda} ${styles.celdaProducto}`}>
                   <span className={styles.celdaEtiqueta}>Producto</span>
                   <ProductSearchSelect
@@ -94,6 +206,21 @@ export default function CustomerRequestForm({
                     onChange={(valor) => onCambiarProducto(idx, valor)}
                     inputClassName={styles.itemInput}
                   />
+                  {it.opciones?.length > 0 && (
+                    <select
+                      className={styles.selectOpcion}
+                      value=""
+                      onChange={(e) => onElegirOpcion(idx, e.target.value)}
+                      aria-label={`Elegir producto para ${it.nombre}`}
+                    >
+                      <option value="">Elige cuál ({it.opciones.length} opciones)…</option>
+                      {it.opciones.map((o) => (
+                        <option key={o.id} value={o.id}>
+                          {o.nombre} — S/ {o.precio.toFixed(2)}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 </div>
 
                 <div className={`${styles.celda} ${styles.celdaCant}`}>
@@ -171,18 +298,6 @@ export default function CustomerRequestForm({
           )}
         </div>
 
-        <div className={`${styles.field} ${styles.fieldFull}`}>
-          <label htmlFor="f-obs" className={styles.fieldLabel}>Notas / Mensaje del Cliente</label>
-          <textarea
-            id="f-obs"
-            name="observaciones"
-            value={form.observaciones}
-            onChange={onChange}
-            placeholder="Pegar transcripción de WhatsApp o requerimientos especiales..."
-            className={styles.textareaInput}
-            rows={3}
-          />
-        </div>
       </div>
 
       <div className={styles.modalFooter}>

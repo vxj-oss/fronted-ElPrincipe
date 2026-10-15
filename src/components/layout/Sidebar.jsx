@@ -20,7 +20,7 @@ import {
 import { useAuth } from '../../context/AuthContext'
 import { puede } from '../../utils/permissions'
 
-const MENU_ITEMS = [
+export const MENU_ITEMS = [
   { to: '/dashboard',     label: 'Dashboard',     icon: LayoutDashboard, cap: 'dashboard.ver' },
   { to: '/agente',        label: 'Agente IA',     icon: Bot,             cap: 'agente.usar' },
   { to: '/productos',     label: 'Productos',     icon: Package,         cap: 'productos.ver' },

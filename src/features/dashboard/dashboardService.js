@@ -55,9 +55,18 @@ export async function fetchDashboardSummary() {
     });
   }
 
+  const hoyStr = getFechaActualLima();
+  const pedidosConfirmadosHoy = pedidosData.filter(
+    (p) => ESTADOS_CONFIRMADOS.includes(p.estado) && p.fecha === hoyStr
+  );
+  const ventasHoy = pedidosConfirmadosHoy.reduce((acc, p) => acc + calcularTotal(p.items), 0);
+
   return {
     kpis: {
       ventasTotales: metricas.ventas_totales || 0,
+      ventasHoy,
+      pedidosConfirmadosHoy: pedidosConfirmadosHoy.length,
+      rentabilidad: summaryData.rentabilidad || null,
       totalPedidos: metricas.total_pedidos || 0,
       totalClientes: metricas.total_clientes || 0,
       totalProductos: metricas.total_productos || 0,
@@ -172,4 +181,19 @@ export function procesarGraficaDesdePedidos(pedidos = [], periodo = 'hoy') {
     valores: [],
     subtitulo: '',
   };
+}
+
+export async function descargarCierreDia() {
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+  const respuesta = await fetch(`${baseUrl}/reports/cierre-dia/pdf`, { credentials: 'include' });
+  if (!respuesta.ok) throw new Error('No se pudo generar el cierre del día.');
+  const blob = await respuesta.blob();
+  const url = URL.createObjectURL(blob);
+  const enlace = document.createElement('a');
+  enlace.href = url;
+  enlace.download = `cierre_dia_${getFechaActualLima()}.pdf`;
+  document.body.appendChild(enlace);
+  enlace.click();
+  document.body.removeChild(enlace);
+  URL.revokeObjectURL(url);
 }

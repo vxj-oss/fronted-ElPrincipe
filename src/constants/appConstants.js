@@ -164,6 +164,9 @@ export const REPORTES_DISPONIBLES = [
 ];
 
 export const PREGUNTAS_SUGERIDAS_AGENTE = [
+  'Arma una cotización para…',
+  '¿A quién debería llamar hoy?',
+  '¿Cómo vamos hoy?',
   '¿Cuáles son los productos con más rotación esta semana?',
   '¿Qué clientes compraron hoy?',
   '¿Cuál es mi avance de meta diaria?',
@@ -186,14 +189,14 @@ export const INDICADORES_META = {
   NCCA: {
     nombre: 'Número de Cotizaciones de Clientes Atendidas',
     color: '#1E3A8A',
-    metaTexto: 'Meta: ≥ 12/día',
+    metaTexto: 'Meta: ≥ 13/día',
     tipo: 'conteo',
     maxEscala: 30,
   },
   NPP: {
     nombre: 'Número de Pedidos Procesados',
     color: '#854f0b',
-    metaTexto: 'Meta: ≥ 11/día',
+    metaTexto: 'Meta: ≥ 12/día',
     tipo: 'conteo',
     maxEscala: 30,
   },
@@ -213,13 +216,14 @@ export const INDICADORES_DEF = {
     nombre: 'Número de Cotizaciones de Clientes Atendidas',
     descripcion: 'Mide el número de cotizaciones de clientes atendidas (registradas y auditadas por el agente de IA) en el día actual, hayan derivado o no en un pedido, evaluando si se alcanza la meta mínima diaria establecida.',
     formula: 'NCCA = Σ Cotizaciones Atendidas',
+    metas: { verdeDesde: 13, naranjaDesde: 7 },
     variables: [
       { clave: 'CA', nombre: 'Cotizaciones día actual', desc: 'Cotizaciones atendidas (hayan derivado o no en pedido) y auditadas por el agente de IA en el día en curso' },
       { clave: 'CP', nombre: 'Cotizaciones día anterior', desc: 'Cotizaciones atendidas (hayan derivado o no en pedido) y auditadas por el agente de IA en el día calendario anterior' },
     ],
     umbrales: [
-      { nivel: 'bueno', rango: 'NCCA ≥ 12', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: 12, max: null },
-      { nivel: 'regular', rango: '7 a 11', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 7, max: 12 },
+      { nivel: 'bueno', rango: 'NCCA ≥ 13', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: 13, max: null },
+      { nivel: 'regular', rango: '7 a 12', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 7, max: 13 },
       { nivel: 'critico', rango: 'NCCA < 7', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: null, max: 7 },
     ],
   },
@@ -229,13 +233,14 @@ export const INDICADORES_DEF = {
     nombre: 'Número de Pedidos Procesados',
     descripcion: 'Mide el número de pedidos procesados (aprobados o entregados) y auditados por el agente de IA en el día actual, evaluando si se alcanza la meta mínima diaria establecida.',
     formula: 'NPP = Σ Pedidos Procesados',
+    metas: { verdeDesde: 12, naranjaDesde: 7 },
     variables: [
       { clave: 'PA', nombre: 'Pedidos día actual', desc: 'Pedidos aprobados o entregados y auditados por el agente de IA en el día en curso' },
       { clave: 'PP', nombre: 'Pedidos día anterior', desc: 'Pedidos aprobados o entregados y auditados por el agente de IA en el día calendario anterior' },
     ],
     umbrales: [
-      { nivel: 'bueno', rango: 'NPP ≥ 11', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: 11, max: null },
-      { nivel: 'regular', rango: '7 a 10', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 7, max: 11 },
+      { nivel: 'bueno', rango: 'NPP ≥ 12', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0', min: 12, max: null },
+      { nivel: 'regular', rango: '7 a 11', color: '#c2410c', bg: '#fff7ed', border: '#fed7aa', min: 7, max: 12 },
       { nivel: 'critico', rango: 'NPP < 7', color: '#b91c1c', bg: '#fef2f2', border: '#fecaca', min: null, max: 7 },
     ],
   },
@@ -245,6 +250,7 @@ export const INDICADORES_DEF = {
     nombre: 'Tiempo Promedio de Toma de Decisión',
     descripcion: 'Mide el tiempo promedio, en segundos, que transcurre entre la apertura del registro de cotización de un cliente (apertura del modal) y la aprobación del pedido correspondiente (tras el registro y la auditoría de la IA), evaluando la rapidez del asesor comercial en la toma de decisiones. La espera de la auditoría del agente de IA al guardar (unos segundos) forma parte de este tiempo y debe considerarse al comparar con el grupo de control.',
     formula: 'TPTD = Σ(Fecha de aprobación del pedido − Hora de apertura del registro de cotización) ÷ N',
+    metas: { verdeAntes: 180, naranjaHasta: 360 },
     variables: [
       { clave: 'FP', nombre: 'Fecha de aprobación del pedido', desc: 'Momento en que el pedido queda marcado como Aprobado, tras el registro y la auditoría de la IA' },
       { clave: 'FS', nombre: 'Hora de apertura del registro de cotización', desc: 'Momento en que el asesor abre el modal para registrar la cotización del cliente' },
@@ -257,3 +263,5 @@ export const INDICADORES_DEF = {
     ],
   },
 };
+
+export const INTERVALO_REFRESCO_MS = 60000;

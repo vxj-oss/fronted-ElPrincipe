@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useEliminacionDiferida } from '../../hooks/useEliminacionDiferida';
 import {
   fetchPedidos,
   crearPedido,
@@ -94,6 +96,8 @@ function opcionesEstadoPara(estadoOriginal) {
 }
 
 export function useOrders() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const cotizacionParam = searchParams.get('cotizacion');
   const [pedidos, setPedidos] = useState([]);
   const [clientesCatalogo, setClientesCatalogo] = useState([]);
   const [productosCatalogo, setProductosCatalogo] = useState([]);
@@ -316,6 +320,29 @@ export function useOrders() {
     [solicitudesPendientes, clientesCatalogo, productosCatalogo, condicionesCatalogo]
   );
 
+  useEffect(() => {
+    if (!cotizacionParam || cargando) return;
+    const id = parseInt(cotizacionParam, 10);
+    setSearchParams({}, { replace: true });
+    if (solicitudesPendientes.some((s) => s.id === id)) {
+      abrirCrear();
+      handleSeleccionarSolicitud(id);
+    } else {
+      setToastMsg({
+        tipo: 'warning',
+        texto: 'Esa cotización ya no está disponible para crear pedido (solo las pendientes del día).',
+      });
+    }
+  }, [cotizacionParam, cargando, solicitudesPendientes, abrirCrear, handleSeleccionarSolicitud, setSearchParams]);
+
+  const nuevoParam = searchParams.get('nuevo');
+
+  useEffect(() => {
+    if (!nuevoParam || cargando) return;
+    setSearchParams({}, { replace: true });
+    abrirCrear();
+  }, [nuevoParam, cargando, abrirCrear, setSearchParams]);
+
   const handleFormChange = useCallback(
     (e) => {
       const { name, value } = e.target;
@@ -521,23 +548,39 @@ export function useOrders() {
 
   const pedirConfirmarEliminar = useCallback((id) => setConfirmDelete(id), []);
 
-  const handleEliminar = useCallback(async () => {
+  const {
+    pendiente: eliminacionPendiente,
+    programar: programarEliminacion,
+    deshacer: deshacerEliminacion,
+    retardoMs: retardoEliminacion,
+  } = useEliminacionDiferida();
+
+  const handleEliminar = useCallback(() => {
     if (!confirmDelete) return;
-    try {
-      await eliminarPedido(confirmDelete);
-      setPedidos((prev) => prev.filter((p) => p.id !== confirmDelete));
-      if (pedidoDetalle?.id === confirmDelete) setPedidoDetalle(null);
-      setToastMsg({ tipo: 'success', texto: 'Pedido eliminado de la lista.' });
-      fetchProductos().then(setProductosCatalogo).catch(() => {});
-      apiRequest('/customer-requests/')
-        .then((data) => setSolicitudesPendientes(solicitudesPendientesDelDia(data)))
-        .catch(() => {});
-    } catch (err) {
-      setToastMsg({ tipo: 'error', texto: err.message || 'No se pudo eliminar el pedido.' });
-    } finally {
-      setConfirmDelete(null);
-    }
-  }, [confirmDelete, pedidoDetalle]);
+    const id = confirmDelete;
+    const objetivo = pedidos.find((p) => p.id === id);
+    setConfirmDelete(null);
+    if (!objetivo) return;
+
+    setPedidos((prev) => prev.filter((p) => p.id !== id));
+    if (pedidoDetalle?.id === id) setPedidoDetalle(null);
+    programarEliminacion({
+      etiqueta: `Pedido ${objetivo.numero} eliminado`,
+      ejecutar: async () => {
+        await eliminarPedido(id);
+        fetchProductos().then(setProductosCatalogo).catch(() => {});
+        apiRequest('/customer-requests/')
+          .then((data) => setSolicitudesPendientes(solicitudesPendientesDelDia(data)))
+          .catch(() => {});
+      },
+      restaurar: () =>
+        setPedidos((prev) =>
+          prev.some((p) => p.id === id) ? prev : [...prev, objetivo].sort((a, b) => b.id - a.id)
+        ),
+      alFallar: (err) =>
+        setToastMsg({ tipo: 'error', texto: err?.message || 'No se pudo eliminar el pedido.' }),
+    });
+  }, [confirmDelete, pedidos, pedidoDetalle, programarEliminacion]);
 
   const abrirModalError = useCallback((pedido) => {
     setErrorTargetId(pedido.id);
@@ -666,5 +709,8 @@ export function useOrders() {
     handleLimpiarError,
     verDetalle,
     cerrarDetalle,
+    eliminacionPendiente,
+    deshacerEliminacion,
+    retardoEliminacion,
   };
 }

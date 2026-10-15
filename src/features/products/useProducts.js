@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import {
   fetchProductos,
   fetchCategorias,
@@ -56,7 +57,13 @@ export function useProducts() {
   const [guardando, setGuardando] = useState(false)
   const [error, setError] = useState(null)
   const [toastMsg, setToastMsg] = useState(null)
-  const [busqueda, setBusqueda] = useState('')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const qParam = searchParams.get('q')
+  const [busqueda, setBusqueda] = useState(qParam || '')
+
+  useEffect(() => {
+    if (qParam !== null) setBusqueda(qParam)
+  }, [qParam])
   const [filtroCategoria, setFiltroCategoria] = useState('')
   const [filtroStock, setFiltroStock] = useState('')
   const [modalAbierto, setModalAbierto] = useState(false)
@@ -124,6 +131,14 @@ export function useProducts() {
     setFormErrors({})
     setModalAbierto(true)
   }, [categorias])
+
+  const nuevoParam = searchParams.get('nuevo')
+
+  useEffect(() => {
+    if (!nuevoParam || cargando) return
+    setSearchParams({}, { replace: true })
+    abrirCrear()
+  }, [nuevoParam, cargando, abrirCrear, setSearchParams])
 
   const abrirEditar = useCallback((producto) => {
     setEditandoId(producto.id)
