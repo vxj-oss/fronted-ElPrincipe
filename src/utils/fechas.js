@@ -23,3 +23,16 @@ export function fechaLimaDeISO(iso) {
   if (Number.isNaN(d.getTime())) return s.split('T')[0];
   return FORMATO_YMD.format(d);
 }
+
+const FORMATO_HORA = new Intl.DateTimeFormat('en-GB', {
+  timeZone: LIMA_TZ,
+  hour: '2-digit',
+  hourCycle: 'h23',
+});
+
+export function saludoLima() {
+  const hora = parseInt(FORMATO_HORA.format(new Date()), 10);
+  if (hora < 12) return 'Buenos días';
+  if (hora < 19) return 'Buenas tardes';
+  return 'Buenas noches';
+}

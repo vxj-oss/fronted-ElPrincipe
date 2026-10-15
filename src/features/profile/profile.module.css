@@ -98,6 +98,10 @@
   gap: 8px;
 }
 
+.statsGrid > :last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
 .statCard {
   background: #f8fafc;
   border-radius: 0.5rem;
@@ -652,7 +656,10 @@
     grid-template-columns: minmax(0, 1fr);
   }
   .statsGrid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .statsGrid > :last-child:nth-child(odd) {
+    grid-column: auto;
   }
 }
 

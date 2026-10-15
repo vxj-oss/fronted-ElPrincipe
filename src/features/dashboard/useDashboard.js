@@ -3,7 +3,7 @@ import {
   fetchDashboardSummary,
   procesarGraficaDesdePedidos,
 } from './dashboardService';
-import { PERIODOS_GRAFICA_DASHBOARD } from '../../constants/appConstants';
+import { PERIODOS_GRAFICA_DASHBOARD, INTERVALO_REFRESCO_MS } from '../../constants/appConstants';
 
 export function useDashboard() {
   const [kpis, setKpis] = useState(null);
@@ -18,9 +18,11 @@ export function useDashboard() {
   useEffect(() => {
     let cancelled = false;
 
-    async function cargarDatos() {
-      setLoading(true);
-      setError(null);
+    async function cargarDatos(silencioso) {
+      if (!silencioso) {
+        setLoading(true);
+        setError(null);
+      }
       try {
         const summary = await fetchDashboardSummary();
         if (!cancelled) {
@@ -30,15 +32,19 @@ export function useDashboard() {
           setPedidosRaw(summary.pedidos);
         }
       } catch {
-        if (!cancelled) setError('No se pudieron cargar los datos del dashboard.');
+        if (!cancelled && !silencioso) setError('No se pudieron cargar los datos del dashboard.');
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled && !silencioso) setLoading(false);
       }
     }
 
-    cargarDatos();
+    cargarDatos(false);
+    const intervalo = setInterval(() => {
+      if (!document.hidden) cargarDatos(true);
+    }, INTERVALO_REFRESCO_MS);
     return () => {
       cancelled = true;
+      clearInterval(intervalo);
     };
   }, []);
 
@@ -52,7 +58,7 @@ export function useDashboard() {
 
   const metaDiaria = kpis?.metaDiaria || 6000;
   const porcentajeMeta = kpis
-    ? Math.min(100, Math.round((kpis.ventasTotales / metaDiaria) * 100))
+    ? Math.min(100, Math.round(((kpis.ventasHoy || 0) / metaDiaria) * 100))
     : 0;
 
   function porcentajeStock(item) {

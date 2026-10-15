@@ -1533,3 +1533,81 @@
   font-weight: 700;
   letter-spacing: -0.02em;
 }
+
+.btnPdf {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid #bfdbfe;
+  border-radius: 0.5rem;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.btnPdf:hover {
+  background: #dbeafe;
+}
+
+:global(.dark) .btnPdf,
+:global([data-theme="dark"]) .btnPdf {
+  background: #1e293b;
+  border-color: #334155;
+  color: #bfdbfe;
+}
+
+@media (min-width: 769px) {
+  .detallePanel {
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    width: 340px;
+    height: calc(100vh - 64px);
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1100px) {
+  .detallePanel {
+    width: 300px;
+  }
+}
+
+.detallePanelHeader {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: inherit;
+}
+
+.detallePanelFooter {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  background: inherit;
+  margin-top: auto;
+}
+
+.detalleTitulo {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.detalleAcciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 18px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+:global(.dark) .detalleAcciones,
+:global([data-theme="dark"]) .detalleAcciones {
+  border-color: #334155;
+}

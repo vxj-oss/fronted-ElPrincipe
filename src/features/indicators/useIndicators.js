@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { INTERVALO_REFRESCO_MS } from '../../constants/appConstants';
 import {
   fetchResumenIndicadores,
   fetchSerieActividadComercial,
@@ -37,10 +38,19 @@ export function useIndicadorDetalle(sigla) {
   const [datos, setDatos] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    const intervalo = setInterval(() => {
+      if (!document.hidden) setTick((t) => t + 1);
+    }, INTERVALO_REFRESCO_MS);
+    return () => clearInterval(intervalo);
+  }, []);
 
   useEffect(() => {
     if (!sigla) return;
-    setCargando(true);
+    const silencioso = tick > 0;
+    if (!silencioso) setCargando(true);
     Promise.all([
       fetchResumenIndicadores(),
       fetchSerieActividadComercial(),
@@ -68,9 +78,13 @@ export function useIndicadorDetalle(sigla) {
           });
         }
       })
-      .catch(() => setError('No se pudo cargar el detalle del indicador.'))
-      .finally(() => setCargando(false));
-  }, [sigla]);
+      .catch(() => {
+        if (!silencioso) setError('No se pudo cargar el detalle del indicador.');
+      })
+      .finally(() => {
+        if (!silencioso) setCargando(false);
+      });
+  }, [sigla, tick]);
 
   const def = INDICADORES_DEF[sigla];
   const valor = datos ? datos.valorCalculado : 0;
@@ -141,21 +155,27 @@ export function useIndicators() {
     TPTD: { 0: true, 1: true, 2: true },
   });
 
-  const cargarDatos = useCallback(async () => {
+  const cargarDatos = useCallback(async (silencioso = false) => {
     try {
-      setCargando(true);
-      setError(null);
+      if (!silencioso) {
+        setCargando(true);
+        setError(null);
+      }
       const resumen = await fetchResumenIndicadores();
       setDatosReales(resumen);
     } catch {
-      setError('Error al sincronizar los indicadores comerciales.');
+      if (!silencioso) setError('Error al sincronizar los indicadores comerciales.');
     } finally {
-      setCargando(false);
+      if (!silencioso) setCargando(false);
     }
   }, []);
 
   useEffect(() => {
     cargarDatos();
+    const intervalo = setInterval(() => {
+      if (!document.hidden) cargarDatos(true);
+    }, INTERVALO_REFRESCO_MS);
+    return () => clearInterval(intervalo);
   }, [cargarDatos]);
 
   const ejecutarRecalculo = useCallback(async () => {

@@ -1,5 +1,6 @@
 import { EMPRESA, METAS_COMERCIALES } from '../../constants/appConstants';
 import { validarPasswordComplejidad } from '../../utils/passwordValidation';
+import { apiRequest } from '../../utils/api';
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
@@ -98,19 +99,32 @@ export async function fetchPerfil() {
   };
 }
 
+async function fetchMetaDiaria() {
+  const respaldo = METAS_COMERCIALES.META_DIARIA_VENTAS || 6000;
+  try {
+    const data = await apiRequest('/dashboard/config');
+    const meta = Number(data?.meta_diaria_ventas);
+    return meta > 0 ? meta : respaldo;
+  } catch {
+    return respaldo;
+  }
+}
+
 export async function fetchStats() {
-  const res = await fetch(`${BASE_URL}/orders/?limit=200`, {
-    headers: getAuthHeaders(),
-    credentials: 'include',
-  });
+  const [res, metaDiaria] = await Promise.all([
+    fetch(`${BASE_URL}/orders/?limit=200`, {
+      headers: getAuthHeaders(),
+      credentials: 'include',
+    }),
+    fetchMetaDiaria(),
+  ]);
 
   if (!res.ok) {
     return {
       pedidosHoy: 0,
       ventasHoy: 0,
-      metaDiaria: METAS_COMERCIALES.META_DIARIA_VENTAS || 6000,
+      metaDiaria,
       clientesHoy: 0,
-      ventasMes: 0,
     };
   }
 
@@ -131,25 +145,16 @@ export async function fetchStats() {
     );
   });
 
-  const pedidosMes = orders.filter((o) => {
-    const fStr = o.fecha_pedido || o.creado_en;
-    if (!fStr) return false;
-    const f = new Date(fStr);
-    return f.getFullYear() === hoyAnio && f.getMonth() === hoyMes;
-  });
-
   const ventasHoy = pedidosHoy.reduce((acc, o) => acc + Number(o.monto_total || 0), 0);
-  const ventasMes = pedidosMes.reduce((acc, o) => acc + Number(o.monto_total || 0), 0);
-  
+
   const clientesHoy = new Set(pedidosHoy.map((o) => o.cliente_id)).size;
   const clientesTotal = new Set(orders.map((o) => o.cliente_id)).size;
 
   return {
     pedidosHoy: pedidosHoy.length,
     ventasHoy,
-    metaDiaria: METAS_COMERCIALES.META_DIARIA_VENTAS || 6000,
+    metaDiaria,
     clientesHoy: clientesHoy > 0 ? clientesHoy : clientesTotal,
-    ventasMes,
   };
 }
 

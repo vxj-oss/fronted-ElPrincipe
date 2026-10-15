@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Menu, Sun, Moon, Sparkles } from 'lucide-react'
+import { Menu, Sun, Moon, Sparkles, Search } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useTheme } from '../../context/ThemeContext'
 
@@ -9,7 +9,7 @@ const ROL_LABELS = {
   asesor_comercial: 'Asesor Comercial',
 }
 
-export default function Topbar({ onToggleSidebar }) {
+export default function Topbar({ onToggleSidebar, onAbrirBusqueda }) {
   const { user } = useAuth()
   const { isDark, toggleTheme } = useTheme()
 
@@ -36,6 +36,18 @@ export default function Topbar({ onToggleSidebar }) {
       </div>
 
       <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={onAbrirBusqueda}
+          className="flex items-center gap-2 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-500 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"
+          aria-label="Búsqueda rápida"
+          title="Búsqueda rápida (Ctrl + K)"
+        >
+          <Search size={14} aria-hidden="true" />
+          <span className="hidden md:inline">Buscar</span>
+          <kbd className="hidden rounded border border-slate-200 px-1 py-px text-[10px] md:inline dark:border-slate-700">Ctrl K</kbd>
+        </button>
+
         <button
           type="button"
           onClick={toggleTheme}

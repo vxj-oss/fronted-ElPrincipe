@@ -1,14 +1,19 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Plus, Search, Eye, X, MessageSquare,
-  CheckCircle, AlertCircle, Trash2,
+  CheckCircle, AlertCircle, Trash2, PackagePlus, FileDown, Share2,
 } from 'lucide-react';
 import { useCustomerRequests } from './useCustomerRequests';
-import { formatearFecha } from './customerRequestsService';
+import { formatearFecha, descargarCotizacionPdf } from './customerRequestsService';
+import { fechaHoyLima, fechaLimaDeISO } from '../../utils/fechas';
+import { compartirArchivo, puedeCompartirArchivos } from '../../utils/descargas';
 import { usePagination } from '../../hooks/usePagination';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import Pagination from '../../components/ui/Pagination';
 import CustomerRequestForm from './CustomerRequestForm';
+import SeguimientoPanel from './SeguimientoPanel';
+import SnackbarDeshacer from '../../components/ui/SnackbarDeshacer';
 import styles from './customerRequests.module.css';
 
 function KPICard({ label, value, note, color }) {
@@ -34,7 +39,10 @@ function Toast({ toast }) {
   );
 }
 
-function DetallePanel({ solicitud, onCerrar, onEliminar }) {
+const puedeCrearPedido = (s) =>
+  s.estado === 'Pendiente' && fechaLimaDeISO(s.fecha) === fechaHoyLima();
+
+function DetallePanel({ solicitud, onCerrar, onEliminar, onCrearPedido }) {
   if (!solicitud) return null;
 
   return (
@@ -56,6 +64,30 @@ function DetallePanel({ solicitud, onCerrar, onEliminar }) {
             <X size={14} />
           </button>
         </div>
+      </div>
+
+      <div className={styles.detalleAcciones}>
+        <button
+          onClick={() => descargarCotizacionPdf(solicitud.id, solicitud.codigo).catch(() => {})}
+          className={styles.btnPdf}
+        >
+          <FileDown size={13} aria-hidden="true" /> PDF
+        </button>
+        {puedeCompartirArchivos() && (
+          <button
+            onClick={() =>
+              compartirArchivo(`/customer-requests/${solicitud.id}/pdf`, `${solicitud.codigo}.pdf`, `Cotización ${solicitud.codigo}`).catch(() => {})
+            }
+            className={styles.btnPdf}
+          >
+            <Share2 size={13} aria-hidden="true" /> Compartir
+          </button>
+        )}
+        {puedeCrearPedido(solicitud) && (
+          <button onClick={() => onCrearPedido(solicitud.id)} className={styles.btnCrearPedido}>
+            <PackagePlus size={13} aria-hidden="true" /> Crear pedido
+          </button>
+        )}
       </div>
 
       <dl className={styles.detalleGrid}>
@@ -114,7 +146,7 @@ function ConfirmDeleteModal({ solicitud, guardando, onConfirm, onCancel }) {
         <div className={styles.confirmBody}>
           <AlertCircle size={32} className={styles.confirmIcon} aria-hidden="true" />
           <p className={styles.confirmText}>
-            ¿Eliminar la cotización <strong>{solicitud.codigo}</strong> de {solicitud.cliente}? Esta acción no se puede deshacer.
+            ¿Eliminar la cotización <strong>{solicitud.codigo}</strong> de {solicitud.cliente}? Podrás deshacerlo durante unos segundos.
           </p>
         </div>
         <div className={styles.modalFooter}>
@@ -137,12 +169,17 @@ export default function CustomerRequestsPage() {
     clientes, productos, CANALES_RECEPCION, ESTADOS_SOLICITUD,
     abrirCrear, cerrarModal, handleFormChange,
     agregarItem, quitarItem,
-    cambiarProductoItem, cambiarCantItem, cambiarPrecioItem,
+    cambiarProductoItem, cambiarCantItem, cambiarPrecioItem, elegirOpcionItem,
+    handleGenerarDesdeNota, generandoIA, avisoIA,
+    ultimaCotizacion, cotizacionRepetida, cargarUltimaCotizacion, porSeguimiento,
     handleGuardar, verDetalle, cerrarDetalle,
     confirmDelete, eliminando, pedirConfirmarEliminar, cancelarEliminar, handleEliminar,
+    eliminacionPendiente, deshacerEliminacion, retardoEliminacion,
   } = useCustomerRequests();
 
   const esMovilVertical = useMediaQuery('(max-width: 768px)');
+  const navigate = useNavigate();
+  const irACrearPedido = (id) => navigate(`/pedidos?cotizacion=${id}`);
 
   const {
     itemsPagina: solicitudesPagina,
@@ -193,6 +230,8 @@ export default function CustomerRequestsPage() {
           <KPICard label="Pendientes de Pedido" value={kpis.pendientes} note="por auditar" color="#C2410C" />
           <KPICard label="Atendidas" value={kpis.atendidas} note="convertidas a pedido" color="#15803D" />
         </section>
+
+        <SeguimientoPanel solicitudes={porSeguimiento} />
 
         <div className={styles.toolbar}>
           <div className={styles.searchWrap}>
@@ -267,6 +306,16 @@ export default function CustomerRequestsPage() {
                         <button onClick={() => verDetalle(s)} className={styles.btnIcono} title="Ver detalle">
                           <Eye size={13} />
                         </button>
+                        {puedeCrearPedido(s) && (
+                          <button
+                            onClick={() => irACrearPedido(s.id)}
+                            className={styles.btnIcono}
+                            aria-label={`Crear pedido desde ${s.codigo}`}
+                            title="Crear pedido"
+                          >
+                            <PackagePlus size={13} />
+                          </button>
+                        )}
                         <button
                           onClick={() => pedirConfirmarEliminar(s.id)}
                           className={`${styles.btnIcono} ${styles.btnIconoDanger}`}
@@ -295,7 +344,9 @@ export default function CustomerRequestsPage() {
         </section>
       </div>
 
-      <DetallePanel solicitud={solicitudDetalle} onCerrar={cerrarDetalle} onEliminar={pedirConfirmarEliminar} />
+      <SnackbarDeshacer pendiente={eliminacionPendiente} retardoMs={retardoEliminacion} onDeshacer={deshacerEliminacion} />
+
+      <DetallePanel solicitud={solicitudDetalle} onCerrar={cerrarDetalle} onEliminar={pedirConfirmarEliminar} onCrearPedido={irACrearPedido} />
 
       <ConfirmDeleteModal
         solicitud={solicitudesFiltradas.find((s) => s.id === confirmDelete)}
@@ -327,6 +378,13 @@ export default function CustomerRequestsPage() {
               onCambiarProducto={cambiarProductoItem}
               onCambiarCant={cambiarCantItem}
               onCambiarPrecio={cambiarPrecioItem}
+              onElegirOpcion={elegirOpcionItem}
+              onGenerarDesdeNota={handleGenerarDesdeNota}
+              generandoIA={generandoIA}
+              avisoIA={avisoIA}
+              ultimaCotizacion={ultimaCotizacion}
+              cotizacionRepetida={cotizacionRepetida}
+              onCargarUltima={cargarUltimaCotizacion}
             />
           </div>
         </div>

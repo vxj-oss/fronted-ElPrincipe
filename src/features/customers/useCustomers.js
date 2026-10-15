@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   fetchClientes,
   crearCliente,
@@ -58,7 +59,13 @@ export function useCustomers() {
   const [error, setError] = useState(null);
   const [toastMsg, setToastMsg] = useState(null);
 
-  const [busqueda, setBusqueda] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const qParam = searchParams.get('q');
+  const [busqueda, setBusqueda] = useState(qParam || '');
+
+  useEffect(() => {
+    if (qParam !== null) setBusqueda(qParam);
+  }, [qParam]);
   const [filtroDistrito, setFiltroDistrito] = useState('');
   const [filtroTipo, setFiltroTipo] = useState('');
 
@@ -126,6 +133,14 @@ export function useCustomers() {
     marcarAperturaModalCliente();
   }, []);
 
+  const nuevoParam = searchParams.get('nuevo');
+
+  useEffect(() => {
+    if (!nuevoParam || cargando) return;
+    setSearchParams({}, { replace: true });
+    abrirCrear();
+  }, [nuevoParam, cargando, abrirCrear, setSearchParams]);
+
   const abrirEditar = useCallback((cliente) => {
     setEditandoId(cliente.id);
     setForm({
@@ -176,8 +191,9 @@ export function useCustomers() {
     try {
       if (editandoId) {
         const actualizado = await actualizarCliente(editandoId, payload);
-        setClientes((prev) => prev.map((c) => (c.id === editandoId ? actualizado : c)));
-        if (clienteDetalle?.id === editandoId) setClienteDetalle(actualizado);
+        const conservar = (c) => ({ ...actualizado, comprasTotal: c.comprasTotal, ultimaCompra: c.ultimaCompra, pedidosCount: c.pedidosCount });
+        setClientes((prev) => prev.map((c) => (c.id === editandoId ? conservar(c) : c)));
+        if (clienteDetalle?.id === editandoId) setClienteDetalle(conservar(clienteDetalle));
         setToastMsg({ tipo: 'success', texto: 'Cliente actualizado exitosamente.' });
       } else {
         const nuevo = await crearCliente(payload);
@@ -198,8 +214,9 @@ export function useCustomers() {
     if (!target) return;
     try {
       const actualizado = await toggleActivoCliente(id, target.activo);
-      setClientes((prev) => prev.map((c) => (c.id === id ? actualizado : c)));
-      if (clienteDetalle?.id === id) setClienteDetalle(actualizado);
+      const conservar = (c) => ({ ...actualizado, comprasTotal: c.comprasTotal, ultimaCompra: c.ultimaCompra, pedidosCount: c.pedidosCount });
+      setClientes((prev) => prev.map((c) => (c.id === id ? conservar(c) : c)));
+      if (clienteDetalle?.id === id) setClienteDetalle(conservar(clienteDetalle));
       setToastMsg({
         tipo: 'success',
         texto: `Cliente ${actualizado.activo ? 'activado' : 'desactivado'}.`,

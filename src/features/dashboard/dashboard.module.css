@@ -667,3 +667,59 @@
   font-weight: 700;
   letter-spacing: -0.02em;
 }
+
+.topbarAcciones {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.btnCierre {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1px solid #bfdbfe;
+  border-radius: 9999px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 150ms ease, transform 150ms ease;
+}
+
+.btnCierre:hover:not(:disabled) {
+  background: #dbeafe;
+  transform: translateY(-1px);
+}
+
+.btnCierre:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+:global(.dark) .btnCierre,
+:global([data-theme="dark"]) .btnCierre {
+  background: #1e293b;
+  border-color: #334155;
+  color: #bfdbfe;
+}
+
+.kpiGrid3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 900px) {
+  .kpiGrid3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .kpiGrid3 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

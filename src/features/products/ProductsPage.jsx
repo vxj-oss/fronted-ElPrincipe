@@ -1,13 +1,14 @@
 ﻿import { useEffect, useState } from 'react'
 import {
   Plus, Search, Pencil, Trash2, AlertCircle,
-  CheckCircle, Package, AlertTriangle, RotateCcw,
+  CheckCircle, Package, AlertTriangle, RotateCcw, FileSpreadsheet,
 } from 'lucide-react'
 import { useProducts, estadoStock } from './useProducts'
 import { usePagination } from '../../hooks/usePagination'
 import { useMediaQuery } from '../../hooks/useMediaQuery'
 import { useAuth } from '../../context/AuthContext'
 import { puede } from '../../utils/permissions'
+import { descargarArchivo } from '../../utils/descargas'
 import Pagination from '../../components/ui/Pagination'
 import ProductForm from './ProductForm'
 import MovimientosStock from './MovimientosStock'
@@ -149,6 +150,18 @@ function ConfirmDeleteModal({ productoId, productos, onConfirm, onCancel }) {
 export default function ProductsPage() {
   const { user } = useAuth()
   const puedeEditar = puede(user?.rol, 'productos.escribir')
+  const [descargandoReposicion, setDescargandoReposicion] = useState(false)
+
+  const descargarReposicion = async () => {
+    setDescargandoReposicion(true)
+    try {
+      await descargarArchivo('/reports/reposicion/excel', 'lista_reposicion.xlsx')
+    } catch {
+      return
+    } finally {
+      setDescargandoReposicion(false)
+    }
+  }
   const {
     productosFiltrados,
     productosBajoStock,
@@ -222,12 +235,18 @@ export default function ProductsPage() {
           <h1 className={styles.pageTitle}>Productos</h1>
           <p className={styles.pageSub}>Catálogo de productos de limpieza — EL PRÍNCIPE</p>
         </div>
-        {puedeEditar && (
-          <button onClick={abrirCrear} className={styles.btnPrimary}>
-            <Plus size={15} aria-hidden="true" />
-            Nuevo producto
+        <div className={styles.headerAcciones}>
+          <button onClick={descargarReposicion} disabled={descargandoReposicion} className={styles.btnSecundario}>
+            <FileSpreadsheet size={15} aria-hidden="true" />
+            {descargandoReposicion ? 'Generando…' : 'Lista de reposición'}
           </button>
-        )}
+          {puedeEditar && (
+            <button onClick={abrirCrear} className={styles.btnPrimary}>
+              <Plus size={15} aria-hidden="true" />
+              Nuevo producto
+            </button>
+          )}
+        </div>
       </header>
 
       <section className={styles.kpiGrid} aria-label="Resumen del catálogo">

@@ -17,6 +17,7 @@ function normalizeRequest(r) {
     codigo: r.codigo_solicitud,
     cliente_id: r.cliente_id,
     cliente: r.cliente?.razon_social || r.cliente?.nombre || `Cliente #${r.cliente_id}`,
+    telefono: r.cliente?.telefono || '',
     fecha: r.fecha_solicitud,
     canal: r.canal_recepcion || 'WhatsApp',
     estado: r.estado || 'Pendiente',
@@ -67,6 +68,44 @@ export async function crearSolicitud(payload) {
   return normalizeRequest(data);
 }
 
+export async function interpretarNota({ texto, clienteId }) {
+  const data = await apiRequest('/customer-requests/interpretar-nota', {
+    method: 'POST',
+    body: JSON.stringify({ texto, cliente_id: clienteId ? parseInt(clienteId, 10) : null }),
+  });
+  return {
+    iaDisponible: data.ia_disponible,
+    clienteSugeridoId: data.cliente_sugerido_id,
+    advertencias: data.advertencias || [],
+    items: (data.items || []).map((it) => ({
+      producto_id: it.producto_id,
+      nombre: it.nombre,
+      cant: it.cantidad,
+      precioEsperado: it.precio_esperado ? parseFloat(it.precio_esperado) : '',
+      opciones: (it.opciones || []).map((o) => ({
+        id: o.producto_id,
+        nombre: o.nombre,
+        precio: parseFloat(o.precio),
+      })),
+    })),
+  };
+}
+
 export async function eliminarSolicitud(id) {
   return apiRequest(`/customer-requests/${id}`, { method: 'DELETE' });
+}
+
+export async function descargarCotizacionPdf(id, codigo) {
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+  const respuesta = await fetch(`${baseUrl}/customer-requests/${id}/pdf`, { credentials: 'include' });
+  if (!respuesta.ok) throw new Error('No se pudo generar el PDF de la cotización.');
+  const blob = await respuesta.blob();
+  const url = URL.createObjectURL(blob);
+  const enlace = document.createElement('a');
+  enlace.href = url;
+  enlace.download = `${codigo}.pdf`;
+  document.body.appendChild(enlace);
+  enlace.click();
+  document.body.removeChild(enlace);
+  URL.revokeObjectURL(url);
 }

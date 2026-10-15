@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef } from 'react';
+﻿import { useEffect, useRef, useState } from 'react';
 import {
   TrendingUp,
   AlertCircle,
@@ -8,10 +8,17 @@ import {
   Users,
   Package,
   TriangleAlert,
+  FileDown,
+  Wallet,
+  CalendarDays,
+  Percent,
 } from 'lucide-react';
 import { useDashboard } from './useDashboard';
+import { descargarCierreDia } from './dashboardService';
+import { descargarArchivo } from '../../utils/descargas';
 import { useAuth } from '../../context/AuthContext';
 import { EMPRESA } from '../../constants/appConstants';
+import { saludoLima } from '../../utils/fechas';
 import styles from './dashboard.module.css';
 
 function KPICard({ label, value, deltaLabel, icon: Icon, accent }) {
@@ -192,6 +199,18 @@ function GraficaVentas({ data, periodo, periodos, onCambiarPeriodo }) {
 
 export default function DashboardPage() {
   const { user } = useAuth();
+  const [descargandoCierre, setDescargandoCierre] = useState(false);
+
+  const cerrarDia = async () => {
+    setDescargandoCierre(true);
+    try {
+      await descargarCierreDia();
+    } catch {
+      return;
+    } finally {
+      setDescargandoCierre(false);
+    }
+  };
   const {
     kpis,
     graficaData,
@@ -236,20 +255,26 @@ export default function DashboardPage() {
       <header className={styles.topbar}>
         <div>
           <h1 className={styles.greeting}>
-            Buenos días, {user?.nombre_completo || user?.nombre_usuario || 'Asesor'}
+            {saludoLima()}, {user?.nombre_completo || user?.nombre_usuario || 'Asesor'}
           </h1>
           <p className={styles.greetingSub}>
             Resumen comercial — {EMPRESA.NOMBRE}, {EMPRESA.CIUDAD}
           </p>
         </div>
-        <span className={styles.dateBadge}>{fechaHoy}</span>
+        <div className={styles.topbarAcciones}>
+          <button type="button" className={styles.btnCierre} onClick={cerrarDia} disabled={descargandoCierre}>
+            <FileDown size={14} aria-hidden="true" />
+            {descargandoCierre ? 'Generando…' : 'Cierre del día (PDF)'}
+          </button>
+          <span className={styles.dateBadge}>{fechaHoy}</span>
+        </div>
       </header>
 
       <section className={styles.kpiGrid} aria-label="Indicadores clave del día">
         <KPICard
-          label="Ventas totales"
-          value={`${EMPRESA.MONEDA_SIMBOLO} ${(kpis?.ventasTotales || 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`}
-          deltaLabel="acumulado total"
+          label="Ventas de hoy"
+          value={`${EMPRESA.MONEDA_SIMBOLO} ${(kpis?.ventasHoy || 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`}
+          deltaLabel={`${kpis?.pedidosConfirmadosHoy || 0} ${kpis?.pedidosConfirmadosHoy === 1 ? 'pedido confirmado' : 'pedidos confirmados'} hoy`}
           icon={ShoppingCart}
           accent
         />
@@ -273,6 +298,29 @@ export default function DashboardPage() {
         />
       </section>
 
+      {kpis?.rentabilidad && (
+        <section className={`${styles.kpiGrid} ${styles.kpiGrid3}`} aria-label="Rentabilidad">
+          <KPICard
+            label="Margen de hoy"
+            value={`${EMPRESA.MONEDA_SIMBOLO} ${kpis.rentabilidad.hoy.margen.toLocaleString('es-PE', { minimumFractionDigits: 2 })}`}
+            deltaLabel={kpis.rentabilidad.hoy.ventas > 0 ? `${kpis.rentabilidad.hoy.margen_pct.toFixed(1)}% de las ventas de hoy` : 'sin ventas hoy'}
+            icon={Wallet}
+          />
+          <KPICard
+            label="Ventas del mes"
+            value={`${EMPRESA.MONEDA_SIMBOLO} ${kpis.rentabilidad.mes.ventas.toLocaleString('es-PE', { minimumFractionDigits: 2 })}`}
+            deltaLabel={`${kpis.rentabilidad.mes.pedidos} ${kpis.rentabilidad.mes.pedidos === 1 ? 'pedido confirmado' : 'pedidos confirmados'} este mes`}
+            icon={CalendarDays}
+          />
+          <KPICard
+            label="Margen del mes"
+            value={`${EMPRESA.MONEDA_SIMBOLO} ${kpis.rentabilidad.mes.margen.toLocaleString('es-PE', { minimumFractionDigits: 2 })}`}
+            deltaLabel={kpis.rentabilidad.mes.ventas > 0 ? `${kpis.rentabilidad.mes.margen_pct.toFixed(1)}% de las ventas del mes` : 'sin ventas este mes'}
+            icon={Percent}
+          />
+        </section>
+      )}
+
       <section className={styles.mainGrid} aria-label="Ventas y stock">
         {graficaData && (
           <GraficaVentas
@@ -287,6 +335,17 @@ export default function DashboardPage() {
           <p className={styles.cardTitle} style={{ marginBottom: '14px' }}>
             Inventario en riesgo
           </p>
+          {stock.length > 0 && (
+            <button
+              type="button"
+              className={styles.btnCierre}
+              style={{ marginBottom: '12px' }}
+              onClick={() => descargarArchivo('/reports/reposicion/excel', 'lista_reposicion.xlsx').catch(() => {})}
+            >
+              <FileDown size={14} aria-hidden="true" />
+              Lista de reposición (Excel)
+            </button>
+          )}
           <div className={styles.stockList}>
             {stock.length === 0 ? (
               <p className={styles.cardSub}>Todo el inventario está en niveles óptimos.</p>
@@ -309,7 +368,7 @@ export default function DashboardPage() {
             Meta comercial — {porcentajeMeta}% completado
           </span>
           <span className={styles.metaValores}>
-            {EMPRESA.MONEDA_SIMBOLO} {Math.min(kpis?.ventasTotales || 0, metaDiaria).toLocaleString('es-PE', { minimumFractionDigits: 2 })} / {EMPRESA.MONEDA_SIMBOLO} {metaDiaria.toLocaleString('es-PE')}
+            {EMPRESA.MONEDA_SIMBOLO} {Math.min(kpis?.ventasHoy || 0, metaDiaria).toLocaleString('es-PE', { minimumFractionDigits: 2 })} / {EMPRESA.MONEDA_SIMBOLO} {metaDiaria.toLocaleString('es-PE')}
           </span>
         </div>
         <div className={styles.metaTrack}>
