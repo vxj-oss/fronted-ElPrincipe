@@ -9,9 +9,6 @@ import {
   Package,
   TriangleAlert,
   FileDown,
-  Wallet,
-  CalendarDays,
-  Percent,
 } from 'lucide-react';
 import { useDashboard } from './useDashboard';
 import { descargarCierreDia } from './dashboardService';
@@ -297,29 +294,6 @@ export default function DashboardPage() {
           icon={TriangleAlert}
         />
       </section>
-
-      {kpis?.rentabilidad && (
-        <section className={`${styles.kpiGrid} ${styles.kpiGrid3}`} aria-label="Rentabilidad">
-          <KPICard
-            label="Margen de hoy"
-            value={`${EMPRESA.MONEDA_SIMBOLO} ${kpis.rentabilidad.hoy.margen.toLocaleString('es-PE', { minimumFractionDigits: 2 })}`}
-            deltaLabel={kpis.rentabilidad.hoy.ventas > 0 ? `${kpis.rentabilidad.hoy.margen_pct.toFixed(1)}% de las ventas de hoy` : 'sin ventas hoy'}
-            icon={Wallet}
-          />
-          <KPICard
-            label="Ventas del mes"
-            value={`${EMPRESA.MONEDA_SIMBOLO} ${kpis.rentabilidad.mes.ventas.toLocaleString('es-PE', { minimumFractionDigits: 2 })}`}
-            deltaLabel={`${kpis.rentabilidad.mes.pedidos} ${kpis.rentabilidad.mes.pedidos === 1 ? 'pedido confirmado' : 'pedidos confirmados'} este mes`}
-            icon={CalendarDays}
-          />
-          <KPICard
-            label="Margen del mes"
-            value={`${EMPRESA.MONEDA_SIMBOLO} ${kpis.rentabilidad.mes.margen.toLocaleString('es-PE', { minimumFractionDigits: 2 })}`}
-            deltaLabel={kpis.rentabilidad.mes.ventas > 0 ? `${kpis.rentabilidad.mes.margen_pct.toFixed(1)}% de las ventas del mes` : 'sin ventas este mes'}
-            icon={Percent}
-          />
-        </section>
-      )}
 
       <section className={styles.mainGrid} aria-label="Ventas y stock">
         {graficaData && (
