@@ -723,3 +723,13 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+@media (max-width: 480px) {
+  .kpiCard {
+    padding: 12px;
+  }
+  .kpiValue {
+    font-size: 1.25rem;
+    white-space: nowrap;
+  }
+}

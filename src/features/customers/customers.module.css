@@ -1050,15 +1050,19 @@
     grid-template-columns: 1fr 1fr;
   }
   .toolbar {
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     align-items: stretch;
+    gap: 8px;
     width: 100%;
   }
   .searchWrap {
+    flex: 1 1 100%;
     max-width: 100%;
   }
   .filterSelect {
-    width: 100%;
+    flex: 1 1 calc(50% - 4px);
+    width: auto;
     min-width: 0;
   }
   .modalBody {
@@ -1488,4 +1492,29 @@
 
 .fichaLista li strong {
   font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 480px) {
+  .kpiCard {
+    padding: 12px;
+  }
+  .kpiValue {
+    font-size: 1.25rem;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .table td[data-primary] {
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px 8px;
+  }
+  .table td[data-primary] .clienteNombre {
+    flex: 1 1 100%;
+  }
+  .table td[data-primary] .clienteSub,
+  .table td[data-primary] .etiqueta {
+    white-space: nowrap;
+  }
 }

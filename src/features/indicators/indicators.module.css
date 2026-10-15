@@ -797,3 +797,16 @@
   font-weight: 700;
   letter-spacing: -0.02em;
 }
+
+@media (max-width: 640px) {
+  .kpiCard {
+    padding: 14px;
+    gap: 8px;
+  }
+  .kpiValor {
+    font-size: 1.75rem;
+  }
+  td[data-label='Fórmula'] {
+    display: none !important;
+  }
+}

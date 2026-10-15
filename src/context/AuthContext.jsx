@@ -53,6 +53,7 @@ export function AuthProvider({ children }) {
         ...userData,
         nombreCompleto: userData.nombre_completo,
         cargo: userData.rol === 'administrador' ? 'Administrador General' : 'Asesor Comercial',
+        esAdmin: userData.rol === 'administrador',
         permisos: [
           'dashboard',
           'agent',

@@ -155,9 +155,19 @@ export default function AgentPage() {
               <p className={styles.agentSub}>{EMPRESA.NOMBRE} · {EMPRESA.SUBTITULO}</p>
             </div>
           </div>
-          <div className={styles.statusRow}>
-            <span className={styles.statusDot} aria-hidden="true" />
-            <span className={styles.statusLabel}>En línea</span>
+          <div className={styles.topbarAcciones}>
+            <button
+              type="button"
+              onClick={nuevaConversacion}
+              className={styles.btnNuevaMovil}
+              aria-label="Nueva consulta"
+            >
+              <Plus size={16} aria-hidden="true" />
+            </button>
+            <div className={styles.statusRow}>
+              <span className={styles.statusDot} aria-hidden="true" />
+              <span className={styles.statusLabel}>En línea</span>
+            </div>
           </div>
         </header>
 
@@ -242,7 +252,7 @@ export default function AgentPage() {
             value={input}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            placeholder="Pregunta sobre ventas, stock, clientes o cotizaciones… (escribe / para ver comandos)"
+            placeholder="Escribe tu pregunta…"
             className={styles.chatInput}
             rows={1}
             aria-label="Escribe tu mensaje"

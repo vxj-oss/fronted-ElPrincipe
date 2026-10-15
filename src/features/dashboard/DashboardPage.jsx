@@ -103,7 +103,9 @@ function GraficaVentas({ data, periodo, periodos, onCambiarPeriodo }) {
   const chartRef = useRef(null);
 
   useEffect(() => {
+    let cancelado = false;
     import('chart.js').then(({ Chart, registerables }) => {
+      if (cancelado || !canvasRef.current) return;
       Chart.register(...registerables);
 
       if (chartRef.current) {
@@ -162,7 +164,11 @@ function GraficaVentas({ data, periodo, periodos, onCambiarPeriodo }) {
     });
 
     return () => {
-      if (chartRef.current) chartRef.current.destroy();
+      cancelado = true;
+      if (chartRef.current) {
+        chartRef.current.destroy();
+        chartRef.current = null;
+      }
     };
   }, [data]);
 

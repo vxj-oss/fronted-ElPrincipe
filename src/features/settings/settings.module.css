@@ -5,7 +5,7 @@
 
 .content {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr));
   gap: 16px;
   align-items: start;
   width: 100%;
@@ -883,4 +883,19 @@
   font-family: var(--font-display);
   font-weight: 700;
   letter-spacing: -0.02em;
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 16px;
+  }
+  .filaAjuste {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .catInput {
+    flex: 1 1 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
 }
