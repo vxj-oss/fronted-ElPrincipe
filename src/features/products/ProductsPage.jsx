@@ -348,8 +348,10 @@ export default function ProductsPage() {
                   <td data-label="Precio S/">S/ {p.precio.toFixed(2)}</td>
                   <td data-label="Costo S/">S/ {p.costo.toFixed(2)}</td>
                   <td data-label="Stock">
-                    <strong>{p.stock}</strong>
-                    <span className={styles.unidadLabel}> {p.unidad}</span>
+                    <span>
+                      <strong>{p.stock}</strong>
+                      <span className={styles.unidadLabel}> {p.unidad}</span>
+                    </span>
                   </td>
                   <td data-label="Mín." className={styles.tdMuted}>{p.minimo}</td>
                   <td data-label="Rotación">{p.rotacion}</td>

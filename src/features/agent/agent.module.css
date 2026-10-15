@@ -746,10 +746,109 @@
     padding: 12px 14px 16px;
     gap: 10px;
   }
-  .suggRow {
-    padding-left: 12px;
-    padding-right: 12px;
+  .chatTopbar {
+    padding: 10px 12px;
+    gap: 8px;
   }
+  .agentId {
+    min-width: 0;
+  }
+  .agentSub {
+    display: none;
+  }
+  .statusLabel {
+    white-space: nowrap;
+  }
+  .chatTopbar .btnNuevaMovil {
+    display: inline-flex;
+  }
+  .avatar {
+    display: none;
+  }
+  .msgRow {
+    gap: 0;
+  }
+  .bubbleWrap {
+    max-width: 92%;
+  }
+  .msgUser .bubbleWrap {
+    margin-left: auto;
+  }
+  .bubble {
+    padding: 10px 12px;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+  .seguimientoFila {
+    margin-left: 0;
+  }
+  .suggRow {
+    padding: 8px 12px;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .suggRow::-webkit-scrollbar {
+    display: none;
+  }
+  .suggBtn {
+    flex-shrink: 0;
+    padding: 7px 12px;
+  }
+  .chatInput {
+    min-width: 0;
+    padding: 10px 12px;
+    min-height: 42px;
+  }
+  .sendBtn {
+    width: 42px;
+    height: 42px;
+    margin-left: 0;
+  }
+  .micBtn {
+    width: 42px;
+    height: 42px;
+  }
+  .comandosMenu {
+    margin: 0 12px 8px;
+  }
+  .comandoItem {
+    flex-direction: column;
+    gap: 1px;
+  }
+  .comandoItem strong {
+    min-width: 0;
+  }
+}
+
+.topbarAcciones {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.btnNuevaMovil {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9999px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #1e3a8a;
+  cursor: pointer;
+}
+
+:global(.dark) .btnNuevaMovil,
+:global([data-theme="dark"]) .btnNuevaMovil {
+  background: #1e293b;
+  border-color: #334155;
+  color: #93c5fd;
 }
 
 .kpiCard {

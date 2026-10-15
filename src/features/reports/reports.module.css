@@ -853,3 +853,30 @@
   font-weight: 700;
   letter-spacing: -0.02em;
 }
+
+@media (max-width: 480px) {
+  .kpiCard {
+    padding: 12px;
+  }
+  .kpiValue {
+    font-size: 1.25rem;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 640px) {
+  .kpiGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .kpiCard {
+    padding: 10px;
+  }
+  .kpiLabel {
+    font-size: 0.625rem;
+    line-height: 1.2;
+  }
+  .kpiNote {
+    display: none;
+  }
+}
