@@ -3,7 +3,10 @@
   CheckCircle, Users, X, Phone, Mail,
   MapPin, CreditCard, ToggleLeft, ToggleRight,
 } from 'lucide-react'
+import { Bot as IconoBot } from 'lucide-react'
 import { useCustomers, iniciales } from './useCustomers'
+import { useAgentContext } from '../agent/AgentContext'
+import { useContextoAgente } from '../agent/useContextoAgente'
 import { usePagination } from '../../hooks/usePagination'
 import { useMediaQuery } from '../../hooks/useMediaQuery'
 import Pagination from '../../components/ui/Pagination'
@@ -61,7 +64,7 @@ function Toast({ toast }) {
   )
 }
 
-function DetallePanel({ cliente, onCerrar, onEditar }) {
+function DetallePanel({ cliente, onCerrar, onEditar, onPreguntar }) {
   if (!cliente) return null
 
   return (
@@ -136,6 +139,14 @@ function DetallePanel({ cliente, onCerrar, onEditar }) {
       <FichaCliente clienteId={cliente.id} telefono={cliente.telefono} />
 
       <div className={styles.detallePanelFooter}>
+        <button
+          onClick={onPreguntar}
+          className={styles.btnSecondary}
+          style={{ width: '100%', justifyContent: 'center', marginBottom: '8px' }}
+        >
+          <IconoBot size={13} aria-hidden="true" />
+          Preguntar al agente
+        </button>
         <button
           onClick={() => onEditar(cliente)}
           className={styles.btnPrimary}
@@ -244,6 +255,8 @@ export default function CustomersPage() {
     verDetalle,
     cerrarDetalle,
   } = useCustomers()
+  const { abrirPanel } = useAgentContext()
+  useContextoAgente(clienteDetalle ? { tipo: 'cliente', id: clienteDetalle.id, nombre: clienteDetalle.nombre } : null)
 
   const esMovilVertical = useMediaQuery('(max-width: 768px)')
 
@@ -442,6 +455,7 @@ export default function CustomersPage() {
         cliente={clienteDetalle}
         onCerrar={cerrarDetalle}
         onEditar={abrirEditar}
+        onPreguntar={abrirPanel}
       />
 
       <ClienteModal

@@ -1,147 +1,82 @@
-﻿import { Plus, Send, Bot, AlertCircle, Sparkles, Mic, Square } from 'lucide-react';
-import { useAgent } from './useAgent';
-import { useAuth } from '../../context/AuthContext';
-import BorradorCotizacion from './BorradorCotizacion';
+import { useState } from 'react';
+import { Plus, Bot, Volume2, VolumeX, History, Trash2, X } from 'lucide-react';
+import { useAgentContext } from './AgentContext';
+import ChatVista from './ChatVista';
+import ListaConversaciones from './ListaConversaciones';
 import { EMPRESA } from '../../constants/appConstants';
 import styles from './agent.module.css';
 
-function Burbuja({ mensaje, avatarAgente, avatarUsuario, inicioAtencion }) {
-  const esAgente = mensaje.rol === 'agent';
-  const esError = mensaje.tipo === 'error';
-
-  const hora = new Date(mensaje.timestamp).toLocaleTimeString('es-PE', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-
-  return (
-    <div className={`${styles.msgRow} ${esAgente ? styles.msgAgent : styles.msgUser}`}>
-      <div className={`${styles.avatar} ${esAgente ? styles.avatarAgent : styles.avatarUser}`}>
-        {esAgente ? avatarAgente : avatarUsuario}
-      </div>
-      <div className={styles.bubbleWrap}>
-        <div
-          className={`
-            ${styles.bubble}
-            ${esAgente ? styles.bubbleAgent : styles.bubbleUser}
-            ${esError ? styles.bubbleError : ''}
-          `}
-        >
-          {mensaje.texto && (
-            <p className={styles.bubbleTexto} style={{ whiteSpace: 'pre-line' }}>
-              {mensaje.texto}
-            </p>
-          )}
-          {esAgente && mensaje.datos_estructurados?.tipo === 'borrador_cotizacion' && (
-            <BorradorCotizacion
-              mensajeId={mensaje.id}
-              datos={mensaje.datos_estructurados}
-              inicioAtencion={inicioAtencion}
-            />
-          )}
-        </div>
-        <span className={styles.bubbleHora}>{hora}</span>
-      </div>
-    </div>
-  );
-}
-
-function TypingIndicator({ avatarAgente }) {
-  return (
-    <div className={`${styles.msgRow} ${styles.msgAgent}`}>
-      <div className={`${styles.avatar} ${styles.avatarAgent}`}>{avatarAgente}</div>
-      <div className={styles.typing}>
-        <span className={styles.dot} />
-        <span className={styles.dot} />
-        <span className={styles.dot} />
-      </div>
-    </div>
-  );
-}
-
-function HistorialItem({ conv, activa, onClick }) {
-  const fecha = new Date(conv.fechaISO).toLocaleDateString('es-PE', {
-    day: '2-digit',
-    month: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-
-  return (
-    <button
-      onClick={() => onClick(conv.id)}
-      className={`${styles.histItem} ${activa ? styles.histItemActivo : ''}`}
-      aria-current={activa ? 'page' : undefined}
-    >
-      <span className={styles.histLabel}>{conv.titulo}</span>
-      <span className={styles.histFecha}>{fecha}</span>
-    </button>
-  );
-}
-
 export default function AgentPage() {
-  const { user } = useAuth();
   const {
     conversaciones,
     conversacionActiva,
-    mensajes,
-    input,
-    enviando,
     cargando,
-    error,
-    preguntasSugeridas,
-    chatBodyRef,
-    inputRef,
     seleccionarConversacion,
     nuevaConversacion,
-    handleInputChange,
-    handleEnviar,
-    handleKeyDown,
-    usarSeguimiento,
-    comandosVisibles,
-    comandoActivo,
-    setComandoActivo,
-    seleccionarComando,
-    limpiarError,
-    dictado,
-  } = useAgent();
+    eliminarUna,
+    eliminarTodas,
+    voz,
+    leerAuto,
+    setLeerAuto,
+  } = useAgentContext();
+  const [historialMovil, setHistorialMovil] = useState(false);
+  const [confirmarTodas, setConfirmarTodas] = useState(false);
 
-  const inicialesAgente = <Bot size={16} aria-hidden="true" />;
-  const inicialesUsuario = user?.nombre_completo
-    ? user.nombre_completo.split(' ').slice(0, 2).map((w) => w[0]).join('').toUpperCase()
-    : 'US';
+  const elegir = (id) => {
+    setHistorialMovil(false);
+    seleccionarConversacion(id);
+  };
+
+  const borrarTodas = () => {
+    setConfirmarTodas(false);
+    eliminarTodas();
+  };
+
+  const lista = (
+    <ListaConversaciones
+      conversaciones={conversaciones}
+      activa={conversacionActiva}
+      cargando={cargando}
+      onSeleccionar={elegir}
+      onEliminar={eliminarUna}
+    />
+  );
+
+  const pieHistorial = conversaciones.length > 0 && (
+    <div className={styles.histPie}>
+      {confirmarTodas ? (
+        <div className={styles.histConfirmar}>
+          <span>¿Borrar todo el historial?</span>
+          <div>
+            <button type="button" className={styles.histBtnSi} onClick={borrarTodas}>
+              Borrar todo
+            </button>
+            <button type="button" className={styles.histBtnNo} onClick={() => setConfirmarTodas(false)} aria-label="Cancelar">
+              <X size={13} aria-hidden="true" />
+            </button>
+          </div>
+        </div>
+      ) : (
+        <button type="button" className={styles.histBorrarTodo} onClick={() => setConfirmarTodas(true)}>
+          <Trash2 size={13} aria-hidden="true" /> Borrar todo el historial
+        </button>
+      )}
+    </div>
+  );
 
   return (
     <div className={styles.shell}>
       <aside className={styles.sidebar} aria-label="Historial de conversaciones">
         <div className={styles.sidebarHeader}>
           <h2 className={styles.sidebarTitulo}>Conversaciones</h2>
-          <button
-            onClick={nuevaConversacion}
-            className={styles.btnNueva}
-            title="Nueva conversación"
-          >
+          <button onClick={nuevaConversacion} className={styles.btnNueva} title="Nueva conversación">
             <Plus size={14} aria-hidden="true" />
             Nueva consulta
           </button>
         </div>
 
-        <nav className={styles.histLista}>
-          {cargando ? (
-            <div className={styles.histCargando}>Cargando...</div>
-          ) : conversaciones.length === 0 ? (
-            <p className={styles.histVacio}>Sin conversaciones aún</p>
-          ) : (
-            conversaciones.map((conv) => (
-              <HistorialItem
-                key={conv.id}
-                conv={conv}
-                activa={conv.id === conversacionActiva}
-                onClick={seleccionarConversacion}
-              />
-            ))
-          )}
-        </nav>
+        <nav className={styles.histLista}>{lista}</nav>
+        {pieHistorial}
       </aside>
 
       <div className={styles.chatPanel}>
@@ -156,6 +91,27 @@ export default function AgentPage() {
             </div>
           </div>
           <div className={styles.topbarAcciones}>
+            {voz.soportada && (
+              <button
+                type="button"
+                onClick={() => setLeerAuto(!leerAuto)}
+                className={`${styles.btnVozAuto} ${leerAuto ? styles.btnVozAutoActivo : ''}`}
+                aria-pressed={leerAuto}
+                aria-label={leerAuto ? 'Desactivar lectura automática' : 'Leer respuestas en voz alta'}
+                title={leerAuto ? 'Lectura automática activada' : 'Leer respuestas en voz alta'}
+              >
+                {leerAuto ? <Volume2 size={15} aria-hidden="true" /> : <VolumeX size={15} aria-hidden="true" />}
+                <span>{leerAuto ? 'Voz activada' : 'Voz'}</span>
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => setHistorialMovil(true)}
+              className={styles.btnNuevaMovil}
+              aria-label="Historial de conversaciones"
+            >
+              <History size={16} aria-hidden="true" />
+            </button>
             <button
               type="button"
               onClick={nuevaConversacion}
@@ -171,115 +127,31 @@ export default function AgentPage() {
           </div>
         </header>
 
-        {error && (
-          <div className={styles.errorBanner} role="alert">
-            <AlertCircle size={14} aria-hidden="true" />
-            {error}
-            <button onClick={limpiarError} className={styles.errorClose} aria-label="Cerrar">
-              ×
-            </button>
-          </div>
-        )}
-
-        <div
-          className={styles.chatBody}
-          ref={chatBodyRef}
-          aria-live="polite"
-          aria-label="Conversación con el agente"
-        >
-          {mensajes.map((m, i) => (
-            <Burbuja
-              key={m.id}
-              mensaje={m}
-              avatarAgente={inicialesAgente}
-              avatarUsuario={inicialesUsuario}
-              inicioAtencion={
-                m.rol === 'agent'
-                  ? mensajes.slice(0, i).reverse().find((x) => x.rol === 'user')?.timestamp
-                  : undefined
-              }
-            />
-          ))}
-
-          {enviando && <TypingIndicator avatarAgente={inicialesAgente} />}
-        </div>
-
-        <div className={styles.suggRow} aria-label="Preguntas sugeridas">
-          {preguntasSugeridas.slice(0, 4).map((p) => (
-            <button
-              key={p}
-              onClick={() => usarSeguimiento(p)}
-              disabled={enviando}
-              className={styles.suggBtn}
-            >
-              <Sparkles size={12} className="inline mr-1" />
-              {p.length > 42 ? p.slice(0, 40) + '…' : p}
-            </button>
-          ))}
-        </div>
-
-        {dictado.errorDictado && (
-          <div className={styles.errorBanner} role="alert">
-            <AlertCircle size={14} aria-hidden="true" />
-            {dictado.errorDictado}
-          </div>
-        )}
-
-        {comandosVisibles.length > 0 && (
-          <ul className={styles.comandosMenu} role="listbox" aria-label="Comandos disponibles">
-            {comandosVisibles.map((c, i) => (
-              <li key={c.cmd} role="option" aria-selected={i === comandoActivo}>
-                <button
-                  type="button"
-                  className={`${styles.comandoItem} ${i === comandoActivo ? styles.comandoItemActivo : ''}`}
-                  onMouseEnter={() => setComandoActivo(i)}
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    seleccionarComando(c);
-                  }}
-                >
-                  <strong>{c.cmd}</strong>
-                  <span>{c.descripcion}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        <div className={styles.inputRow}>
-          <textarea
-            ref={inputRef}
-            value={input}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            placeholder="Escribe tu pregunta…"
-            className={styles.chatInput}
-            rows={1}
-            aria-label="Escribe tu mensaje"
-            disabled={enviando}
-          />
-          {dictado.soportado && (
-            <button
-              type="button"
-              onClick={() => dictado.alternar(input)}
-              disabled={enviando}
-              className={`${styles.micBtn} ${dictado.escuchando ? styles.micBtnActivo : ''}`}
-              aria-label={dictado.escuchando ? 'Detener dictado' : 'Dictar por voz'}
-              title={dictado.escuchando ? 'Detener dictado' : 'Dictar por voz'}
-            >
-              {dictado.escuchando ? <Square size={14} aria-hidden="true" /> : <Mic size={16} aria-hidden="true" />}
-            </button>
-          )}
-          <button
-            onClick={handleEnviar}
-            disabled={!input.trim() || enviando}
-            className={styles.sendBtn}
-            aria-label="Enviar mensaje"
-          >
-            <Send size={16} aria-hidden="true" />
-          </button>
-        </div>
+        <ChatVista />
       </div>
+
+      {historialMovil && (
+        <div className={styles.historialMovil} role="dialog" aria-label="Historial de conversaciones">
+          <div className={styles.historialMovilCab}>
+            <h2 className={styles.sidebarTitulo}>Conversaciones</h2>
+            <button type="button" className={styles.flotanteBtnOscuro} onClick={() => setHistorialMovil(false)} aria-label="Cerrar">
+              <X size={18} aria-hidden="true" />
+            </button>
+          </div>
+          <button
+            type="button"
+            className={styles.btnNueva}
+            onClick={() => {
+              setHistorialMovil(false);
+              nuevaConversacion();
+            }}
+          >
+            <Plus size={14} aria-hidden="true" /> Nueva consulta
+          </button>
+          <div className={styles.historialMovilLista}>{lista}</div>
+          {pieHistorial}
+        </div>
+      )}
     </div>
   );
 }

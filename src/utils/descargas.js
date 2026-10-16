@@ -16,6 +16,18 @@ function guardarBlob(blob, nombreArchivo) {
   URL.revokeObjectURL(url);
 }
 
+export async function descargarArchivoPost(endpoint, cuerpo, nombreArchivo) {
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+  const respuesta = await fetch(`${baseUrl}${endpoint}`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(cuerpo),
+  });
+  if (!respuesta.ok) throw new Error('No se pudo generar el archivo.');
+  guardarBlob(await respuesta.blob(), nombreArchivo);
+}
+
 export async function descargarArchivo(endpoint, nombreArchivo) {
   guardarBlob(await obtenerBlob(endpoint), nombreArchivo);
 }

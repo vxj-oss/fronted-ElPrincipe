@@ -376,6 +376,16 @@ export function useCustomerRequests() {
     });
   }, [confirmDelete, solicitudes, programarEliminacion]);
 
+  const estadoParam = searchParams.get('estado');
+  const qSolicitudParam = searchParams.get('q');
+
+  useEffect(() => {
+    if (estadoParam === null && qSolicitudParam === null) return;
+    if (estadoParam !== null) setFiltroEstado(ESTADOS_SOLICITUD.includes(estadoParam) ? estadoParam : '');
+    if (qSolicitudParam !== null) setBusqueda(qSolicitudParam);
+    setSearchParams({}, { replace: true });
+  }, [estadoParam, qSolicitudParam, setSearchParams]);
+
   return {
     solicitudesFiltradas,
     kpis,

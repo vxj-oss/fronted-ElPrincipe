@@ -257,6 +257,14 @@ export function useProducts() {
     }
   }, [])
 
+  const stockParam = searchParams.get('stock')
+
+  useEffect(() => {
+    if (stockParam === null) return
+    setFiltroStock(['critico', 'bajo', 'ok'].includes(stockParam) ? stockParam : '')
+    setSearchParams({}, { replace: true })
+  }, [stockParam, setSearchParams])
+
   return {
     productosFiltrados,
     productosBajoStock,
