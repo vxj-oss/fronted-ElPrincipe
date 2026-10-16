@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from 'react';
+﻿import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   TrendingUp,
   AlertCircle,
@@ -9,7 +9,19 @@ import {
   Package,
   TriangleAlert,
   FileDown,
+  Bot,
+  ArrowRight,
+  Gauge,
+  RefreshCw,
+  ChevronDown,
+  TrendingDown,
+  Send,
+  Lightbulb,
+  AlertTriangle,
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAgentContext } from '../agent/AgentContext';
+import { fetchLecturaDashboard } from '../agent/agentService';
 import { useDashboard } from './useDashboard';
 import { descargarCierreDia } from './dashboardService';
 import { descargarArchivo } from '../../utils/descargas';
@@ -33,6 +45,256 @@ function KPICard({ label, value, deltaLabel, icon: Icon, accent }) {
         {deltaLabel}
       </div>
     </div>
+  );
+}
+
+function PreguntarAlAgente({ pregunta, etiqueta = 'Preguntar al agente' }) {
+  const { abrirPanel, usarSeguimiento, enviando } = useAgentContext();
+  return (
+    <button
+      type="button"
+      className={styles.btnPreguntar}
+      disabled={enviando}
+      onClick={() => {
+        abrirPanel();
+        usarSeguimiento(pregunta);
+      }}
+    >
+      <Bot size={13} aria-hidden="true" />
+      {etiqueta}
+    </button>
+  );
+}
+
+const ICONOS_LECTURA = {
+  ventas: TrendingUp,
+  indicadores: Gauge,
+  stock: Package,
+  recompra: Users,
+  seguimiento: Clock,
+  anomalias: AlertTriangle,
+};
+
+const FILTROS_LECTURA = [
+  { clave: 'todo', etiqueta: 'Todo' },
+  { clave: 'urgente', etiqueta: 'Urgente' },
+  { clave: 'oportunidades', etiqueta: 'Oportunidades' },
+];
+
+function hace(minutos) {
+  if (minutos < 1) return 'justo ahora';
+  if (minutos === 1) return 'hace 1 min';
+  return `hace ${minutos} min`;
+}
+
+function LecturaAgente() {
+  const navigate = useNavigate();
+  const { abrirPanel, usarSeguimiento, enviando } = useAgentContext();
+  const [lectura, setLectura] = useState(null);
+  const [cargando, setCargando] = useState(true);
+  const [actualizando, setActualizando] = useState(false);
+  const [abierto, setAbierto] = useState(null);
+  const [filtro, setFiltro] = useState('todo');
+  const [consulta, setConsulta] = useState('');
+  const [momento, setMomento] = useState(Date.now());
+  const [ahora, setAhora] = useState(Date.now());
+
+  const cargar = useCallback(async (forzar = false) => {
+    setActualizando(true);
+    try {
+      const datos = await fetchLecturaDashboard(forzar);
+      setLectura(datos);
+      setMomento(Date.now());
+    } catch {
+      return;
+    } finally {
+      setCargando(false);
+      setActualizando(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    cargar(false);
+    const intervalo = setInterval(() => {
+      if (!document.hidden) cargar(false);
+    }, 5 * 60 * 1000);
+    const reloj = setInterval(() => setAhora(Date.now()), 30000);
+    return () => {
+      clearInterval(intervalo);
+      clearInterval(reloj);
+    };
+  }, [cargar]);
+
+  const ejecutar = (accion) => {
+    if (accion.tipo === 'enlace') {
+      navigate(accion.ruta);
+      return;
+    }
+    abrirPanel();
+    usarSeguimiento(accion.texto);
+  };
+
+  const preguntar = (e) => {
+    e.preventDefault();
+    const texto = consulta.trim();
+    if (!texto || enviando) return;
+    abrirPanel();
+    usarSeguimiento(texto);
+    setConsulta('');
+  };
+
+  const puntos = useMemo(() => {
+    const todos = lectura?.puntos || [];
+    if (filtro === 'urgente') return todos.filter((p) => p.nivel === 'alta');
+    if (filtro === 'oportunidades') return todos.filter((p) => ['recompra', 'seguimiento', 'stock'].includes(p.id));
+    return todos;
+  }, [lectura, filtro]);
+
+  if (cargando) {
+    return (
+      <section className={styles.lectura} aria-label="Lectura del agente">
+        <p className={styles.lecturaTitulo}><Bot size={15} aria-hidden="true" /> Lectura del agente</p>
+        <div className={styles.lecturaEsqueleto} aria-hidden="true">
+          <span /><span /><span />
+        </div>
+      </section>
+    );
+  }
+  if (!lectura?.puntos?.length) return null;
+
+  const minutos = Math.max(0, Math.floor((ahora - momento) / 60000));
+
+  return (
+    <section className={styles.lectura} aria-label="Lectura del agente">
+      <div className={styles.lecturaCabecera}>
+        <div className={styles.lecturaTituloFila}>
+          <p className={styles.lecturaTitulo}><Bot size={15} aria-hidden="true" /> Lectura del agente</p>
+          {lectura.urgentes > 0 && (
+            <span className={styles.lecturaUrgentes}>{lectura.urgentes} {lectura.urgentes === 1 ? 'urgente' : 'urgentes'}</span>
+          )}
+        </div>
+        <div className={styles.lecturaControles}>
+          <div className={styles.lecturaFiltros} role="tablist" aria-label="Filtrar lectura">
+            {FILTROS_LECTURA.map((f) => (
+              <button
+                key={f.clave}
+                type="button"
+                role="tab"
+                aria-selected={filtro === f.clave}
+                className={`${styles.lecturaFiltro} ${filtro === f.clave ? styles.lecturaFiltroActivo : ''}`}
+                onClick={() => setFiltro(f.clave)}
+              >
+                {f.etiqueta}
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            className={styles.lecturaRefrescar}
+            onClick={() => cargar(true)}
+            disabled={actualizando}
+            aria-label="Actualizar lectura"
+            title={`Actualizada ${hace(minutos)}`}
+          >
+            <RefreshCw size={13} aria-hidden="true" className={actualizando ? styles.girando : ''} />
+            <span>{hace(minutos)}</span>
+          </button>
+        </div>
+      </div>
+
+      {puntos.length === 0 ? (
+        <p className={styles.cardSub}>No hay elementos en este filtro.</p>
+      ) : (
+        <ul className={styles.lecturaLista}>
+          {puntos.map((p, i) => {
+            const Icono = ICONOS_LECTURA[p.icono] || Bot;
+            const expandido = abierto === p.id;
+            const hayDetalle = p.detalle?.length > 0;
+            return (
+              <li
+                key={p.id}
+                className={`${styles.lecturaItem} ${styles[`lectura_${p.nivel}`] || ''} ${expandido ? styles.lecturaItemAbierto : ''}`}
+                style={{ animationDelay: `${i * 60}ms` }}
+              >
+                <div className={styles.lecturaFila}>
+                  <span className={`${styles.lecturaIcono} ${p.nivel === 'alta' ? styles.lecturaPulso : ''}`} aria-hidden="true">
+                    {p.icono === 'ventas' && p.tendencia === 'baja' ? <TrendingDown size={15} /> : <Icono size={15} />}
+                  </span>
+                  <button
+                    type="button"
+                    className={styles.lecturaCuerpo}
+                    onClick={() => hayDetalle && setAbierto(expandido ? null : p.id)}
+                    aria-expanded={hayDetalle ? expandido : undefined}
+                    disabled={!hayDetalle}
+                  >
+                    <span className={styles.lecturaCabeza}>
+                      <strong>{p.titulo}</strong>
+                      {p.valor && <span className={styles.lecturaChip}>{p.valor}</span>}
+                    </span>
+                    <span className={styles.lecturaTexto}>{p.texto}</span>
+                    {p.sugerencia && (
+                      <span className={styles.lecturaSugerencia}>
+                        <Lightbulb size={12} aria-hidden="true" /> {p.sugerencia}
+                      </span>
+                    )}
+                  </button>
+                  <div className={styles.lecturaAcciones}>
+                    {p.accion && (
+                      <button
+                        type="button"
+                        className={styles.lecturaBtn}
+                        disabled={enviando && p.accion.tipo === 'pregunta'}
+                        onClick={() => ejecutar(p.accion)}
+                      >
+                        {p.accion.etiqueta}
+                        <ArrowRight size={12} aria-hidden="true" />
+                      </button>
+                    )}
+                    {hayDetalle && (
+                      <button
+                        type="button"
+                        className={styles.lecturaChevron}
+                        onClick={() => setAbierto(expandido ? null : p.id)}
+                        aria-label={expandido ? 'Ocultar detalle' : 'Ver detalle'}
+                      >
+                        <ChevronDown size={16} aria-hidden="true" className={expandido ? styles.chevronArriba : ''} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+                {expandido && (
+                  <ul className={styles.lecturaDetalle}>
+                    {p.detalle.map((d) => (
+                      <li key={d.texto}>
+                        <span className={d.color ? styles[`punto_${d.color}`] : undefined}>{d.texto}</span>
+                        {d.accion && (
+                          <button type="button" className={styles.lecturaMini} disabled={enviando} onClick={() => ejecutar(d.accion)}>
+                            {d.accion.etiqueta}
+                          </button>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
+      <form className={styles.lecturaPregunta} onSubmit={preguntar}>
+        <input
+          type="text"
+          value={consulta}
+          onChange={(e) => setConsulta(e.target.value)}
+          placeholder="Pregúntale algo al agente sobre tu negocio…"
+          aria-label="Pregunta para el agente"
+        />
+        <button type="submit" disabled={!consulta.trim() || enviando} aria-label="Enviar pregunta">
+          <Send size={14} aria-hidden="true" />
+        </button>
+      </form>
+    </section>
   );
 }
 
@@ -179,6 +441,10 @@ function GraficaVentas({ data, periodo, periodos, onCambiarPeriodo }) {
           <p className={styles.cardTitle}>Ventas por período</p>
           <p className={styles.cardSub}>{data?.subtitulo}</p>
         </div>
+        <div className={styles.cardAcciones}>
+        <PreguntarAlAgente
+          pregunta={`¿Por qué cambiaron las ventas ${{ hoy: 'hoy', semana: 'esta semana', mes: 'este mes' }[periodo] || 'esta semana'}?`}
+        />
         <div className={styles.tabRow}>
           {periodos.map((p) => (
             <button
@@ -189,6 +455,7 @@ function GraficaVentas({ data, periodo, periodos, onCambiarPeriodo }) {
               {p.label}
             </button>
           ))}
+        </div>
         </div>
       </div>
       <div className={styles.chartWrap}>
@@ -312,9 +579,10 @@ export default function DashboardPage() {
         )}
 
         <div className={styles.card}>
-          <p className={styles.cardTitle} style={{ marginBottom: '14px' }}>
-            Inventario en riesgo
-          </p>
+          <div className={styles.cardHeader} style={{ marginBottom: '10px' }}>
+            <p className={styles.cardTitle}>Inventario en riesgo</p>
+            <PreguntarAlAgente pregunta="¿Qué debo reponer?" etiqueta="Preguntar" />
+          </div>
           {stock.length > 0 && (
             <button
               type="button"
@@ -341,6 +609,8 @@ export default function DashboardPage() {
           </div>
         </div>
       </section>
+
+      <LecturaAgente />
 
       <section className={styles.metaBar} aria-label="Progreso de meta diaria">
         <div className={styles.metaHeader}>

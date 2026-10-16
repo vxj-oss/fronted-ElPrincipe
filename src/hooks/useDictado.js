@@ -20,6 +20,7 @@ export function useDictado(onTexto) {
   const [errorDictado, setErrorDictado] = useState(null);
   const reconocimientoRef = useRef(null);
   const baseRef = useRef('');
+  const ignorarRef = useRef(false);
   const onTextoRef = useRef(onTexto);
   const soportado = Boolean(obtenerReconocimiento());
 
@@ -33,9 +34,17 @@ export function useDictado(onTexto) {
     reconocimientoRef.current?.stop();
   }, []);
 
+  const cancelar = useCallback(() => {
+    ignorarRef.current = true;
+    reconocimientoRef.current?.abort();
+    setEscuchando(false);
+    setErrorDictado(null);
+  }, []);
+
   const iniciar = useCallback((textoBase = '') => {
     const Reconocimiento = obtenerReconocimiento();
     if (!Reconocimiento) return;
+    ignorarRef.current = false;
 
     const reconocimiento = new Reconocimiento();
     reconocimiento.lang = IDIOMA;
@@ -46,6 +55,7 @@ export function useDictado(onTexto) {
     baseRef.current = base ? `${base} ` : '';
 
     reconocimiento.onresult = (evento) => {
+      if (ignorarRef.current) return;
       let dictado = '';
       for (let i = 0; i < evento.results.length; i += 1) {
         dictado += evento.results[i][0].transcript;
@@ -53,6 +63,10 @@ export function useDictado(onTexto) {
       onTextoRef.current(`${baseRef.current}${dictado.trim()}`);
     };
     reconocimiento.onerror = (evento) => {
+      if (ignorarRef.current || evento.error === 'aborted') {
+        setEscuchando(false);
+        return;
+      }
       setErrorDictado(MENSAJES_ERROR[evento.error] || 'No se pudo usar el dictado por voz.');
       setEscuchando(false);
     };
@@ -76,5 +90,5 @@ export function useDictado(onTexto) {
     [escuchando, iniciar, detener]
   );
 
-  return { soportado, escuchando, errorDictado, alternar, detener };
+  return { soportado, escuchando, errorDictado, alternar, detener, cancelar };
 }

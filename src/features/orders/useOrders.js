@@ -646,6 +646,25 @@ export function useOrders() {
 
   const cerrarDetalle = useCallback(() => setPedidoDetalle(null), []);
 
+  const estadoParam = searchParams.get('estado');
+  const qOrdenParam = searchParams.get('q');
+  const detalleParam = searchParams.get('detalle');
+
+  useEffect(() => {
+    if (cargando || (estadoParam === null && qOrdenParam === null && !detalleParam)) return;
+    if (detalleParam) {
+      const encontrado = pedidos.find((p) => p.numero === detalleParam);
+      setBusqueda(detalleParam);
+      setFiltroEstado('');
+      setFiltroError('');
+      if (encontrado) setPedidoDetalle(encontrado);
+    } else {
+      if (estadoParam !== null) setFiltroEstado(ESTADOS_PEDIDO.includes(estadoParam) ? estadoParam : '');
+      if (qOrdenParam !== null) setBusqueda(qOrdenParam);
+    }
+    setSearchParams({}, { replace: true });
+  }, [cargando, pedidos, estadoParam, qOrdenParam, detalleParam, setSearchParams]);
+
   return {
     pedidosFiltrados,
     kpis,

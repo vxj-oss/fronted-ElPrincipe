@@ -257,6 +257,21 @@ export function useCustomers() {
 
   const cerrarDetalle = useCallback(() => setClienteDetalle(null), []);
 
+  const tipoParam = searchParams.get('tipo');
+  const detalleParam = searchParams.get('detalle');
+
+  useEffect(() => {
+    if (cargando || (tipoParam === null && !detalleParam)) return;
+    if (tipoParam !== null) {
+      setFiltroTipo(['Mayorista', 'Institucional', 'Minorista'].includes(tipoParam) ? tipoParam : '');
+    }
+    if (detalleParam) {
+      const encontrado = clientes.find((c) => String(c.id) === detalleParam);
+      if (encontrado) setClienteDetalle(encontrado);
+    }
+    setSearchParams({}, { replace: true });
+  }, [cargando, clientes, tipoParam, detalleParam, setSearchParams]);
+
   return {
     clientesFiltrados,
     kpis,

@@ -1,12 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, CheckCircle2, Copy, FileDown, Minus, Plus, Share2, X } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { AlertTriangle, CheckCircle2, Copy, FileDown, Minus, Plus, Share2, ShoppingCart, X } from 'lucide-react';
 import { compartirArchivo, puedeCompartirArchivos } from '../../utils/descargas';
 import { fetchClientes } from '../customers/customersService';
 import { crearSolicitud, descargarCotizacionPdf, CANALES_RECEPCION } from '../customer_requests/customerRequestsService';
 import { EMPRESA } from '../../constants/appConstants';
+import { useAgentContext } from './AgentContext';
+import { avisarDatosActualizados, guardarResuelto, leerResueltos } from './resueltos';
 import styles from './agent.module.css';
-
-const CLAVE_RESUELTOS = 'agente_borradores_resueltos';
 
 let clientesPromesa = null;
 function cargarClientes() {
@@ -19,22 +19,6 @@ function cargarClientes() {
       });
   }
   return clientesPromesa;
-}
-
-function leerResueltos() {
-  try {
-    return JSON.parse(localStorage.getItem(CLAVE_RESUELTOS) || '{}');
-  } catch {
-    return {};
-  }
-}
-
-function guardarResuelto(id, valor) {
-  try {
-    localStorage.setItem(CLAVE_RESUELTOS, JSON.stringify({ ...leerResueltos(), [id]: valor }));
-  } catch {
-    return;
-  }
 }
 
 const soles = (n) =>
@@ -120,6 +104,7 @@ function BotonCopiar({ obtenerTexto }) {
 }
 
 export default function BorradorCotizacion({ mensajeId, datos, inicioAtencion }) {
+  const { usarSeguimiento, enviando, registrarBorrador, desregistrarBorrador } = useAgentContext();
   const resuelto = useMemo(() => leerResueltos()[mensajeId] || null, [mensajeId]);
   const [clientes, setClientes] = useState([]);
   const [clienteId, setClienteId] = useState(datos.cliente?.id ?? '');
@@ -145,6 +130,38 @@ export default function BorradorCotizacion({ mensajeId, datos, inicioAtencion })
     const elegido = clientes.find((c) => String(c.id) === String(clienteId));
     return elegido ? elegido.nombre || elegido.razon_social : datos.cliente?.nombre || '';
   };
+
+  const ultimo = useRef({});
+  ultimo.current = { items, clienteId, nombreCliente };
+
+  useEffect(() => {
+    if (estado !== 'borrador') return undefined;
+    registrarBorrador(mensajeId, {
+      tipo: 'cotizacion',
+      obtener: () => {
+        const actual = ultimo.current;
+        return {
+          tipo: 'cotizacion',
+          mensaje_id: String(mensajeId),
+          descuento_pct: descuento,
+          cliente: actual.clienteId ? { id: Number(actual.clienteId), nombre: actual.nombreCliente() } : null,
+          items: actual.items.map((it) => ({
+            producto_id: it.producto_id,
+            nombre: it.nombre,
+            cantidad: it.cant,
+            precio_esperado: it.precioEsperado === '' ? null : Number(it.precioEsperado),
+            stock: it.stock,
+            opciones: it.opciones.map((o) => ({ producto_id: o.id, nombre: o.nombre, precio: o.precio, stock: o.stock })),
+          })),
+        };
+      },
+      aplicar: (edicion) => {
+        setItems(itemsIniciales({ items: edicion.items }));
+        if (edicion.cliente?.id) setClienteId(edicion.cliente.id);
+      },
+    });
+    return () => desregistrarBorrador(mensajeId);
+  }, [estado, mensajeId, descuento, registrarBorrador, desregistrarBorrador]);
 
   const cambiarCantidad = (idx, delta) =>
     setItems((prev) =>
@@ -214,6 +231,7 @@ export default function BorradorCotizacion({ mensajeId, datos, inicioAtencion })
       guardarResuelto(mensajeId, guardado);
       setRegistro(guardado);
       setEstado('registrado');
+      avisarDatosActualizados();
     } catch (err) {
       setError(err.message || 'No se pudo registrar la cotización.');
       setEstado('borrador');
@@ -249,6 +267,16 @@ export default function BorradorCotizacion({ mensajeId, datos, inicioAtencion })
               onClick={() => descargarCotizacionPdf(registro.id, registro.codigo).catch(() => {})}
             >
               <FileDown size={13} aria-hidden="true" /> Descargar PDF
+            </button>
+          )}
+          {registro.codigo && (
+            <button
+              type="button"
+              className={styles.borradorCopiar}
+              disabled={enviando}
+              onClick={() => usarSeguimiento(`Hazle el pedido de la cotización ${registro.codigo}`)}
+            >
+              <ShoppingCart size={13} aria-hidden="true" /> Convertir en pedido
             </button>
           )}
           {registro.id && puedeCompartirArchivos() && (

@@ -265,3 +265,5 @@ export const INDICADORES_DEF = {
 };
 
 export const INTERVALO_REFRESCO_MS = 60000;
+
+export const INTERVALO_AVISOS_MS = 5 * 60 * 1000;

@@ -4,7 +4,10 @@ import {
   AlertTriangle, AlertCircle, CheckCircle,
   X, ShoppingBag, ShieldAlert, ShieldCheck, FileDown, Share2, Receipt,
 } from 'lucide-react';
+import { Bot as IconoBot } from 'lucide-react';
 import { useOrders } from './useOrders';
+import { useAgentContext } from '../agent/AgentContext';
+import { useContextoAgente } from '../agent/useContextoAgente';
 import { calcularTotal, formatearFecha } from './ordersService';
 import { EMPRESA } from '../../constants/appConstants';
 import { descargarArchivo, compartirArchivo, puedeCompartirArchivos } from '../../utils/descargas';
@@ -86,7 +89,7 @@ function Toast({ toast }) {
 const descargarPedidoPdf = (pedido) =>
   descargarArchivo(`/orders/${pedido.id}/pdf`, `${pedido.numero}.pdf`).catch(() => {});
 
-function DetallePanel({ pedido, onCerrar, onEditar, onConfirmar }) {
+function DetallePanel({ pedido, onCerrar, onEditar, onConfirmar, onPreguntar }) {
   if (!pedido) return null;
   const total = calcularTotal(pedido.items);
   const cond = pedido.condicionComercial;
@@ -243,6 +246,13 @@ function DetallePanel({ pedido, onCerrar, onEditar, onConfirmar }) {
           </button>
         )}
         <button
+          onClick={onPreguntar}
+          className={styles.btnSecondary}
+          style={{ width: '100%', marginBottom: '8px' }}
+        >
+          <IconoBot size={13} aria-hidden="true" /> Preguntar al agente
+        </button>
+        <button
           onClick={() => onEditar(pedido)}
           className={styles.btnSecondary}
           style={{ width: '100%' }}
@@ -393,6 +403,8 @@ export default function OrdersPage() {
     verDetalle, cerrarDetalle,
     eliminacionPendiente, deshacerEliminacion, retardoEliminacion,
   } = useOrders();
+  const { abrirPanel } = useAgentContext();
+  useContextoAgente(pedidoDetalle ? { tipo: 'pedido', id: pedidoDetalle.id, codigo: pedidoDetalle.numero, nombre: pedidoDetalle.cliente } : null);
 
   const esMovilVertical = useMediaQuery('(max-width: 768px)');
 
@@ -601,6 +613,7 @@ export default function OrdersPage() {
         onCerrar={cerrarDetalle}
         onEditar={abrirEditar}
         onConfirmar={handleCambiarEstado}
+        onPreguntar={abrirPanel}
       />
 
       <PedidoModal
