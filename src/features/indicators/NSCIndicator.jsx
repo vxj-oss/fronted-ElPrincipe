@@ -4,13 +4,15 @@ import { useIndicadorDetalle } from './useIndicators';
 import { usePagination } from '../../hooks/usePagination';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import Pagination from '../../components/ui/Pagination';
+import { bgSuave, bordeSuave } from '../../utils/colorSuave';
+import { useTheme } from '../../context/ThemeContext';
 import styles from './indicators.module.css';
 
 export function CargandoView() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', gap: 12 }}>
-      <div style={{ width: 32, height: 32, border: '3px solid #e2e8f0', borderTopColor: '#1E3A8A', borderRadius: '50%', animation: 'spin .7s linear infinite' }} />
-      <p style={{ fontSize: '0.875rem', color: '#64748b' }}>Cargando indicador...</p>
+      <div style={{ width: 32, height: 32, border: '3px solid #e2e8f0', borderTopColor: '#5433eb', borderRadius: '50%', animation: 'spin .7s linear infinite' }} />
+      <p style={{ fontSize: '0.875rem', color: 'var(--ind-muted)' }}>Cargando indicador...</p>
     </div>
   );
 }
@@ -19,19 +21,19 @@ export function ErrorView({ mensaje }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', gap: 12 }}>
       <AlertCircle size={32} style={{ color: '#dc2626' }} />
-      <p style={{ fontSize: '0.875rem', color: '#64748b' }}>{mensaje || 'Error al cargar el indicador.'}</p>
+      <p style={{ fontSize: '0.875rem', color: 'var(--ind-muted)' }}>{mensaje || 'Error al cargar el indicador.'}</p>
     </div>
   );
 }
 
 export function SeccionCard({ numero, titulo, children }) {
   return (
-    <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '0.75rem', padding: '18px 20px', marginBottom: 14 }}>
+    <div style={{ background: 'var(--ind-surface)', border: '1px solid #e2e8f0', borderRadius: '0.75rem', padding: '18px 20px', marginBottom: 14 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-        <div style={{ width: 26, height: 26, borderRadius: 6, background: '#1E3A8A', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 500, flexShrink: 0 }}>
+        <div style={{ width: 26, height: 26, borderRadius: 6, background: '#5433eb', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 500, flexShrink: 0 }}>
           {numero}
         </div>
-        <span style={{ fontSize: '0.9375rem', fontWeight: 500, color: '#0f172a' }}>{titulo}</span>
+        <span style={{ fontSize: '0.9375rem', fontWeight: 500, color: 'var(--ind-text)' }}>{titulo}</span>
       </div>
       {children}
     </div>
@@ -41,16 +43,16 @@ export function SeccionCard({ numero, titulo, children }) {
 export function DatoCard({ sigla, nombre, valor, desc, desglose = [] }) {
   return (
     <div style={{ border: '1px solid #e2e8f0', borderRadius: '0.5rem', padding: '14px 16px' }}>
-      <p style={{ fontSize: '0.625rem', fontWeight: 500, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '.07em', marginBottom: 4 }}>
+      <p style={{ fontSize: '0.625rem', fontWeight: 500, color: 'var(--ind-faint)', textTransform: 'uppercase', letterSpacing: '.07em', marginBottom: 4 }}>
         {sigla} — {nombre}
       </p>
-      <p style={{ fontSize: '2rem', fontWeight: 500, color: '#0f172a', lineHeight: 1, marginBottom: 4 }}>{valor}</p>
-      <p style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: 10 }}>{desc}</p>
+      <p style={{ fontSize: '2rem', fontWeight: 500, color: 'var(--ind-text)', lineHeight: 1, marginBottom: 4 }}>{valor}</p>
+      <p style={{ fontSize: '0.75rem', color: 'var(--ind-muted)', marginBottom: 10 }}>{desc}</p>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
         {desglose.map((d, i) => (
-          <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#64748b' }}>
+          <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--ind-muted)' }}>
             <span>{d.label}</span>
-            <span style={{ fontWeight: 500, color: '#0f172a' }}>{d.valor}</span>
+            <span style={{ fontWeight: 500, color: 'var(--ind-text)' }}>{d.valor}</span>
           </div>
         ))}
       </div>
@@ -70,9 +72,9 @@ export function TablaErrores({ filas = [], columnas = [], claves = [] }) {
       <div style={{ overflowX: 'auto' }}>
         <table className="responsive-table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8125rem' }}>
           <thead>
-            <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+            <tr style={{ background: 'var(--ind-head-bg)', borderBottom: '1px solid #e2e8f0' }}>
               {columnas.map((c) => (
-                <th key={c} style={{ padding: '7px 10px', textAlign: 'left', fontSize: '0.6875rem', fontWeight: 500, color: '#64748b', textTransform: 'uppercase', letterSpacing: '.06em' }}>
+                <th key={c} style={{ padding: '7px 10px', textAlign: 'left', fontSize: '0.6875rem', fontWeight: 500, color: 'var(--ind-muted)', textTransform: 'uppercase', letterSpacing: '.06em' }}>
                   {c}
                 </th>
               ))}
@@ -81,7 +83,7 @@ export function TablaErrores({ filas = [], columnas = [], claves = [] }) {
           <tbody>
             {filas.length === 0 ? (
               <tr>
-                <td colSpan={columnas.length} style={{ padding: '16px', textAlign: 'center', color: '#94a3b8' }}>
+                <td colSpan={columnas.length} style={{ padding: '16px', textAlign: 'center', color: 'var(--ind-faint)' }}>
                   Sin registros para este periodo.
                 </td>
               </tr>
@@ -89,7 +91,7 @@ export function TablaErrores({ filas = [], columnas = [], claves = [] }) {
               itemsPagina.map((f, i) => (
                 <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
                   {claves.map((k, ci) => (
-                    <td key={k} data-label={columnas[ci]} data-primary={ci === 0 ? '' : undefined} style={{ padding: '8px 10px', color: '#0f172a' }}>
+                    <td key={k} data-label={columnas[ci]} data-primary={ci === 0 ? '' : undefined} style={{ padding: '8px 10px', color: 'var(--ind-text)' }}>
                       {f[k]}
                     </td>
                   ))}
@@ -113,7 +115,8 @@ export function TablaErrores({ filas = [], columnas = [], claves = [] }) {
   );
 }
 
-export function GraficoLinea({ titulo, labels = [], data = [], color = '#1E3A8A' }) {
+export function GraficoLinea({ titulo, labels = [], data = [], color = '#5433eb' }) {
+  const { isDark: temaOscuro } = useTheme();
   const ref = useRef(null);
   const chartRef = useRef(null);
 
@@ -121,10 +124,10 @@ export function GraficoLinea({ titulo, labels = [], data = [], color = '#1E3A8A'
     import('chart.js').then(({ Chart, registerables }) => {
       Chart.register(...registerables);
       if (chartRef.current) chartRef.current.destroy();
-      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const gc = isDark ? '#2c2c2a' : '#e2e8f0';
+      const isDark = temaOscuro;
+      const gc = isDark ? '#2b2b32' : '#ebebeb';
       const textoMuted = isDark ? '#cbd5e1' : '#334155';
-      const superficie = isDark ? '#111827' : '#ffffff';
+      const superficie = isDark ? '#17171b' : '#ffffff';
 
       const valorFinalPlugin = {
         id: 'valorFinalLinea',
@@ -183,8 +186,8 @@ export function GraficoLinea({ titulo, labels = [], data = [], color = '#1E3A8A'
             legend: { display: false },
             tooltip: {
               backgroundColor: isDark ? '#020617' : '#1e293b',
-              titleColor: '#f8fafc',
-              bodyColor: '#f8fafc',
+              titleColor: 'var(--ind-head-bg)',
+              bodyColor: 'var(--ind-head-bg)',
               bodyFont: { size: 12, weight: '600' },
               padding: 10,
               cornerRadius: 8,
@@ -208,11 +211,11 @@ export function GraficoLinea({ titulo, labels = [], data = [], color = '#1E3A8A'
       window.removeEventListener('afterprint', handlePrintResize);
       if (chartRef.current) chartRef.current.destroy();
     };
-  }, [labels, data, color]);
+  }, [labels, data, color, temaOscuro]);
 
   return (
     <div style={{ border: '1px solid #e2e8f0', borderRadius: '0.5rem', padding: '12px', breakInside: 'avoid', pageBreakInside: 'avoid' }}>
-      <p style={{ fontSize: '0.6875rem', color: '#94a3b8', marginBottom: 8 }}>{titulo}</p>
+      <p style={{ fontSize: '0.6875rem', color: 'var(--ind-faint)', marginBottom: 8 }}>{titulo}</p>
       <div style={{ position: 'relative', height: 170 }}>
         <canvas ref={ref} role="img" aria-label={titulo} />
       </div>
@@ -220,7 +223,8 @@ export function GraficoLinea({ titulo, labels = [], data = [], color = '#1E3A8A'
   );
 }
 
-export function GraficoBarras({ titulo, labels = [], data = [], color = '#1E3A8A' }) {
+export function GraficoBarras({ titulo, labels = [], data = [], color = '#5433eb' }) {
+  const { isDark: temaOscuro } = useTheme();
   const ref = useRef(null);
   const chartRef = useRef(null);
 
@@ -228,8 +232,8 @@ export function GraficoBarras({ titulo, labels = [], data = [], color = '#1E3A8A
     import('chart.js').then(({ Chart, registerables }) => {
       Chart.register(...registerables);
       if (chartRef.current) chartRef.current.destroy();
-      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const gc = isDark ? '#2c2c2a' : '#e2e8f0';
+      const isDark = temaOscuro;
+      const gc = isDark ? '#2b2b32' : '#ebebeb';
       const textoMuted = isDark ? '#cbd5e1' : '#334155';
 
       const valoresPlugin = {
@@ -282,8 +286,8 @@ export function GraficoBarras({ titulo, labels = [], data = [], color = '#1E3A8A
             legend: { display: false },
             tooltip: {
               backgroundColor: isDark ? '#020617' : '#1e293b',
-              titleColor: '#f8fafc',
-              bodyColor: '#f8fafc',
+              titleColor: 'var(--ind-head-bg)',
+              bodyColor: 'var(--ind-head-bg)',
               bodyFont: { size: 12, weight: '600' },
               padding: 10,
               cornerRadius: 8,
@@ -307,11 +311,11 @@ export function GraficoBarras({ titulo, labels = [], data = [], color = '#1E3A8A
       window.removeEventListener('afterprint', handlePrintResize);
       if (chartRef.current) chartRef.current.destroy();
     };
-  }, [labels, data, color]);
+  }, [labels, data, color, temaOscuro]);
 
   return (
     <div style={{ border: '1px solid #e2e8f0', borderRadius: '0.5rem', padding: '12px', breakInside: 'avoid', pageBreakInside: 'avoid' }}>
-      <p style={{ fontSize: '0.6875rem', color: '#94a3b8', marginBottom: 8 }}>{titulo}</p>
+      <p style={{ fontSize: '0.6875rem', color: 'var(--ind-faint)', marginBottom: 8 }}>{titulo}</p>
       <div style={{ position: 'relative', height: 170 }}>
         <canvas ref={ref} role="img" aria-label={titulo} />
       </div>
@@ -356,13 +360,13 @@ export function GraficoPie({ titulo, labels = [], data = [], colores = [] }) {
 
   return (
     <div style={{ border: '1px solid #e2e8f0', borderRadius: '0.5rem', padding: '12px', breakInside: 'avoid', pageBreakInside: 'avoid' }}>
-      <p style={{ fontSize: '0.6875rem', color: '#94a3b8', marginBottom: 8 }}>{titulo}</p>
+      <p style={{ fontSize: '0.6875rem', color: 'var(--ind-faint)', marginBottom: 8 }}>{titulo}</p>
       <div style={{ position: 'relative', height: 140 }}>
         <canvas ref={ref} role="img" aria-label={titulo} />
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 8 }}>
         {labels.map((l, i) => (
-          <div key={l} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.6875rem', color: '#64748b' }}>
+          <div key={l} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.6875rem', color: 'var(--ind-muted)' }}>
             <div style={{ width: 10, height: 10, borderRadius: 2, background: colores[i] || '#94a3b8', flexShrink: 0 }} />
             {l}
           </div>
@@ -402,7 +406,7 @@ export default function NSCIndicator({ onVolver }) {
             <span className={styles.indNumBadge}>Indicador {def.numero}</span>
             <span
               className={styles.estadoBadge}
-              style={{ color: umbral.color, background: umbral.bg, border: `1px solid ${umbral.border}` }}
+              style={{ color: umbral.color, background: bgSuave(umbral.color), border: `1px solid ${bordeSuave(umbral.color)}` }}
             >
               <span className={styles.puntoEstado} />
             </span>
@@ -428,7 +432,7 @@ export default function NSCIndicator({ onVolver }) {
             sigla="SA"
             nombre="Cotizaciones día actual"
             valor={datos.SA}
-            desc="Cotizaciones atendidas (hayan derivado o no en pedido) y auditadas por el agente de IA en el día en curso"
+            desc="Cotizaciones atendidas y auditadas por el agente de IA en el día en curso"
             desglose={[
               { label: datos.diaActual, valor: `${datos.SA} solic.` },
               { label: 'Conformes', valor: `${datos.conformes} solic.` },
@@ -439,7 +443,7 @@ export default function NSCIndicator({ onVolver }) {
             sigla="Σ"
             nombre="Acumulado del periodo"
             valor={datos.sumaAcumulada}
-            desc="Suma de cotizaciones registradas en todos los días disponibles del historial (fórmula NCCA = Σ Cotizaciones Atendidas)"
+            desc="Suma de cotizaciones registradas"
             desglose={[{ label: `${datos.serieLabels?.length || 0} día(s) registrados`, valor: `${datos.sumaAcumulada} solic.` }]}
           />
         </div>
@@ -449,7 +453,7 @@ export default function NSCIndicator({ onVolver }) {
         <div className={styles.resultadoGrid}>
           <div
             className={styles.resultadoCard}
-            style={{ background: umbral.bg, border: `1px solid ${umbral.border}` }}
+            style={{ background: bgSuave(umbral.color), border: `1px solid ${bordeSuave(umbral.color)}` }}
           >
             <p className={styles.resLabel}>Resultado</p>
             <p className={styles.resValor} style={{ color: umbral.color }}>
@@ -471,7 +475,7 @@ export default function NSCIndicator({ onVolver }) {
             <div className={styles.estadoBadgeCenter}>
               <span
                 className={styles.estadoBadge}
-                style={{ color: umbral.color, background: umbral.bg, border: `1px solid ${umbral.border}` }}
+                style={{ color: umbral.color, background: bgSuave(umbral.color), border: `1px solid ${bordeSuave(umbral.color)}` }}
               >
                 <span className={styles.puntoEstado} />
               </span>
@@ -497,13 +501,13 @@ export default function NSCIndicator({ onVolver }) {
             titulo="Evolución de cotizaciones por día (histórico)"
             labels={datos.serieLabels}
             data={datos.serieValores}
-            color="#1E3A8A"
+            color="#5433eb"
           />
           <GraficoBarras
             titulo="Día actual vs. día anterior"
             labels={datos.comparativoLabels}
             data={datos.comparativoValores}
-            color="#1E3A8A"
+            color="#5433eb"
           />
           <DatoCard
             sigla="Comparativo"
@@ -519,7 +523,7 @@ export default function NSCIndicator({ onVolver }) {
             titulo="Cotizaciones registradas por día"
             labels={datos.serieLabels}
             data={datos.serieValores}
-            color="#1E3A8A"
+            color="#5433eb"
           />
           <GraficoLinea
             titulo="Acumulado de cotizaciones (Σ)"
@@ -532,14 +536,14 @@ export default function NSCIndicator({ onVolver }) {
         <div className={styles.bottomGrid} style={{ gridTemplateColumns: '1fr' }}>
           <div
             className={styles.conclusionCard}
-            style={{ background: '#eff6ff', border: '1px solid #bfdbfe' }}
+            style={{ background: 'var(--ind-info-bg)', border: '1px solid var(--ind-info-border)' }}
           >
-            <p className={styles.conclusionTitulo} style={{ color: '#1d4ed8' }}>
+            <p className={styles.conclusionTitulo} style={{ color: 'var(--ind-info-title)' }}>
               Conclusión automática
             </p>
             <p
               className={styles.conclusionTexto}
-              style={{ color: '#1e3a8a' }}
+              style={{ color: 'var(--ind-info-text)' }}
               dangerouslySetInnerHTML={{ __html: conclusion }}
             />
           </div>

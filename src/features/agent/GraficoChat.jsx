@@ -4,7 +4,7 @@ import { descargarCanvasPng, descargarGraficoPdf } from './graficoExport';
 import { AccionesChat } from './AnalisisChat';
 import styles from './agent.module.css';
 
-const COLORES = ['#1E3A8A', '#f59e0b', '#16a34a', '#dc2626', '#7c3aed', '#0891b2', '#db2777', '#65a30d'];
+const COLORES = ['#5433eb', '#f59e0b', '#16a34a', '#dc2626', '#7c3aed', '#0891b2', '#db2777', '#65a30d'];
 
 function formatear(valor, prefijo) {
   const numero = Number(valor) || 0;

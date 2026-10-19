@@ -17,6 +17,7 @@ import AccionProducto from './AccionProducto';
 import BorradorProducto from './BorradorProducto';
 import AccionEntidad from './AccionEntidad';
 import BorradorCliente from './BorradorCliente';
+import PlanChat from './PlanChat';
 import styles from './agent.module.css';
 
 function TextoRespuesta({ texto, animar, onTermina }) {
@@ -105,6 +106,7 @@ export function Burbuja({ mensaje, avatarAgente, avatarUsuario, inicioAtencion }
           {mostrarExtras && datos?.tipo === 'navegacion' && <NavegacionChat datos={datos} />}
           {mostrarExtras && datos?.tipo === 'grafico' && <GraficoChat datos={datos} />}
           {mostrarExtras && datos?.tipo === 'analisis' && <AnalisisChat datos={datos} />}
+          {mostrarExtras && datos?.plan?.pendientes?.length > 0 && <PlanChat plan={datos.plan} mensajeId={mensaje.id} />}
           {mostrarExtras && datos?.explicacion && <ExplicacionChat explicacion={datos.explicacion} />}
         </div>
         <div className={styles.bubblePie}>

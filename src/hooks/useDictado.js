@@ -15,6 +15,33 @@ const MENSAJES_ERROR = {
   network: 'Sin conexión para el dictado por voz.',
 };
 
+const normalizarPalabra = (palabra) => palabra.toLowerCase().replace(/[.,;:!?¿¡]/g, '');
+
+function unirFragmentos(fragmentos) {
+  let palabras = [];
+  fragmentos.forEach((fragmento) => {
+    const nuevas = fragmento.trim().split(/\s+/).filter(Boolean);
+    if (!nuevas.length) return;
+    if (!palabras.length) {
+      palabras = nuevas;
+      return;
+    }
+    const previas = palabras.map(normalizarPalabra);
+    const claves = nuevas.map(normalizarPalabra);
+    const textoPrevio = ` ${previas.join(' ')} `;
+    if (textoPrevio.includes(` ${claves.join(' ')} `)) return;
+    let solape = 0;
+    for (let k = Math.min(previas.length, claves.length); k > 0; k -= 1) {
+      if (previas.slice(-k).join(' ') === claves.slice(0, k).join(' ')) {
+        solape = k;
+        break;
+      }
+    }
+    palabras = [...palabras.slice(0, palabras.length - solape), ...nuevas];
+  });
+  return palabras.join(' ');
+}
+
 export function useDictado(onTexto) {
   const [escuchando, setEscuchando] = useState(false);
   const [errorDictado, setErrorDictado] = useState(null);
@@ -56,11 +83,11 @@ export function useDictado(onTexto) {
 
     reconocimiento.onresult = (evento) => {
       if (ignorarRef.current) return;
-      let dictado = '';
+      const fragmentos = [];
       for (let i = 0; i < evento.results.length; i += 1) {
-        dictado += evento.results[i][0].transcript;
+        fragmentos.push(evento.results[i][0].transcript);
       }
-      onTextoRef.current(`${baseRef.current}${dictado.trim()}`);
+      onTextoRef.current(`${baseRef.current}${unirFragmentos(fragmentos)}`);
     };
     reconocimiento.onerror = (evento) => {
       if (ignorarRef.current || evento.error === 'aborted') {

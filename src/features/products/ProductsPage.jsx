@@ -233,7 +233,7 @@ export default function ProductsPage() {
       <header className={styles.pageHeader}>
         <div>
           <h1 className={styles.pageTitle}>Productos</h1>
-          <p className={styles.pageSub}>Catálogo de productos de limpieza — EL PRÍNCIPE</p>
+          <p className={styles.pageSub}>Catálogo de productos de limpieza</p>
         </div>
         <div className={styles.headerAcciones}>
           <button onClick={descargarReposicion} disabled={descargandoReposicion} className={styles.btnSecundario}>
@@ -252,7 +252,7 @@ export default function ProductsPage() {
       <section className={styles.kpiGrid} aria-label="Resumen del catálogo">
         <KPICard label="Total productos" value={kpis.total} note="en catálogo" />
         <KPICard label="Stock crítico" value={kpis.criticos} note="bajo mínimo" colorValue="#dc2626" />
-        <KPICard label="Activos" value={kpis.activos} note="en venta" colorValue="#1E3A8A" />
+        <KPICard label="Activos" value={kpis.activos} note="en venta" colorValue="#5433eb" />
         <KPICard
           label="Valor inventario"
           value={`S/ ${kpis.valorInventario.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}

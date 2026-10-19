@@ -4,7 +4,7 @@ import { AlertTriangle, CheckCircle2, FileDown, X } from 'lucide-react';
 import { crearPedido } from '../orders/ordersService';
 import { descargarArchivo } from '../../utils/descargas';
 import { useAgentContext } from './AgentContext';
-import { avisarDatosActualizados, guardarResuelto, leerResueltos } from './resueltos';
+import { avisarDatosActualizados, guardarResuelto, leerResueltos, avisarPasoCompletado } from './resueltos';
 import styles from './agent.module.css';
 
 const soles = (n) =>
@@ -82,6 +82,7 @@ export default function BorradorPedido({ mensajeId, datos, inicioAtencion }) {
       setRegistro(guardado);
       setEstado('creado');
       avisarDatosActualizados();
+      avisarPasoCompletado({ mensajeId, tipo: 'pedido', codigo: pedido.numero });
     } catch (err) {
       setError(err.message || 'No se pudo crear el pedido.');
       setEstado('borrador');

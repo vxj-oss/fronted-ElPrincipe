@@ -11,51 +11,11 @@
   display: none;
   flex: 0 0 45%;
   background:
-    linear-gradient(180deg, rgba(15, 37, 87, 0.7) 0%, rgba(15, 37, 87, 0.85) 100%),
+    linear-gradient(180deg, rgba(8, 8, 12, 0.5) 0%, rgba(8, 8, 12, 0.62) 100%),
     url('../../assets/Login.png') center / cover no-repeat,
-    #0f2557;
+    #17171b;
   position: relative;
   overflow: hidden;
-}
-
-.branding::before,
-.branding::after {
-  content: '';
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(50px);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.branding::before {
-  top: -8%;
-  left: -10%;
-  width: 320px;
-  height: 320px;
-  background: radial-gradient(circle, rgba(126, 224, 255, 0.35), transparent 70%);
-  animation: brandBlobDrift 11s ease-in-out infinite;
-}
-
-.branding::after {
-  bottom: -12%;
-  right: -8%;
-  width: 280px;
-  height: 280px;
-  background: radial-gradient(circle, rgba(126, 20, 255, 0.32), transparent 70%);
-  animation: brandBlobDrift 13s ease-in-out infinite reverse;
-}
-
-@keyframes brandBlobDrift {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50%      { transform: translate(24px, -18px) scale(1.15); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .branding::before,
-  .branding::after {
-    animation: none;
-  }
 }
 
 .brandingContent {
@@ -79,7 +39,7 @@
 
 .brandTitle {
   font-size: 2.5rem;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.05em;
   margin-bottom: 0.75rem;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6), 0 1px 3px rgba(0, 0, 0, 0.5);
@@ -122,7 +82,7 @@
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
-  background-color: #f8fafc;
+  background-color: #f2f4f5;
   overflow-y: auto;
   height: 100%;
 }
@@ -132,17 +92,17 @@
   max-width: 440px;
   margin: auto;
   background: #ffffff;
-  border-radius: 1rem;
-  border: 1px solid #e2e8f0;
+  border-radius: 28px;
+  border: 1px solid transparent;
   padding: 2rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
   animation: formCardIn 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
   transition: box-shadow 250ms ease, border-color 250ms ease;
 }
 
 .formCard:focus-within {
-  border-color: rgba(30, 58, 138, 0.35);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 0 0 4px rgba(30, 58, 138, 0.08), 0 12px 28px -12px rgba(30, 58, 138, 0.25);
+  border-color: rgba(84, 51, 235, 0.35);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 0 0 4px rgba(84, 51, 235, 0.08), 0 12px 28px -12px rgba(84, 51, 235, 0.25);
 }
 
 @keyframes formCardIn {
@@ -164,14 +124,14 @@
 
 .formTitle {
   font-size: 1.375rem;
-  font-weight: 700;
-  color: #0f172a;
+  font-weight: 600;
+  color: #0b0b0c;
   margin-bottom: 0.25rem;
 }
 
 .formSubtitle {
   font-size: 0.875rem;
-  color: #64748b;
+  color: #787574;
   margin-bottom: 1.25rem;
 }
 
@@ -201,7 +161,7 @@
   display: block;
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #334155;
+  color: #3a3736;
   margin-bottom: 0.375rem;
 }
 
@@ -226,7 +186,7 @@
   left: 0.75rem;
   top: 50%;
   transform: translateY(-50%);
-  color: #94a3b8;
+  color: #a5a19f;
   display: flex;
   align-items: center;
   pointer-events: none;
@@ -235,7 +195,7 @@
 
 .inputIconWrap:focus-within .inputIcon,
 .passwordWrapper:focus-within .inputIcon {
-  color: #1E3A8A;
+  color: #5433eb;
 }
 
 .hasIcon {
@@ -250,7 +210,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #94a3b8;
+  color: #a5a19f;
   display: flex;
   align-items: center;
   padding: 0;
@@ -258,7 +218,7 @@
 }
 
 .eyeBtn:hover {
-  color: #1E3A8A;
+  color: #5433eb;
   transform: translateY(-50%) scale(1.1);
 }
 
@@ -312,7 +272,7 @@
     background:
       radial-gradient(circle at 18% 15%, rgba(126, 20, 255, 0.4), transparent 50%),
       radial-gradient(circle at 85% 5%, rgba(71, 191, 255, 0.35), transparent 55%),
-      linear-gradient(160deg, #0f2557 0%, #1e3a8a 55%, #142a63 100%);
+      linear-gradient(160deg, #0f2557 0%, #5433eb 55%, #142a63 100%);
   }
 
   .mobileTitle {
@@ -320,7 +280,7 @@
     text-align: center;
     font-family: 'Space Grotesk', 'Inter', sans-serif;
     font-size: 2.5rem;
-    font-weight: 800;
+    font-weight: 600;
     letter-spacing: 0.03em;
     margin-bottom: 0.875rem;
     color: #ffffff;
@@ -362,19 +322,216 @@
 .registerLink {
   text-align: center;
   font-size: 0.875rem;
-  color: #64748b;
+  color: #787574;
   margin-top: 1.5rem;
   margin-bottom: 0;
 }
 
 .link {
-  color: #1E3A8A;
+  color: #5433eb;
   font-weight: 600;
   text-decoration: none;
   transition: color 150ms ease;
 }
 
 .link:hover {
-  color: #1d4ed8;
+  color: #4527d6;
   text-decoration: underline;
+}
+.formPanel {
+  position: relative;
+  background-color: #f2f4f5;
+  overflow-x: hidden;
+}
+
+.formCard {
+  position: relative;
+  z-index: 2;
+  padding: 2.25rem;
+  border-color: transparent;
+  box-shadow: 0 10px 30px -10px rgba(40, 20, 120, 0.22), 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+  transform: perspective(900px) rotateX(calc(var(--my, 0) * -2.4deg)) rotateY(calc(var(--mx, 0) * 3.2deg));
+  transform-style: preserve-3d;
+  transition: transform 180ms ease-out, box-shadow 250ms ease;
+  animation-name: formCardEntrada;
+}
+
+.formCard:focus-within {
+  border-color: transparent;
+  box-shadow: 0 0 0 4px rgba(84, 51, 235, 0.12), 0 18px 40px -12px rgba(69, 36, 219, 0.35);
+}
+
+@keyframes formCardEntrada {
+  from { opacity: 0; translate: 0 18px; scale: 0.97; }
+  to   { opacity: 1; translate: 0 0; scale: 1; }
+}
+
+.formTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+
+.formCard :global(.btn-primary) {
+  position: relative;
+  overflow: hidden;
+  height: 3rem;
+}
+
+.formCard :global(.btn-primary)::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -60%;
+  width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transform: skewX(-18deg);
+  transition: left 600ms ease;
+}
+
+.formCard :global(.btn-primary):hover::after {
+  left: 130%;
+}
+
+:global(.dark) .formPanel {
+  background-color: #0e0e11;
+}
+
+:global(.dark) .formCard {
+  background: #17171b;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6), 0 4px 18px rgba(0, 0, 0, 0.45);
+}
+
+:global(.dark) .formTitle {
+  color: #f7f7f9;
+}
+
+:global(.dark) .label {
+  color: #d6d4dc;
+}
+
+:global(.dark) .formSubtitle,
+:global(.dark) .registerLink {
+  color: #a6a3ae;
+}
+
+:global(.dark) .link {
+  color: #b4a8ff;
+}
+
+:global(.dark) .alertError {
+  background: #2a1517;
+  border-color: #5c2428;
+  color: #ffb4b8;
+}
+
+@media (max-width: 767px) and (orientation: portrait) {
+  .formPanel {
+    background: #f2f4f5;
+  }
+
+  :global(.dark) .formPanel {
+    background: #0e0e11;
+  }
+
+  .mobileTitle {
+    position: relative;
+    z-index: 2;
+    color: #0b0b0c;
+    animation: none;
+    text-shadow: none;
+  }
+
+  :global(.dark) .mobileTitle {
+    color: #f7f7f9;
+  }
+
+  .mobileTitleAccent {
+    color: #5433eb;
+  }
+
+  .mobileLogo {
+    position: relative;
+    z-index: 2;
+    border-radius: 28px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .formCard {
+    transform: none;
+    animation: none;
+  }
+}
+
+.brandingContent {
+  align-items: flex-start;
+  justify-content: flex-end;
+  text-align: left;
+  padding: 3rem 3rem 3.5rem;
+  background: linear-gradient(0deg, rgba(8, 8, 12, 0.88) 0%, rgba(8, 8, 12, 0.55) 40%, transparent 72%);
+}
+
+.brandTitle {
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  -webkit-text-fill-color: #ffffff;
+  color: #ffffff;
+  text-shadow: none;
+  animation: none;
+}
+
+.brandSubtitle {
+  font-weight: 500;
+  text-shadow: none;
+}
+
+.brandCaption {
+  max-width: 420px;
+  text-shadow: none;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.brandingContent {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  background: none;
+}
+
+.brandingCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  padding: 2.25rem 2rem;
+  border-radius: 28px;
+  background: rgba(10, 10, 14, 0.62);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.brandCaption {
+  margin: 0 auto;
+}
+
+.branding::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  -webkit-backdrop-filter: grayscale(0.7) brightness(0.8);
+  backdrop-filter: grayscale(0.7) brightness(0.8);
+}
+
+.brandingCard {
+  background: rgba(10, 10, 14, 0.5);
 }

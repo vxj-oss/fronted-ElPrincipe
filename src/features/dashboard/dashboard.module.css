@@ -15,22 +15,22 @@
 .greeting {
   font-size: 1.375rem;
   font-weight: 600;
-  color: #0f172a;
+  color: #0b0b0c;
   line-height: 1.25;
 }
 
 .greetingSub {
   font-size: 0.8125rem;
-  color: #64748b;
+  color: #787574;
   margin-top: 3px;
 }
 
 .dateBadge {
   font-size: 0.75rem;
-  color: #64748b;
+  color: #787574;
   background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.5rem;
+  border: 1px solid #ebebeb;
+  border-radius: 9999px;
   padding: 6px 12px;
   white-space: nowrap;
   text-transform: capitalize;
@@ -44,11 +44,12 @@
 
 .kpiCard {
   background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 28px;
   padding: 18px 20px;
   min-width: 0;
   transition: box-shadow 150ms ease, background-color 150ms ease, border-color 150ms ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
 }
 
 .kpiCard:hover {
@@ -56,7 +57,7 @@
 }
 
 .kpiAccent {
-  border-left: 3px solid #1E3A8A;
+  border-left: 3px solid #5433eb;
 }
 
 .kpiLabel {
@@ -65,7 +66,7 @@
   gap: 5px;
   font-size: 0.6875rem;
   font-weight: 500;
-  color: #94a3b8;
+  color: #a5a19f;
   text-transform: uppercase;
   letter-spacing: 0.07em;
   margin-bottom: 10px;
@@ -74,7 +75,7 @@
 .kpiValue {
   font-size: 1.625rem;
   font-weight: 600;
-  color: #0f172a;
+  color: #0b0b0c;
   line-height: 1;
   margin-bottom: 8px;
 }
@@ -89,7 +90,7 @@
 
 .up  { color: #16a34a; }
 .down{ color: #dc2626; }
-.neu { color: #94a3b8; }
+.neu { color: #a5a19f; }
 
 .mainGrid {
   display: grid;
@@ -100,11 +101,12 @@
 
 .card {
   background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 28px;
   padding: 20px;
   min-width: 0;
   transition: background-color 150ms ease, border-color 150ms ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
 }
 
 .cardHeader {
@@ -117,41 +119,41 @@
 .cardTitle {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #0f172a;
+  color: #0b0b0c;
 }
 
 .cardSub {
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: #a5a19f;
   margin-top: 2px;
 }
 
 .tabRow {
   display: flex;
   gap: 2px;
-  background: #f1f5f9;
-  border-radius: 0.5rem;
+  background: #f2f4f5;
+  border-radius: 9999px;
   padding: 3px;
 }
 
 .tab {
   font-size: 0.75rem;
   padding: 4px 10px;
-  border-radius: 0.375rem;
+  border-radius: 9999px;
   cursor: pointer;
   border: none;
   background: transparent;
-  color: #94a3b8;
+  color: #a5a19f;
   transition: all 150ms ease;
   font-family: inherit;
 }
 
-.tab:hover    { color: #1E3A8A; }
+.tab:hover    { color: #5433eb; }
 .tabActive {
   background: #fff;
-  color: #0f172a;
+  color: #0b0b0c;
   font-weight: 500;
-  box-shadow: 0 0 0 1px #e2e8f0;
+  box-shadow: 0 0 0 1px #ebebeb;
 }
 
 .chartWrap {
@@ -172,8 +174,8 @@
   gap: 10px;
   padding: 10px;
   border-radius: 0.5rem;
-  background: #f8fafc;
-  border: 1px solid #f1f5f9;
+  background: #f2f4f5;
+  border: 1px solid #f2f4f5;
   transition: background-color 150ms ease, border-color 150ms ease;
 }
 
@@ -186,7 +188,7 @@
   display: block;
   font-size: 0.8125rem;
   font-weight: 500;
-  color: #0f172a;
+  color: #0b0b0c;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -195,12 +197,12 @@
 .stockQty {
   display: block;
   font-size: 0.6875rem;
-  color: #94a3b8;
+  color: #a5a19f;
   margin-top: 1px;
 }
 
 .stockBarWrap { width: 52px; flex-shrink: 0; }
-.stockBarBg   { height: 4px; background: #e2e8f0; border-radius: 2px; overflow: hidden; }
+.stockBarBg   { height: 4px; background: #ebebeb; border-radius: 2px; overflow: hidden; }
 .stockBarFill { height: 100%; border-radius: 2px; transition: width 600ms ease; }
 
 .pill {
@@ -218,8 +220,8 @@
 
 .metaBar {
   background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.75rem;
+  border: 1px solid #ebebeb;
+  border-radius: 9999px;
   padding: 16px 20px;
   transition: background-color 150ms ease, border-color 150ms ease;
 }
@@ -231,19 +233,19 @@
   margin-bottom: 10px;
 }
 
-.metaLabel  { font-size: 0.8125rem; font-weight: 500; color: #0f172a; }
-.metaValores{ font-size: 0.8125rem; color: #64748b; }
+.metaLabel  { font-size: 0.8125rem; font-weight: 500; color: #0b0b0c; }
+.metaValores{ font-size: 0.8125rem; color: #787574; }
 
 .metaTrack {
   height: 6px;
-  background: #f1f5f9;
+  background: #f2f4f5;
   border-radius: 3px;
   overflow: hidden;
 }
 
 .metaFill {
   height: 100%;
-  background: linear-gradient(90deg, #1E3A8A, #3b82f6);
+  background: linear-gradient(90deg, #5433eb, #7b66f0);
   border-radius: 3px;
   transition: width 800ms cubic-bezier(.25,.8,.25,1);
 }
@@ -253,7 +255,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: #94a3b8;
+  color: #a5a19f;
   margin-bottom: 10px;
 }
 
@@ -300,14 +302,14 @@
   gap: 12px;
 }
 
-.estadoTexto { font-size: 0.875rem; color: #64748b; }
+.estadoTexto { font-size: 0.875rem; color: #787574; }
 .errorIcon   { color: #dc2626; }
 
 .spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid #e2e8f0;
-  border-top-color: #1E3A8A;
+  border: 3px solid #ebebeb;
+  border-top-color: #5433eb;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
@@ -324,7 +326,7 @@
 :global([data-theme="dark"]) .stockNombre,
 :global(.dark) .metaLabel,
 :global([data-theme="dark"]) .metaLabel {
-  color: #f8fafc;
+  color: #f7f7f9;
 }
 
 :global(.dark) .greetingSub,
@@ -333,7 +335,7 @@
 :global([data-theme="dark"]) .metaValores,
 :global(.dark) .estadoTexto,
 :global([data-theme="dark"]) .estadoTexto {
-  color: #94a3b8;
+  color: #a6a3ae;
 }
 
 :global(.dark) .dateBadge,
@@ -344,8 +346,8 @@
 :global([data-theme="dark"]) .card,
 :global(.dark) .metaBar,
 :global([data-theme="dark"]) .metaBar {
-  background-color: #0f172a;
-  border-color: #1e293b;
+  background-color: #0e0e11;
+  border-color: #17171b;
 }
 
 :global(.dark) .kpiCard:hover,
@@ -355,37 +357,37 @@
 
 :global(.dark) .kpiAccent,
 :global([data-theme="dark"]) .kpiAccent {
-  border-left: 3px solid #3b82f6;
+  border-left: 3px solid #8b76ff;
 }
 
 :global(.dark) .tabRow,
 :global([data-theme="dark"]) .tabRow {
-  background: #1e293b;
+  background: #17171b;
 }
 
 :global(.dark) .tab:hover,
 :global([data-theme="dark"]) .tab:hover {
-  color: #60a5fa;
+  color: #a99aff;
 }
 
 :global(.dark) .tabActive,
 :global([data-theme="dark"]) .tabActive {
-  background: #0f172a;
-  color: #f8fafc;
-  box-shadow: 0 0 0 1px #334155;
+  background: #0e0e11;
+  color: #f7f7f9;
+  box-shadow: 0 0 0 1px #2b2b32;
 }
 
 :global(.dark) .stockItem,
 :global([data-theme="dark"]) .stockItem {
-  background: #1e293b;
-  border-color: #334155;
+  background: #17171b;
+  border-color: #2b2b32;
 }
 
 :global(.dark) .stockBarBg,
 :global([data-theme="dark"]) .stockBarBg,
 :global(.dark) .metaTrack,
 :global([data-theme="dark"]) .metaTrack {
-  background: #334155;
+  background: #2b2b32;
 }
 
 :global(.dark) .pillRed,
@@ -462,8 +464,8 @@
 
 :global(.dark) .spinner,
 :global([data-theme="dark"]) .spinner {
-  border-color: #1e293b;
-  border-top-color: #3b82f6;
+  border-color: #17171b;
+  border-top-color: #8b76ff;
 }
 
 @media (max-width: 1100px) {
@@ -479,31 +481,31 @@
 }
 
 .kpiCard {
-  border: 1px solid rgba(148, 163, 184, 0.35);
+  border: 1px solid rgba(165, 161, 159, 0.35);
   transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background-color 150ms ease;
 }
 
 .kpiCard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px -10px rgba(15, 23, 42, 0.22);
-  border-color: rgba(30, 58, 138, 0.35);
+  box-shadow: 0 6px 16px -10px rgba(11, 11, 12, 0.22);
+  border-color: rgba(84, 51, 235, 0.35);
 }
 
 .btnPrimary {
-  background: linear-gradient(135deg, #1E3A8A, #2563eb);
-  box-shadow: 0 1px 2px rgba(30, 58, 138, 0.35);
+  background: linear-gradient(135deg, #5433eb, #5433eb);
+  box-shadow: 0 1px 2px rgba(84, 51, 235, 0.35);
   transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease, opacity 180ms ease;
 }
 
 .btnPrimary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  background: linear-gradient(135deg, #4527d6, #7b66f0);
   transform: translateY(-1px);
-  box-shadow: 0 10px 20px -10px rgba(30, 58, 138, 0.55);
+  box-shadow: 0 10px 20px -10px rgba(84, 51, 235, 0.55);
 }
 
 .btnPrimary:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 0 1px 2px rgba(30, 58, 138, 0.3);
+  box-shadow: 0 1px 2px rgba(84, 51, 235, 0.3);
 }
 
 .btnSecondary {
@@ -512,7 +514,7 @@
 
 .btnSecondary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 10px -6px rgba(15, 23, 42, 0.2);
+  box-shadow: 0 4px 10px -6px rgba(11, 11, 12, 0.2);
 }
 
 .btnSecondary:active {
@@ -568,7 +570,7 @@
 .filterSelect:focus,
 .fieldInput:focus,
 .fieldSelect:focus {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 0 0 3px rgba(123, 102, 240, 0.15);
 }
 
 @media (min-width: 769px) {
@@ -577,11 +579,11 @@
   }
 
   .table tr:hover td:first-child {
-    box-shadow: inset 3px 0 0 0 #1E3A8A;
+    box-shadow: inset 3px 0 0 0 #5433eb;
   }
 
   .table tr:active td {
-    background: #eff6ff;
+    background: #f3f0fe;
   }
 }
 
@@ -621,36 +623,36 @@
 
 :global(.dark) .kpiCard,
 :global([data-theme="dark"]) .kpiCard {
-  border-color: rgba(51, 65, 85, 0.8);
+  border-color: rgba(43, 43, 50, 0.8);
 }
 
 :global(.dark) .kpiCard:hover,
 :global([data-theme="dark"]) .kpiCard:hover {
   box-shadow: 0 6px 16px -10px rgba(0, 0, 0, 0.5);
-  border-color: rgba(59, 130, 246, 0.4);
+  border-color: rgba(139, 118, 255, 0.4);
 }
 
 :global(.dark) .btnPrimary,
 :global([data-theme="dark"]) .btnPrimary {
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
-  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.35);
+  background: linear-gradient(135deg, #6a52f0, #8b76ff);
+  box-shadow: 0 1px 2px rgba(106, 82, 240, 0.35);
 }
 
 :global(.dark) .btnPrimary:hover:not(:disabled),
 :global([data-theme="dark"]) .btnPrimary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #3b82f6, #60a5fa);
-  box-shadow: 0 10px 20px -10px rgba(59, 130, 246, 0.5);
+  background: linear-gradient(135deg, #8b76ff, #a99aff);
+  box-shadow: 0 10px 20px -10px rgba(139, 118, 255, 0.5);
 }
 
 @media (min-width: 769px) {
   :global(.dark) .table tr:hover td:first-child,
   :global([data-theme="dark"]) .table tr:hover td:first-child {
-    box-shadow: inset 3px 0 0 0 #3b82f6;
+    box-shadow: inset 3px 0 0 0 #8b76ff;
   }
 
   :global(.dark) .table tr:active td,
   :global([data-theme="dark"]) .table tr:active td {
-    background: rgba(59, 130, 246, 0.12);
+    background: rgba(139, 118, 255, 0.12);
   }
 }
 
@@ -664,7 +666,7 @@
 
 .kpiValue {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.02em;
 }
 
@@ -680,10 +682,10 @@
   align-items: center;
   gap: 6px;
   padding: 7px 14px;
-  border: 1px solid #bfdbfe;
+  border: 1px solid #d9d2fb;
   border-radius: 9999px;
-  background: #eff6ff;
-  color: #1e3a8a;
+  background: #f3f0fe;
+  color: #5433eb;
   font-size: 0.8125rem;
   font-weight: 500;
   font-family: inherit;
@@ -692,7 +694,7 @@
 }
 
 .btnCierre:hover:not(:disabled) {
-  background: #dbeafe;
+  background: #e9e5fd;
   transform: translateY(-1px);
 }
 
@@ -703,9 +705,9 @@
 
 :global(.dark) .btnCierre,
 :global([data-theme="dark"]) .btnCierre {
-  background: #1e293b;
-  border-color: #334155;
-  color: #bfdbfe;
+  background: #17171b;
+  border-color: #2b2b32;
+  color: #d4ccff;
 }
 
 .kpiGrid3 {
@@ -736,9 +738,9 @@
 
 .lectura {
   padding: 16px 18px;
-  border: 1px solid #dbeafe;
+  border: 1px solid #e9e5fd;
   border-radius: 0.875rem;
-  background: linear-gradient(135deg, #eff6ff, #ffffff);
+  background: linear-gradient(135deg, #f3f0fe, #ffffff);
 }
 
 .lecturaCabecera {
@@ -755,13 +757,13 @@
   gap: 6px;
   margin: 0;
   font-size: 0.875rem;
-  font-weight: 700;
-  color: #1e3a8a;
+  font-weight: 600;
+  color: #5433eb;
 }
 
 .lecturaHora {
   font-size: 0.6875rem;
-  color: #94a3b8;
+  color: #a5a19f;
 }
 
 .lecturaLista {
@@ -780,8 +782,8 @@
   flex-wrap: wrap;
   gap: 6px 12px;
   padding: 8px 12px;
-  border: 1px solid #e2e8f0;
-  border-left: 3px solid #94a3b8;
+  border: 1px solid #ebebeb;
+  border-left: 3px solid #a5a19f;
   border-radius: 0.5rem;
   background: #fff;
 }
@@ -795,7 +797,7 @@
 }
 
 .lectura_info {
-  border-left-color: #3b82f6;
+  border-left-color: #7b66f0;
 }
 
 .lectura_ok {
@@ -807,7 +809,7 @@
   min-width: 0;
   font-size: 0.8125rem;
   line-height: 1.45;
-  color: #0f172a;
+  color: #0b0b0c;
 }
 
 .lecturaBtn,
@@ -816,10 +818,10 @@
   align-items: center;
   gap: 5px;
   padding: 5px 11px;
-  border: 1px solid #bfdbfe;
+  border: 1px solid #d9d2fb;
   border-radius: 9999px;
-  background: #eff6ff;
-  color: #1e3a8a;
+  background: #f3f0fe;
+  color: #5433eb;
   font-size: 0.75rem;
   font-family: inherit;
   white-space: nowrap;
@@ -829,7 +831,7 @@
 
 .lecturaBtn:hover:not(:disabled),
 .btnPreguntar:hover:not(:disabled) {
-  background: #dbeafe;
+  background: #e9e5fd;
   transform: translateY(-1px);
 }
 
@@ -848,33 +850,33 @@
 
 :global(.dark) .lectura,
 :global([data-theme="dark"]) .lectura {
-  background: linear-gradient(135deg, #172554, #0f172a);
-  border-color: #1e3a8a;
+  background: linear-gradient(135deg, #2c1a8f, #0e0e11);
+  border-color: #5433eb;
 }
 
 :global(.dark) .lecturaItem,
 :global([data-theme="dark"]) .lecturaItem {
-  background: #1e293b;
-  border-color: #334155;
+  background: #17171b;
+  border-color: #2b2b32;
 }
 
 :global(.dark) .lecturaTitulo,
 :global([data-theme="dark"]) .lecturaTitulo {
-  color: #bfdbfe;
+  color: #d4ccff;
 }
 
 :global(.dark) .lecturaTexto,
 :global([data-theme="dark"]) .lecturaTexto {
-  color: #f8fafc;
+  color: #f7f7f9;
 }
 
 :global(.dark) .lecturaBtn,
 :global([data-theme="dark"]) .lecturaBtn,
 :global(.dark) .btnPreguntar,
 :global([data-theme="dark"]) .btnPreguntar {
-  background: #1e3a8a55;
-  border-color: #3b82f6;
-  color: #bfdbfe;
+  background: #5433eb55;
+  border-color: #8b76ff;
+  color: #d4ccff;
 }
 
 @media (max-width: 640px) {
@@ -899,7 +901,7 @@
   background: #fee2e2;
   color: #b91c1c;
   font-size: 0.6875rem;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .lecturaControles {
@@ -913,7 +915,7 @@
   display: inline-flex;
   padding: 2px;
   border-radius: 9999px;
-  background: #e2e8f0;
+  background: #ebebeb;
 }
 
 .lecturaFiltro {
@@ -921,7 +923,7 @@
   border: none;
   border-radius: 9999px;
   background: transparent;
-  color: #64748b;
+  color: #787574;
   font-size: 0.75rem;
   font-family: inherit;
   cursor: pointer;
@@ -930,9 +932,9 @@
 
 .lecturaFiltroActivo {
   background: #fff;
-  color: #1e3a8a;
+  color: #5433eb;
   font-weight: 600;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 1px 2px rgba(11, 11, 12, 0.12);
 }
 
 .lecturaRefrescar {
@@ -940,18 +942,19 @@
   align-items: center;
   gap: 5px;
   padding: 4px 10px;
-  border: 1px solid #e2e8f0;
-  border-radius: 9999px;
+  border: 1px solid transparent;
+  border-radius: 28px;
   background: #fff;
-  color: #64748b;
+  color: #787574;
   font-size: 0.6875rem;
   font-family: inherit;
   cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
 }
 
 .lecturaRefrescar:hover:not(:disabled) {
-  color: #1e3a8a;
-  border-color: #bfdbfe;
+  color: #5433eb;
+  border-color: #d9d2fb;
 }
 
 .girando {
@@ -970,7 +973,7 @@
 }
 
 .lecturaItem:hover {
-  box-shadow: 0 6px 16px -10px rgba(15, 23, 42, 0.35);
+  box-shadow: 0 6px 16px -10px rgba(11, 11, 12, 0.35);
 }
 
 @keyframes lecturaEntrada {
@@ -993,8 +996,8 @@
   width: 30px;
   height: 30px;
   border-radius: 9999px;
-  background: #f1f5f9;
-  color: #475569;
+  background: #f2f4f5;
+  color: #5a5654;
 }
 
 .lectura_alta .lecturaIcono {
@@ -1013,8 +1016,8 @@
 }
 
 .lectura_info .lecturaIcono {
-  background: #dbeafe;
-  color: #2563eb;
+  background: #e9e5fd;
+  color: #5433eb;
 }
 
 .lecturaPulso {
@@ -1050,14 +1053,14 @@
   flex-wrap: wrap;
   gap: 6px;
   font-size: 0.8125rem;
-  color: #0f172a;
+  color: #0b0b0c;
 }
 
 .lecturaChip {
   padding: 1px 8px;
   border-radius: 9999px;
-  background: #f1f5f9;
-  color: #334155;
+  background: #f2f4f5;
+  color: #3a3736;
   font-size: 0.6875rem;
   font-weight: 600;
 }
@@ -1080,7 +1083,7 @@
 .lecturaTexto {
   flex: none;
   font-size: 0.78125rem;
-  color: #64748b;
+  color: #787574;
 }
 
 .lecturaAcciones {
@@ -1099,13 +1102,13 @@
   border: none;
   border-radius: 9999px;
   background: transparent;
-  color: #94a3b8;
+  color: #a5a19f;
   cursor: pointer;
 }
 
 .lecturaChevron:hover {
-  background: #f1f5f9;
-  color: #1e3a8a;
+  background: #f2f4f5;
+  color: #5433eb;
 }
 
 .lecturaChevron svg {
@@ -1134,24 +1137,25 @@
   gap: 4px 10px;
   padding: 5px 10px;
   border-radius: 0.5rem;
-  background: #f8fafc;
+  background: #f2f4f5;
   font-size: 0.78125rem;
-  color: #334155;
+  color: #3a3736;
 }
 
 .lecturaMini {
   padding: 2px 10px;
-  border: 1px solid #bfdbfe;
-  border-radius: 9999px;
+  border: 1px solid transparent;
+  border-radius: 28px;
   background: #fff;
-  color: #1e3a8a;
+  color: #5433eb;
   font-size: 0.6875rem;
   font-family: inherit;
   cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
 }
 
 .lecturaMini:hover:not(:disabled) {
-  background: #eff6ff;
+  background: #f3f0fe;
 }
 
 .punto_verde::before,
@@ -1169,7 +1173,7 @@
 .punto_verde::before { background: #16a34a; }
 .punto_naranja::before { background: #f59e0b; }
 .punto_rojo::before { background: #dc2626; }
-.punto_gris::before { background: #94a3b8; }
+.punto_gris::before { background: #a5a19f; }
 
 .lecturaPregunta {
   display: flex;
@@ -1177,14 +1181,15 @@
   gap: 6px;
   margin-top: 12px;
   padding: 4px 4px 4px 14px;
-  border: 1px solid #cbd5e1;
-  border-radius: 9999px;
+  border: 1px solid transparent;
+  border-radius: 28px;
   background: #fff;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
 }
 
 .lecturaPregunta:focus-within {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  border-color: #5433eb;
+  box-shadow: 0 0 0 3px rgba(84, 51, 235, 0.12);
 }
 
 .lecturaPregunta input {
@@ -1193,7 +1198,7 @@
   border: none;
   outline: none;
   background: transparent;
-  color: #0f172a;
+  color: #0b0b0c;
   font-size: 0.8125rem;
   font-family: inherit;
 }
@@ -1206,7 +1211,7 @@
   height: 30px;
   border: none;
   border-radius: 9999px;
-  background: #1e3a8a;
+  background: #5433eb;
   color: #fff;
   cursor: pointer;
 }
@@ -1226,7 +1231,7 @@
 .lecturaEsqueleto span {
   height: 40px;
   border-radius: 0.5rem;
-  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+  background: linear-gradient(90deg, #ebebeb 25%, #f2f4f5 50%, #ebebeb 75%);
   background-size: 200% 100%;
   animation: lecturaBrillo 1.2s linear infinite;
 }
@@ -1237,13 +1242,13 @@
 
 :global(.dark) .lecturaFiltros,
 :global([data-theme="dark"]) .lecturaFiltros {
-  background: #1e293b;
+  background: #17171b;
 }
 
 :global(.dark) .lecturaFiltroActivo,
 :global([data-theme="dark"]) .lecturaFiltroActivo {
-  background: #334155;
-  color: #bfdbfe;
+  background: #2b2b32;
+  color: #d4ccff;
 }
 
 :global(.dark) .lecturaRefrescar,
@@ -1252,30 +1257,30 @@
 :global([data-theme="dark"]) .lecturaPregunta,
 :global(.dark) .lecturaMini,
 :global([data-theme="dark"]) .lecturaMini {
-  background: #1e293b;
-  border-color: #334155;
-  color: #cbd5e1;
+  background: #17171b;
+  border-color: #2b2b32;
+  color: #c9c7cf;
 }
 
 :global(.dark) .lecturaPregunta input,
 :global([data-theme="dark"]) .lecturaPregunta input,
 :global(.dark) .lecturaCabeza,
 :global([data-theme="dark"]) .lecturaCabeza {
-  color: #f8fafc;
+  color: #f7f7f9;
 }
 
 :global(.dark) .lecturaDetalle li,
 :global([data-theme="dark"]) .lecturaDetalle li {
-  background: #0f172a;
-  color: #cbd5e1;
+  background: #0e0e11;
+  color: #c9c7cf;
 }
 
 :global(.dark) .lecturaIcono,
 :global([data-theme="dark"]) .lecturaIcono,
 :global(.dark) .lecturaChip,
 :global([data-theme="dark"]) .lecturaChip {
-  background: #334155;
-  color: #cbd5e1;
+  background: #2b2b32;
+  color: #c9c7cf;
 }
 
 @media (max-width: 640px) {
@@ -1315,7 +1320,7 @@
   margin-top: 2px;
   font-size: 0.78125rem;
   font-weight: 600;
-  color: #1d4ed8;
+  color: #4527d6;
 }
 
 .lecturaSugerencia svg {
@@ -1325,5 +1330,5 @@
 
 :global(.dark) .lecturaSugerencia,
 :global([data-theme="dark"]) .lecturaSugerencia {
-  color: #93c5fd;
+  color: #c0b5f3;
 }

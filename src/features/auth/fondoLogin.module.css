@@ -1,0 +1,170 @@
+.fondo {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.capa {
+  position: absolute;
+  inset: 0;
+  transform: translate3d(calc(var(--mx, 0) * var(--prof, 20) * 1px), calc(var(--my, 0) * var(--prof, 20) * 1px), 0);
+  transition: transform 120ms linear;
+}
+
+.capaOrbe1 { --prof: 34; }
+.capaOrbe2 { --prof: -26; }
+.capaOrbe3 { --prof: 18; }
+
+.orbe {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(46px);
+  opacity: 0.7;
+  animation: orbeDeriva 14s ease-in-out infinite;
+  transition: opacity 400ms ease;
+}
+
+.orbe1 {
+  top: -10%;
+  left: -8%;
+  width: 46vmin;
+  height: 46vmin;
+  background: radial-gradient(circle, rgba(84, 51, 235, 0.42), transparent 68%);
+}
+
+.orbe2 {
+  bottom: -14%;
+  right: -10%;
+  width: 54vmin;
+  height: 54vmin;
+  background: radial-gradient(circle, rgba(192, 181, 243, 0.75), transparent 66%);
+  animation-duration: 17s;
+  animation-direction: reverse;
+}
+
+.orbe3 {
+  top: 38%;
+  left: 52%;
+  width: 30vmin;
+  height: 30vmin;
+  background: radial-gradient(circle, rgba(123, 102, 240, 0.3), transparent 70%);
+  animation-duration: 11s;
+}
+
+.fondo[data-cargando='si'] .orbe {
+  animation-duration: 4s;
+  opacity: 0.95;
+}
+
+@keyframes orbeDeriva {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(30px, -22px) scale(1.14); }
+}
+
+.puntos {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(84, 51, 235, 0.16) 1px, transparent 1.4px);
+  background-size: 26px 26px;
+  mask-image: radial-gradient(ellipse at center, transparent 18%, #000 78%);
+  -webkit-mask-image: radial-gradient(ellipse at center, transparent 18%, #000 78%);
+  opacity: 0.55;
+}
+
+.capaTarjeta {
+  position: absolute;
+  transform: translate3d(calc(var(--mx, 0) * var(--p, 1) * -22px), calc(var(--my, 0) * var(--p, 1) * -18px), 0);
+  transition: transform 140ms linear;
+}
+
+.tarjeta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 8px 8px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 10px 28px -8px rgba(84, 51, 235, 0.28);
+  font-size: 0.78rem;
+  letter-spacing: -0.01em;
+  color: #0b0b0c;
+  white-space: nowrap;
+  rotate: var(--giro, 0deg);
+  animation: tarjetaFlota 7s ease-in-out infinite;
+}
+
+.tarjetaIcono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 9999px;
+  background: #f3f0fe;
+  color: #5433eb;
+}
+
+.tarjetaTexto {
+  font-weight: 500;
+}
+
+@keyframes tarjetaFlota {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 -14px; }
+}
+
+:global(.dark) .orbe1 {
+  background: radial-gradient(circle, rgba(106, 82, 240, 0.5), transparent 68%);
+}
+
+:global(.dark) .orbe2 {
+  background: radial-gradient(circle, rgba(84, 51, 235, 0.38), transparent 66%);
+}
+
+:global(.dark) .orbe3 {
+  background: radial-gradient(circle, rgba(139, 118, 255, 0.28), transparent 70%);
+}
+
+:global(.dark) .puntos {
+  background-image: radial-gradient(rgba(180, 168, 255, 0.18) 1px, transparent 1.4px);
+}
+
+:global(.dark) .tarjeta {
+  background: rgba(30, 30, 36, 0.9);
+  color: #f7f7f9;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+}
+
+:global(.dark) .tarjetaIcono {
+  background: #2a2350;
+  color: #b4a8ff;
+}
+
+@media (max-width: 900px) {
+  .capaTarjeta:nth-of-type(n + 8) {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .capaTarjeta {
+    opacity: 0.55;
+  }
+
+  .tarjetaTexto {
+    display: none;
+  }
+
+  .tarjeta {
+    padding: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbe,
+  .tarjeta {
+    animation: none;
+  }
+}

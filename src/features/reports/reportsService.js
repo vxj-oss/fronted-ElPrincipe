@@ -1,4 +1,5 @@
 import { REPORTES_DISPONIBLES } from '../../constants/appConstants';
+import { apiRequest } from '../../utils/api';
 
 export const REPORTES_CATALOGO = REPORTES_DISPONIBLES;
 
@@ -19,20 +20,40 @@ export function saveHistorialLocal(historial) {
   } catch {}
 }
 
-export async function descargarReporteDesdeBackend({ reporteId, formato = 'Excel' }, onProgress) {
+const quitarAcentos = (texto) =>
+  (texto || 'cliente')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .toLowerCase()
+    .slice(0, 40) || 'cliente';
+
+export async function fetchClientesParaReporte() {
+  const datos = await apiRequest('/customers/');
+  return datos
+    .map((c) => ({ id: c.id, nombre: c.razon_social, documento: c.ruc_dni || '' }))
+    .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
+}
+
+export async function descargarReporteDesdeBackend({ reporteId, formato = 'Excel', cliente = null }, onProgress) {
   const reporte = REPORTES_CATALOGO.find((r) => r.id === reporteId);
   if (!reporte) throw new Error('Reporte no encontrado');
 
   const esPdf = formato === 'PDF';
   const endpoint = esPdf ? reporte.endpointPdf : reporte.endpointExcel;
   const extension = esPdf ? 'pdf' : 'xlsx';
-  const nombreDescarga = `${reporte.archivoBase}.${extension}`;
+  if (reporte.requiereCliente && !cliente) throw new Error('Elige un cliente para este reporte');
+  const nombreDescarga = reporte.requiereCliente
+    ? `historial_${quitarAcentos(cliente.nombre)}.${extension}`
+    : `${reporte.archivoBase}.${extension}`;
+  const consulta = reporte.requiereCliente ? `?cliente_id=${cliente.id}` : '';
 
   onProgress?.(20, `Solicitando reporte ${formato} al backend...`);
   onProgress?.(50, `FastAPI procesando reporte en ${formato}...`);
 
   const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
-  const response = await fetch(`${baseUrl}${endpoint}`, {
+  const response = await fetch(`${baseUrl}${endpoint}${consulta}`, {
     method: 'GET',
     credentials: 'include',
   });
@@ -50,7 +71,8 @@ export async function descargarReporteDesdeBackend({ reporteId, formato = 'Excel
   const entrada = {
     id: Date.now(),
     reporteId,
-    nombre: reporte.nombre,
+    nombre: reporte.requiereCliente ? `${reporte.nombre}: ${cliente.nombre}` : reporte.nombre,
+    cliente: reporte.requiereCliente ? cliente : null,
     formato,
     fecha: new Date().toISOString(),
     size: blob.size > 1048576 ? `${(blob.size / 1048576).toFixed(1)} MB` : `${Math.round(blob.size / 1024)} KB`,

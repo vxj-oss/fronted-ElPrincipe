@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAgent } from './useAgent';
 import { fetchAvisos, sugerenciasPantalla, sugerenciasEntidad } from './agentService';
 import { INTERVALO_AVISOS_MS } from '../../constants/appConstants';
+import { EVENTO_PASO_COMPLETADO } from './resueltos';
 
 const AgentContext = createContext(null);
 
@@ -38,6 +39,7 @@ export function AgentProvider({ children }) {
   const [vistos, setVistos] = useState(() => leerLista(localStorage, CLAVE_VISTOS));
   const [descartados, setDescartados] = useState(() => leerLista(sessionStorage, CLAVE_DESCARTADOS));
   const [globoOculto, setGloboOculto] = useState(false);
+  const [planActivo, setPlanActivo] = useState(null);
 
   useEffect(() => {
     let cancelado = false;
@@ -102,6 +104,43 @@ export function AgentProvider({ children }) {
     if (window.matchMedia('(max-width: 768px)').matches) setPanelAbierto(false);
   }, [ultimoMensaje, navigate]);
 
+  useEffect(() => {
+    if (!ultimoMensaje?.fresca || ultimoMensaje.rol === 'user') return;
+    const datos = ultimoMensaje.datos_estructurados;
+    if (datos?.plan?.pendientes?.length) {
+      setPlanActivo({ tarjetaId: ultimoMensaje.id, pendientes: datos.plan.pendientes, esperandoTarjeta: false });
+      return;
+    }
+    setPlanActivo((actual) => {
+      if (!actual?.esperandoTarjeta) return actual;
+      const esTarjeta = ['borrador_pedido', 'borrador_cotizacion'].includes(datos?.tipo);
+      if (!esTarjeta) return null;
+      return { ...actual, tarjetaId: ultimoMensaje.id, esperandoTarjeta: false };
+    });
+  }, [ultimoMensaje]);
+
+  const planRef = useRef(null);
+  planRef.current = planActivo;
+
+  useEffect(() => {
+    const alCompletar = (evento) => {
+      const plan = planRef.current;
+      const detalle = evento.detail || {};
+      if (!plan || plan.esperandoTarjeta || detalle.mensajeId !== plan.tarjetaId) return;
+      const siguiente = plan.pendientes[0];
+      if (!siguiente || siguiente.espera !== detalle.tipo) return;
+      const restantes = plan.pendientes.slice(1);
+      setPlanActivo(restantes.length ? { pendientes: restantes, tarjetaId: null, esperandoTarjeta: true } : null);
+      agente.usarSeguimiento(siguiente.texto.replace('{codigo}', detalle.codigo || ''));
+    };
+    window.addEventListener(EVENTO_PASO_COMPLETADO, alCompletar);
+    return () => window.removeEventListener(EVENTO_PASO_COMPLETADO, alCompletar);
+  }, [agente.usarSeguimiento]);
+
+  useEffect(() => {
+    if (agente.mensajes.length === 0) setPlanActivo(null);
+  }, [agente.mensajes.length]);
+
   const hayConsulta = agente.mensajes.some((m) => m.rol === 'user');
   const sugerenciasDeEntidad =
     agente.usarPantalla && agente.entidadPantalla ? sugerenciasEntidad(agente.entidadPantalla.tipo) : null;
@@ -124,6 +163,7 @@ export function AgentProvider({ children }) {
     ocultarGlobo: () => setGloboOculto(true),
     descartarAviso,
     marcarVistos,
+    planActivo,
   };
 
   return <AgentContext.Provider value={valor}>{children}</AgentContext.Provider>;

@@ -5,6 +5,7 @@ import { INDICADORES_META } from '../../constants/appConstants';
 import NSCIndicator from './NSCIndicator';
 import NPIndicator from './NPIndicator';
 import TPDIndicator from './TPDIndicator';
+import { bgSuave, bordeSuave } from '../../utils/colorSuave';
 import styles from './indicators.module.css';
 
 function KPIResumenCard({ sigla, resultado, meta, onVerDetalle }) {
@@ -32,21 +33,21 @@ function KPIResumenCard({ sigla, resultado, meta, onVerDetalle }) {
         {sinDatos ? (
           <span
             className={styles.kpiBadgeEstado}
-            style={{ color: '#64748b', background: '#f1f5f9', border: '1px solid #e2e8f0' }}
+            style={{ color: 'var(--ind-muted)', background: 'var(--ind-head-bg)', border: '1px solid #e2e8f0' }}
           >
             Sin datos
           </span>
         ) : (
           <span
             className={styles.kpiBadgeEstado}
-            style={{ color: interpretacion.color, background: interpretacion.bg, border: `1px solid ${interpretacion.border}` }}
+            style={{ color: interpretacion.color, background: bgSuave(interpretacion.color), border: `1px solid ${bordeSuave(interpretacion.color)}` }}
           >
             <span className={styles.puntoEstado} />
           </span>
         )}
       </div>
 
-      <p className={styles.kpiValor} style={{ color: sinDatos ? '#64748b' : interpretacion.color }}>
+      <p className={styles.kpiValor} style={{ color: sinDatos ? 'var(--ind-muted)' : interpretacion.color }}>
         {valorFormateado}
       </p>
 
@@ -55,7 +56,7 @@ function KPIResumenCard({ sigla, resultado, meta, onVerDetalle }) {
       <div className={styles.kpiBarBg}>
         <div
           className={styles.kpiBarFill}
-          style={{ width: `${porcentajeBarra}%`, background: sinDatos ? '#94a3b8' : interpretacion.color }}
+          style={{ width: `${porcentajeBarra}%`, background: sinDatos ? 'var(--ind-faint)' : interpretacion.color }}
           role="progressbar"
           aria-valuenow={Math.round(porcentajeBarra)}
           aria-valuemin={0}
@@ -128,7 +129,7 @@ export default function IndicatorPage() {
       <header className={styles.pageHeader}>
         <div>
           <h1 className={styles.pageTitle}>Indicadores comerciales</h1>
-          <p className={styles.pageSub}>NCCA · NPP · TPTD — Panel de actividad comercial por día</p>
+          <p className={styles.pageSub}>INDICADORES - NCCA · NPP · TPTD </p>
         </div>
         <button
           onClick={ejecutarRecalculo}
@@ -178,15 +179,15 @@ export default function IndicatorPage() {
                     <td data-label="Sigla" data-primary><strong style={{ color: meta.color }}>{s}</strong></td>
                     <td data-label="Nombre del Indicador">{meta.nombre}</td>
                     <td data-label="Fórmula"><code>{s === 'NCCA' ? 'Σ Cotizaciones Atendidas' : s === 'NPP' ? 'Σ Pedidos Procesados' : 'Σ(FP − FS) ÷ N'}</code></td>
-                    <td data-label="Resultado Actual"><strong style={{ color: res?.sinDatos ? '#64748b' : res?.interpretacion?.color }}>{res ? res.valorFormateado : '—'}</strong></td>
-                    <td data-label="Umbral Meta"><span style={{ fontSize: '0.75rem', color: '#64748b' }}>{meta.metaTexto}</span></td>
+                    <td data-label="Resultado Actual"><strong style={{ color: res?.sinDatos ? 'var(--ind-muted)' : res?.interpretacion?.color }}>{res ? res.valorFormateado : '—'}</strong></td>
+                    <td data-label="Umbral Meta"><span style={{ fontSize: '0.75rem', color: 'var(--ind-muted)' }}>{meta.metaTexto}</span></td>
                     <td data-label="Estado">
                       {res && (
                         <span
                           className={styles.estadoBadge}
                           style={res.sinDatos
-                            ? { color: '#64748b', background: '#f1f5f9', border: '1px solid #e2e8f0' }
-                            : { color: res.interpretacion.color, background: res.interpretacion.bg, border: `1px solid ${res.interpretacion.border}` }}
+                            ? { color: 'var(--ind-muted)', background: 'var(--ind-head-bg)', border: '1px solid #e2e8f0' }
+                            : { color: res.interpretacion.color, background: bgSuave(res.interpretacion.color), border: `1px solid ${bordeSuave(res.interpretacion.color)}` }}
                         >
                           {res.sinDatos ? 'Sin datos' : <span className={styles.puntoEstado} />}
                         </span>

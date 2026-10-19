@@ -8,6 +8,7 @@ import {
   GraficoLinea,
   GraficoBarras,
 } from './NSCIndicator';
+import { bgSuave, bordeSuave } from '../../utils/colorSuave';
 import styles from './indicators.module.css';
 
 export default function NPIndicator({ onVolver }) {
@@ -40,7 +41,7 @@ export default function NPIndicator({ onVolver }) {
             <span className={styles.indNumBadge}>Indicador {def.numero}</span>
             <span
               className={styles.estadoBadge}
-              style={{ color: umbral.color, background: umbral.bg, border: `1px solid ${umbral.border}` }}
+              style={{ color: umbral.color, background: bgSuave(umbral.color), border: `1px solid ${bordeSuave(umbral.color)}` }}
             >
               <span className={styles.puntoEstado} />
             </span>
@@ -77,7 +78,7 @@ export default function NPIndicator({ onVolver }) {
             sigla="Σ"
             nombre="Acumulado del periodo"
             valor={datos.sumaAcumulada}
-            desc="Suma de pedidos procesados en todos los días disponibles del historial (fórmula NPP = Σ Pedidos Procesados)"
+            desc="Suma de pedidos procesados"
             desglose={[{ label: `${datos.serieLabels?.length || 0} día(s) registrados`, valor: `${datos.sumaAcumulada} ped.` }]}
           />
         </div>
@@ -87,7 +88,7 @@ export default function NPIndicator({ onVolver }) {
         <div className={styles.resultadoGrid}>
           <div
             className={styles.resultadoCard}
-            style={{ background: umbral.bg, border: `1px solid ${umbral.border}` }}
+            style={{ background: bgSuave(umbral.color), border: `1px solid ${bordeSuave(umbral.color)}` }}
           >
             <p className={styles.resLabel}>Resultado</p>
             <p className={styles.resValor} style={{ color: umbral.color }}>
@@ -109,7 +110,7 @@ export default function NPIndicator({ onVolver }) {
             <div className={styles.estadoBadgeCenter}>
               <span
                 className={styles.estadoBadge}
-                style={{ color: umbral.color, background: umbral.bg, border: `1px solid ${umbral.border}` }}
+                style={{ color: umbral.color, background: bgSuave(umbral.color), border: `1px solid ${bordeSuave(umbral.color)}` }}
               >
                 <span className={styles.puntoEstado} />
               </span>
@@ -170,12 +171,12 @@ export default function NPIndicator({ onVolver }) {
         <div className={styles.bottomGrid} style={{ gridTemplateColumns: '1fr' }}>
           <div
             className={styles.conclusionCard}
-            style={{ background: '#fff7ed', border: '1px solid #fed7aa' }}
+            style={{ background: 'var(--ind-warn-bg)', border: '1px solid var(--ind-warn-border)' }}
           >
-            <p className={styles.conclusionTitulo} style={{ color: '#c2410c' }}>Conclusión automática</p>
+            <p className={styles.conclusionTitulo} style={{ color: 'var(--ind-warn-title)' }}>Conclusión automática</p>
             <p
               className={styles.conclusionTexto}
-              style={{ color: '#92400e' }}
+              style={{ color: 'var(--ind-warn-text)' }}
               dangerouslySetInnerHTML={{ __html: conclusion }}
             />
           </div>

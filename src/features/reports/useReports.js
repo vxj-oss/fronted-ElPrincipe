@@ -3,6 +3,7 @@ import {
   getHistorialLocal,
   descargarReporteDesdeBackend,
   REPORTES_CATALOGO,
+  fetchClientesParaReporte,
 } from './reportsService';
 import { mesActualLima } from '../../utils/fechas';
 
@@ -15,11 +16,20 @@ export function useReports() {
   const [generando, setGenerando] = useState(false);
   const [progreso, setProgreso] = useState(0);
   const [mensajeGen, setMensajeGen] = useState('');
+  const [clientes, setClientes] = useState([]);
+  const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
 
   useEffect(() => {
     setHistorial(getHistorialLocal());
     setCargando(false);
   }, []);
+
+  useEffect(() => {
+    if (!reporteSeleccionado?.requiereCliente || clientes.length > 0) return;
+    fetchClientesParaReporte()
+      .then(setClientes)
+      .catch(() => setToastMsg({ tipo: 'error', texto: 'No se pudo cargar la lista de clientes.' }));
+  }, [reporteSeleccionado, clientes.length]);
 
   useEffect(() => {
     if (!toastMsg) return;
@@ -38,7 +48,7 @@ export function useReports() {
     };
   }, [historial]);
 
-  const handleGenerar = useCallback(async (id = reporteSeleccionado?.id, formato = formatoSeleccionado) => {
+  const handleGenerar = useCallback(async (id = reporteSeleccionado?.id, formato = formatoSeleccionado, clienteIndicado = null) => {
     if (!id) return;
 
     const rep = REPORTES_CATALOGO.find((r) => r.id === id);
@@ -47,13 +57,19 @@ export function useReports() {
     }
     setFormatoSeleccionado(formato);
 
+    const cliente = clienteIndicado || clienteSeleccionado;
+    if (rep?.requiereCliente && !cliente) {
+      setToastMsg({ tipo: 'error', texto: 'Elige primero un cliente para descargar su historial.' });
+      return;
+    }
+
     setGenerando(true);
     setProgreso(0);
     setMensajeGen('Iniciando...');
 
     try {
       const entrada = await descargarReporteDesdeBackend(
-        { reporteId: id, formato },
+        { reporteId: id, formato, cliente: rep?.requiereCliente ? cliente : null },
         (pct, msg) => {
           setProgreso(pct);
           setMensajeGen(msg);
@@ -77,7 +93,7 @@ export function useReports() {
         setMensajeGen('');
       }, 800);
     }
-  }, [reporteSeleccionado, formatoSeleccionado]);
+  }, [reporteSeleccionado, formatoSeleccionado, clienteSeleccionado]);
 
   return {
     historial,
@@ -93,5 +109,8 @@ export function useReports() {
     REPORTES_CATALOGO,
     setReporteSeleccionado,
     handleGenerar,
+    clientes,
+    clienteSeleccionado,
+    setClienteSeleccionado,
   };
 }

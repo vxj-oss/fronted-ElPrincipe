@@ -152,7 +152,7 @@ function DetallePanel({ pedido, onCerrar, onEditar, onConfirmar, onPreguntar }) 
           borderRadius: '8px',
           backgroundColor: '#EFF6FF',
           border: '1px solid #BFDBFE',
-          color: '#1E3A8A',
+          color: '#5433eb',
           fontSize: '0.8125rem',
           lineHeight: 1.5,
         }}>
@@ -229,7 +229,7 @@ function DetallePanel({ pedido, onCerrar, onEditar, onConfirmar, onPreguntar }) 
         ))}
         <div className={styles.detalleTotalRow}>
           <span>Total del pedido</span>
-          <strong style={{ color: '#1E3A8A' }}>
+          <strong style={{ color: '#5433eb' }}>
             {EMPRESA.MONEDA_SIMBOLO} {total.toLocaleString('es-PE', { minimumFractionDigits: 2 })}
           </strong>
         </div>
@@ -445,7 +445,7 @@ export default function OrdersPage() {
         <header className={styles.pageHeader}>
           <div>
             <h1 className={styles.pageTitle}>Pedidos</h1>
-            <p className={styles.pageSub}>Gestion de Pedidos — {EMPRESA.NOMBRE}, {EMPRESA.CIUDAD}</p>
+            <p className={styles.pageSub}>Pedidos  {EMPRESA.NOMBRE}, {EMPRESA.CIUDAD}</p>
           </div>
           <button onClick={abrirCrear} className={styles.btnPrimary}>
             <Plus size={15} aria-hidden="true" /> Nuevo pedido

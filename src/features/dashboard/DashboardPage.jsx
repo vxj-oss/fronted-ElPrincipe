@@ -18,6 +18,7 @@ import {
   Send,
   Lightbulb,
   AlertTriangle,
+  ClipboardCheck,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAgentContext } from '../agent/AgentContext';
@@ -26,6 +27,7 @@ import { useDashboard } from './useDashboard';
 import { descargarCierreDia } from './dashboardService';
 import { descargarArchivo } from '../../utils/descargas';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { EMPRESA } from '../../constants/appConstants';
 import { saludoLima } from '../../utils/fechas';
 import styles from './dashboard.module.css';
@@ -37,7 +39,7 @@ function KPICard({ label, value, deltaLabel, icon: Icon, accent }) {
         <Icon size={13} aria-hidden="true" />
         {label}
       </div>
-      <div className={styles.kpiValue} style={accent ? { color: '#1E3A8A' } : {}}>
+      <div className={styles.kpiValue} style={accent ? { color: '#5433eb' } : {}}>
         {value}
       </div>
       <div className={`${styles.kpiDelta} ${styles.up}`}>
@@ -73,6 +75,7 @@ const ICONOS_LECTURA = {
   recompra: Users,
   seguimiento: Clock,
   anomalias: AlertTriangle,
+  pedidos: ClipboardCheck,
 };
 
 const FILTROS_LECTURA = [
@@ -146,7 +149,7 @@ function LecturaAgente() {
   const puntos = useMemo(() => {
     const todos = lectura?.puntos || [];
     if (filtro === 'urgente') return todos.filter((p) => p.nivel === 'alta');
-    if (filtro === 'oportunidades') return todos.filter((p) => ['recompra', 'seguimiento', 'stock'].includes(p.id));
+    if (filtro === 'oportunidades') return todos.filter((p) => ['recompra', 'por_convertir', 'por_aprobar', 'stock'].includes(p.id));
     return todos;
   }, [lectura, filtro]);
 
@@ -361,6 +364,7 @@ function AlertaCard({ alerta }) {
 }
 
 function GraficaVentas({ data, periodo, periodos, onCambiarPeriodo }) {
+  const { isDark: temaOscuro } = useTheme();
   const canvasRef = useRef(null);
   const chartRef = useRef(null);
 
@@ -374,8 +378,8 @@ function GraficaVentas({ data, periodo, periodos, onCambiarPeriodo }) {
         chartRef.current.destroy();
       }
 
-      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const gridColor = isDark ? '#2c2c2a' : '#e1e0d9';
+      const isDark = temaOscuro;
+      const gridColor = isDark ? '#2b2b32' : '#ebebeb';
       const tickColor = '#898781';
 
       chartRef.current = new Chart(canvasRef.current, {
@@ -386,8 +390,8 @@ function GraficaVentas({ data, periodo, periodos, onCambiarPeriodo }) {
             {
               label: `Ventas ${EMPRESA.MONEDA_SIMBOLO}`,
               data: data.valores,
-              backgroundColor: '#1E3A8A20',
-              borderColor: '#1E3A8A',
+              backgroundColor: '#5433eb20',
+              borderColor: '#5433eb',
               borderWidth: 1.5,
               borderRadius: { topLeft: 4, topRight: 4 },
               borderSkipped: false,
@@ -432,7 +436,7 @@ function GraficaVentas({ data, periodo, periodos, onCambiarPeriodo }) {
         chartRef.current = null;
       }
     };
-  }, [data]);
+  }, [data, temaOscuro]);
 
   return (
     <div className={styles.card}>
@@ -528,7 +532,7 @@ export default function DashboardPage() {
             {saludoLima()}, {user?.nombre_completo || user?.nombre_usuario || 'Asesor'}
           </h1>
           <p className={styles.greetingSub}>
-            Resumen comercial — {EMPRESA.NOMBRE}, {EMPRESA.CIUDAD}
+            Resumen comercial
           </p>
         </div>
         <div className={styles.topbarAcciones}>
