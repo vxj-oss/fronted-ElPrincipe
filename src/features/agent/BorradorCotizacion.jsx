@@ -5,7 +5,7 @@ import { fetchClientes } from '../customers/customersService';
 import { crearSolicitud, descargarCotizacionPdf, CANALES_RECEPCION } from '../customer_requests/customerRequestsService';
 import { EMPRESA } from '../../constants/appConstants';
 import { useAgentContext } from './AgentContext';
-import { avisarDatosActualizados, guardarResuelto, leerResueltos } from './resueltos';
+import { avisarDatosActualizados, avisarPasoCompletado, guardarResuelto, leerResueltos } from './resueltos';
 import styles from './agent.module.css';
 
 let clientesPromesa = null;
@@ -232,6 +232,7 @@ export default function BorradorCotizacion({ mensajeId, datos, inicioAtencion })
       setRegistro(guardado);
       setEstado('registrado');
       avisarDatosActualizados();
+      avisarPasoCompletado({ mensajeId, tipo: 'cotizacion', codigo: creada.codigo });
     } catch (err) {
       setError(err.message || 'No se pudo registrar la cotización.');
       setEstado('borrador');

@@ -9,6 +9,7 @@ import {
   GraficoLinea,
   GraficoBarras,
 } from './NSCIndicator';
+import { bgSuave, bordeSuave } from '../../utils/colorSuave';
 import styles from './indicators.module.css';
 
 export default function TPDIndicator({ onVolver }) {
@@ -45,14 +46,14 @@ export default function TPDIndicator({ onVolver }) {
             {sinDatos ? (
               <span
                 className={styles.estadoBadge}
-                style={{ color: '#64748b', background: '#f1f5f9', border: '1px solid #e2e8f0' }}
+                style={{ color: 'var(--ind-muted)', background: 'var(--ind-head-bg)', border: '1px solid #e2e8f0' }}
               >
                 Sin datos
               </span>
             ) : (
               <span
                 className={styles.estadoBadge}
-                style={{ color: umbral.color, background: umbral.bg, border: `1px solid ${umbral.border}` }}
+                style={{ color: umbral.color, background: bgSuave(umbral.color), border: `1px solid ${bordeSuave(umbral.color)}` }}
               >
                 <span className={styles.puntoEstado} />
               </span>
@@ -93,7 +94,7 @@ export default function TPDIndicator({ onVolver }) {
             desglose={[{ label: 'Histórico', valor: datos.tpdGeneral !== null ? `${formatearSegundos(datos.tpdGeneral)} s` : '—' }]}
           />
         </div>
-        <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: 12, lineHeight: 1.5 }}>
+        <p style={{ fontSize: '0.75rem', color: 'var(--ind-muted)', marginTop: 12, lineHeight: 1.5 }}>
           Nota: la auditoría del agente de IA agrega unos segundos de espera al guardar la cotización y el pedido. 
         </p>
       </SeccionCard>
@@ -102,10 +103,10 @@ export default function TPDIndicator({ onVolver }) {
         <div className={styles.resultadoGrid}>
           <div
             className={styles.resultadoCard}
-            style={{ background: sinDatos ? '#f1f5f9' : umbral.bg, border: `1px solid ${sinDatos ? '#e2e8f0' : umbral.border}` }}
+            style={{ background: sinDatos ? 'var(--ind-head-bg)' : bgSuave(umbral.color), border: `1px solid ${sinDatos ? 'var(--ind-border)' : bordeSuave(umbral.color)}` }}
           >
             <p className={styles.resLabel}>Resultado</p>
-            <p className={styles.resValor} style={{ color: sinDatos ? '#64748b' : umbral.color }}>
+            <p className={styles.resValor} style={{ color: sinDatos ? 'var(--ind-muted)' : umbral.color }}>
               {sinDatos ? '—' : `${formatearSegundos(valor)} s`}
             </p>
             <p className={styles.resUnidad}>segundos promedio entre la apertura del registro de cotización y la aprobación del pedido{sinDatos ? ' (sin aprobaciones en el día actual)' : ''}</p>
@@ -125,14 +126,14 @@ export default function TPDIndicator({ onVolver }) {
               {sinDatos ? (
                 <span
                   className={styles.estadoBadge}
-                  style={{ color: '#64748b', background: '#f1f5f9', border: '1px solid #e2e8f0' }}
+                  style={{ color: 'var(--ind-muted)', background: 'var(--ind-head-bg)', border: '1px solid #e2e8f0' }}
                 >
                   Sin datos
                 </span>
               ) : (
                 <span
                   className={styles.estadoBadge}
-                  style={{ color: umbral.color, background: umbral.bg, border: `1px solid ${umbral.border}` }}
+                  style={{ color: umbral.color, background: bgSuave(umbral.color), border: `1px solid ${bordeSuave(umbral.color)}` }}
                 >
                   <span className={styles.puntoEstado} />
                 </span>
@@ -182,12 +183,12 @@ export default function TPDIndicator({ onVolver }) {
         <div className={styles.bottomGrid} style={{ gridTemplateColumns: '1fr' }}>
           <div
             className={styles.conclusionCard}
-            style={{ background: '#f0fdf4', border: '1px solid #bbf7d0' }}
+            style={{ background: 'var(--ind-ok-bg)', border: '1px solid var(--ind-ok-border)' }}
           >
-            <p className={styles.conclusionTitulo} style={{ color: '#15803d' }}>Conclusión automática</p>
+            <p className={styles.conclusionTitulo} style={{ color: 'var(--ind-ok-title)' }}>Conclusión automática</p>
             <p
               className={styles.conclusionTexto}
-              style={{ color: '#166534' }}
+              style={{ color: 'var(--ind-ok-text)' }}
               dangerouslySetInnerHTML={{ __html: conclusion }}
             />
           </div>

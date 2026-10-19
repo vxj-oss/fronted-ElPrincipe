@@ -54,26 +54,21 @@ export default function Sidebar({ colapsado, esMovil = false, onCerrar }) {
 
   const contenido = (
     <>
-      <div
-        aria-hidden="true"
-        className="sidebar-glow pointer-events-none absolute -top-16 -left-10 w-56 h-56 rounded-full bg-blue-600/20 blur-3xl"
-      />
-
-      <div className="relative p-4 border-b border-slate-800/80 shrink-0 flex items-center gap-3 overflow-hidden h-16">
+      <div className="relative p-4 border-b border-slate-200 dark:border-slate-800 shrink-0 flex items-center gap-3 overflow-hidden h-16">
         <div className="relative shrink-0">
           <img
             src={logo}
             alt="Logo"
-            className="w-10 h-10 rounded-xl object-cover shadow-md shadow-black/30 ring-2 ring-blue-500/30"
+            className="w-10 h-10 rounded-xl object-cover shadow-sm ring-2 ring-slate-200 dark:ring-slate-800"
           />
-          <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 ring-2 ring-slate-900 status-dot-live" />
+          <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 ring-2 ring-white dark:ring-slate-900 status-dot-live" />
         </div>
         {!contraido && (
           <div className="truncate transition-opacity duration-200">
-            <p className="font-display font-bold text-base tracking-tight leading-tight bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+            <p className="font-display font-bold text-base tracking-tight leading-tight text-slate-900 dark:text-white">
               EL PRÍNCIPE
             </p>
-            <p className="text-xs text-slate-400 mt-0.5 truncate">{rolUsuario}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">{rolUsuario}</p>
           </div>
         )}
       </div>
@@ -87,19 +82,19 @@ export default function Sidebar({ colapsado, esMovil = false, onCerrar }) {
             onClick={esMovil ? onCerrar : undefined}
             style={{ animationDelay: `${idx * 30}ms` }}
             className={({ isActive }) =>
-              `nav-item-enter group relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 ${
+              `nav-item-enter group relative flex items-center gap-3 px-3 py-2.5 rounded-full text-sm transition-all duration-200 ${
                 contraido ? 'justify-center' : ''
               } ${
                 isActive
-                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow-lg shadow-blue-950/50'
-                  : 'text-slate-400 hover:bg-slate-800/70 hover:text-slate-50 hover:translate-x-0.5'
+                  ? 'bg-slate-100 dark:bg-brand-950 text-brand-600 dark:text-brand-500 font-semibold'
+                  : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-50 hover:translate-x-0.5'
               }`
             }
           >
             {({ isActive }) => (
               <>
                 {isActive && !contraido && (
-                  <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-1 rounded-r-full bg-white/80" />
+                  <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-1 rounded-r-full bg-brand-600" />
                 )}
                 <Icon
                   size={19}
@@ -114,18 +109,18 @@ export default function Sidebar({ colapsado, esMovil = false, onCerrar }) {
         ))}
       </nav>
 
-      <div className="relative p-3 border-t border-slate-800/80 shrink-0 bg-slate-950/40">
+      <div className="relative p-3 border-t border-slate-200 dark:border-slate-800 shrink-0">
         <div className={`flex items-center ${contraido ? 'justify-center' : 'justify-between'}`}>
           {!contraido && (
             <div className="flex items-center gap-2.5 overflow-hidden mr-2">
               <div className="relative shrink-0">
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-xs font-bold text-white shadow-md shadow-blue-950/40 ring-2 ring-slate-800">
+                <div className="w-9 h-9 rounded-full bg-brand-600 flex items-center justify-center text-xs font-semibold text-white shadow-md shadow-brand-600/30 ring-2 ring-white dark:ring-slate-800">
                   {iniciales(nombreUsuario)}
                 </div>
-                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-slate-950" />
+                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-white dark:ring-slate-900" />
               </div>
               <div className="overflow-hidden">
-                <p className="text-sm font-medium text-slate-200 truncate">{nombreUsuario}</p>
+                <p className="text-sm font-medium text-slate-900 dark:text-slate-200 truncate">{nombreUsuario}</p>
                 <p className="text-xs text-slate-500 truncate">{correoUsuario}</p>
               </div>
             </div>
@@ -134,7 +129,7 @@ export default function Sidebar({ colapsado, esMovil = false, onCerrar }) {
             type="button"
             onClick={logout}
             title="Cerrar sesión"
-            className="p-2 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 hover:scale-105 active:scale-95 transition-all duration-150 shrink-0"
+            className="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:text-red-500 hover:bg-red-500/10 hover:scale-105 active:scale-95 transition-all duration-150 shrink-0"
           >
             <LogOut size={18} />
           </button>
@@ -154,8 +149,8 @@ export default function Sidebar({ colapsado, esMovil = false, onCerrar }) {
           aria-hidden="true"
         />
         <aside
-          className={`fixed inset-y-0 left-0 z-50 w-64 max-w-[80vw] bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-white flex flex-col select-none transition-transform duration-300 ease-in-out overflow-hidden ${
-            colapsado ? '-translate-x-full' : 'translate-x-0 border-r border-slate-800 shadow-2xl'
+          className={`fixed inset-y-0 left-0 z-50 w-64 max-w-[80vw] bg-white dark:bg-slate-900 text-slate-900 dark:text-white flex flex-col select-none transition-transform duration-300 ease-in-out overflow-hidden ${
+            colapsado ? '-translate-x-full' : 'translate-x-0 shadow-2xl'
           }`}
         >
           {contenido}
@@ -166,7 +161,7 @@ export default function Sidebar({ colapsado, esMovil = false, onCerrar }) {
 
   return (
     <aside
-      className={`relative bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-white flex flex-col shrink-0 h-full select-none border-r border-slate-800 transition-all duration-300 ease-in-out ${
+      className={`relative bg-white dark:bg-slate-900 text-slate-900 dark:text-white flex flex-col shrink-0 h-full select-none shadow-[0_0_32px_rgba(0,0,0,0.07)] dark:shadow-none dark:border-r dark:border-slate-800 transition-all duration-300 ease-in-out ${
         contraido ? 'w-20' : 'w-64'
       }`}
     >

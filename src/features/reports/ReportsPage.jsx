@@ -1,4 +1,5 @@
-﻿import {
+﻿import { useState } from 'react';
+import {
   Download,
   AlertCircle,
   CheckCircle,
@@ -93,6 +94,47 @@ function TarjetaReporte({ reporte, seleccionado, onSeleccionar, onDescargarDirec
   );
 }
 
+function SelectorCliente({ clientes, seleccionado, onSeleccionar }) {
+  const [texto, setTexto] = useState(seleccionado?.nombre || '');
+
+  const cambiar = (valor) => {
+    setTexto(valor);
+    const normalizado = valor.trim().toLowerCase();
+    const encontrado = clientes.find(
+      (c) =>
+        c.nombre.toLowerCase() === normalizado ||
+        `${c.nombre} · ${c.documento}`.toLowerCase() === normalizado
+    );
+    onSeleccionar(encontrado || null);
+  };
+
+  return (
+    <div className={styles.cfgGroup}>
+      <label htmlFor="cfg-cliente" className={styles.cfgLabel}>
+        Cliente
+      </label>
+      <input
+        id="cfg-cliente"
+        type="text"
+        list="lista-clientes-reporte"
+        value={texto}
+        onChange={(e) => cambiar(e.target.value)}
+        placeholder="Escribe para buscar un cliente…"
+        className={styles.cfgInput}
+        autoComplete="off"
+      />
+      <datalist id="lista-clientes-reporte">
+        {clientes.map((c) => (
+          <option key={c.id} value={c.nombre}>
+            {c.documento}
+          </option>
+        ))}
+      </datalist>
+      {texto && !seleccionado && <p className={styles.cardSub}>Elige un cliente de la lista.</p>}
+    </div>
+  );
+}
+
 function BarraProgreso({ progreso, mensaje }) {
   return (
     <div className={styles.progresoWrap} role="status" aria-live="polite">
@@ -138,7 +180,7 @@ function HistorialItem({ entrada, onReDescargar }) {
       </span>
 
       <button
-        onClick={() => onReDescargar(entrada.reporteId, entrada.formato)}
+        onClick={() => onReDescargar(entrada.reporteId, entrada.formato, entrada.cliente)}
         className={styles.btnReDescargar}
         aria-label={`Re-descargar ${entrada.nombre}`}
         title="Re-descargar"
@@ -164,6 +206,9 @@ export default function ReportsPage() {
     REPORTES_CATALOGO,
     setReporteSeleccionado,
     handleGenerar,
+    clientes,
+    clienteSeleccionado,
+    setClienteSeleccionado,
   } = useReports();
 
   if (cargando) {
@@ -183,7 +228,7 @@ export default function ReportsPage() {
         <div>
           <h1 className={styles.pageTitle}>Reportes</h1>
           <p className={styles.pageSub}>
-            Exportación de datos oficial — EL PRÍNCIPE
+            Exportación de datos 
           </p>
         </div>
       </header>
@@ -238,6 +283,14 @@ export default function ReportsPage() {
                 : 'Selecciona un reporte'}
             </p>
 
+            {reporteSeleccionado?.requiereCliente && (
+              <SelectorCliente
+                clientes={clientes}
+                seleccionado={clienteSeleccionado}
+                onSeleccionar={setClienteSeleccionado}
+              />
+            )}
+
             <div className={styles.cfgGroup}>
               <label htmlFor="cfg-formato" className={styles.cfgLabel}>
                 Formato de exportación
@@ -286,7 +339,7 @@ export default function ReportsPage() {
                   <HistorialItem
                     key={h.id}
                     entrada={h}
-                    onReDescargar={(id, fmt) => handleGenerar(id, fmt)}
+                    onReDescargar={(id, fmt, cliente) => handleGenerar(id, fmt, cliente)}
                   />
                 ))}
               </div>

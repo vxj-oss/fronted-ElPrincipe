@@ -161,6 +161,19 @@ export const REPORTES_DISPONIBLES = [
     endpointPdf: '/reports/indicators/pdf',
     archivoBase: 'indicadores',
   },
+  {
+    id: 'customer_history',
+    nombre: 'Historial por Cliente',
+    descripcion: 'Pedidos, productos más comprados y cotizaciones del cliente que elijas.',
+    icono: 'users',
+    colorBg: '#ecfeff',
+    colorIcon: '#0e7490',
+    formatos: ['Excel', 'PDF'],
+    endpointExcel: '/reports/customer-history/excel',
+    endpointPdf: '/reports/customer-history/pdf',
+    archivoBase: 'historial_cliente',
+    requiereCliente: true,
+  },
 ];
 
 export const PREGUNTAS_SUGERIDAS_AGENTE = [
@@ -188,7 +201,7 @@ export const METAS_COMERCIALES = {
 export const INDICADORES_META = {
   NCCA: {
     nombre: 'Número de Cotizaciones de Clientes Atendidas',
-    color: '#1E3A8A',
+    color: '#5433eb',
     metaTexto: 'Meta: ≥ 13/día',
     tipo: 'conteo',
     maxEscala: 30,

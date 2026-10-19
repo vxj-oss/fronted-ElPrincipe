@@ -47,7 +47,7 @@ export default function MainLayout() {
 
   return (
     <AgentProvider>
-    <div id="app-shell" className="flex h-screen w-screen overflow-hidden bg-slate-50 dark:bg-slate-950 transition-colors">
+    <div id="app-shell" className="flex h-screen w-screen overflow-hidden bg-slate-100 dark:bg-slate-950 transition-colors">
       <Sidebar colapsado={colapsado} esMovil={esMovil} onCerrar={() => setColapsado(true)} />
 
       <div id="app-shell-inner" className="flex-1 flex flex-col h-full overflow-hidden min-w-0">
@@ -55,7 +55,7 @@ export default function MainLayout() {
           onToggleSidebar={() => setColapsado((prev) => !prev)}
           onAbrirBusqueda={() => setBusquedaAbierta(true)}
         />
-        <main className="flex-1 overflow-y-auto overflow-x-hidden bg-slate-50 dark:bg-slate-900 transition-colors">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden bg-slate-100 dark:bg-slate-950 transition-colors">
           <React.Fragment key={versionDatos}>
             <Outlet />
           </React.Fragment>

@@ -28,7 +28,7 @@ export default function Modal({ open, onClose, title, children, footer, size = '
       onClick={(e) => e.target === e.currentTarget && onClose?.()}
     >
       <div
-        className={`w-full ${SIZE_CLASSES[size] || SIZE_CLASSES.md} bg-white dark:bg-slate-900 border border-surface-border dark:border-slate-800 rounded-lg shadow-card`}
+        className={`w-full ${SIZE_CLASSES[size] || SIZE_CLASSES.md} bg-white dark:bg-slate-900 dark:border dark:border-slate-800 rounded-[28px] shadow-[0_8px_40px_rgba(0,0,0,0.18)]`}
       >
         <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-surface-border dark:border-slate-800">
           <h2 className="text-sm font-semibold text-neutral-text dark:text-white">{title}</h2>

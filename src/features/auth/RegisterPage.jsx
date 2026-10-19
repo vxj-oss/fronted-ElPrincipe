@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Eye, EyeOff, User, AtSign, Mail, Lock } from 'lucide-react';
 import { useRegister } from './useRegister';
 import Button from '../../components/ui/Button';
+import FondoLogin from './FondoLogin';
 import styles from './auth.module.css';
 
 export default function RegisterPage() {
@@ -13,15 +14,18 @@ export default function RegisterPage() {
     <div className={styles.wrapper}>
       <div className={styles.branding}>
         <div className={styles.brandingContent}>
+          <div className={styles.brandingCard}>
           <h1 className={styles.brandTitle}>EL PRÍNCIPE</h1>
           <p className={styles.brandSubtitle}>Sistema de Gestión Comercial</p>
           <p className={styles.brandCaption}>
             Únete a la plataforma de ventas y gestión comercial de productos de limpieza.
           </p>
+          </div>
         </div>
       </div>
 
       <div className={styles.formPanel}>
+        <FondoLogin cargando={loading} />
         <h1 className={styles.mobileTitle}>
           EP <span className={styles.mobileTitleAccent}>Agent</span>
         </h1>

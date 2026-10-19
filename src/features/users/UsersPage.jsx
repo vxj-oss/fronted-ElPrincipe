@@ -179,7 +179,7 @@ export default function UsersPage() {
         <div>
           <h1 className={styles.pageTitle}>Usuarios</h1>
           <p className={styles.pageSub}>
-            Gestión de accesos — las cuentas se crean desde el registro en el inicio de sesión
+            Manejo de accesos para los usuarios
           </p>
         </div>
       </header>
@@ -187,7 +187,7 @@ export default function UsersPage() {
       <section className={styles.kpiGrid} aria-label="Resumen de usuarios">
         <KPICard label="Total" value={kpis.total} note="cuentas registradas" />
         <KPICard label="Administradores" value={kpis.admins} note="acceso total" color="#4338ca" />
-        <KPICard label="Asesores" value={kpis.asesores} note="acceso comercial" color="#1E3A8A" />
+        <KPICard label="Asesores" value={kpis.asesores} note="acceso comercial" color="#5433eb" />
         <KPICard label="Inactivos" value={kpis.inactivos} note="sin acceso" color="#b91c1c" />
       </section>
 
@@ -250,7 +250,7 @@ export default function UsersPage() {
                         disabled={esYo} aria-label={u.activo ? 'Desactivar' : 'Activar'}
                         title={esYo ? 'No puedes cambiar tu propio estado' : ''}>
                         {u.activo
-                          ? <ToggleRight size={20} style={{ color: '#1E3A8A' }} />
+                          ? <ToggleRight size={20} style={{ color: '#5433eb' }} />
                           : <ToggleLeft size={20} style={{ color: '#94a3b8' }} />}
                       </button>
                     </td>

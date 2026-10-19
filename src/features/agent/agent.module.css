@@ -10,10 +10,10 @@
 }
 
 .sidebar {
-  border-right: 1px solid #e2e8f0;
+  border-right: 1px solid #ebebeb;
   display: flex;
   flex-direction: column;
-  background: #f8fafc;
+  background: #f2f4f5;
   height: 100%;
   min-height: 0;
   overflow: hidden;
@@ -22,16 +22,16 @@
 
 .sidebarHeader {
   padding: 14px 16px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #ebebeb;
   flex-shrink: 0;
-  background: #f8fafc;
+  background: #f2f4f5;
   transition: background-color 150ms ease, border-color 150ms ease;
 }
 
 .sidebarTitulo {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #0f172a;
+  color: #0b0b0c;
   margin-bottom: 8px;
 }
 
@@ -42,12 +42,12 @@
   justify-content: center;
   gap: 6px;
   padding: 8px 12px;
-  border-radius: 0.5rem;
-  border: 1px solid #cbd5e1;
+  border-radius: 9999px;
+  border: 1px solid #dcdcdc;
   background: #ffffff;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #1e3a8a;
+  color: #5433eb;
   cursor: pointer;
   font-family: inherit;
   transition: all 150ms ease;
@@ -55,8 +55,8 @@
 }
 
 .btnNueva:hover {
-  background: #eff6ff;
-  border-color: #93c5fd;
+  background: #f3f0fe;
+  border-color: #b9aef7;
 }
 
 .histLista {
@@ -82,12 +82,12 @@
 
 .histItem:hover {
   background: #ffffff;
-  border-color: #e2e8f0;
+  border-color: #ebebeb;
 }
 
 .histItemActivo {
   background: #ffffff;
-  border-color: #bfdbfe;
+  border-color: #d9d2fb;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
@@ -95,7 +95,7 @@
   display: block;
   font-size: 0.8125rem;
   font-weight: 500;
-  color: #1e293b;
+  color: #1c1b1b;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -105,14 +105,14 @@
 .histFecha {
   display: block;
   font-size: 0.6875rem;
-  color: #94a3b8;
+  color: #a5a19f;
 }
 
 .histCargando,
 .histVacio {
   padding: 16px;
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: #a5a19f;
   text-align: center;
 }
 
@@ -128,7 +128,7 @@
 
 .chatTopbar {
   padding: 12px 24px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #ebebeb;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -147,7 +147,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #1e3a8a;
+  background: #5433eb;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -158,12 +158,12 @@
 .agentNombre {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #0f172a;
+  color: #0b0b0c;
 }
 
 .agentSub {
   font-size: 0.6875rem;
-  color: #94a3b8;
+  color: #a5a19f;
 }
 
 .statusRow {
@@ -181,7 +181,7 @@
 
 .statusLabel {
   font-size: 0.6875rem;
-  color: #64748b;
+  color: #787574;
 }
 
 .errorBanner {
@@ -245,18 +245,18 @@
   align-items: center;
   justify-content: center;
   font-size: 0.6875rem;
-  font-weight: 700;
+  font-weight: 600;
   flex-shrink: 0;
 }
 
 .avatarAgent {
-  background: #1e3a8a;
+  background: #5433eb;
   color: #ffffff;
 }
 
 .avatarUser {
-  background: #dbeafe;
-  color: #1e3a8a;
+  background: #e9e5fd;
+  color: #5433eb;
 }
 
 .bubbleWrap {
@@ -280,13 +280,13 @@
 
 .bubbleAgent {
   background: #ffffff;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #ebebeb;
   border-top-left-radius: 2px;
-  color: #0f172a;
+  color: #0b0b0c;
 }
 
 .bubbleUser {
-  background: #1e3a8a;
+  background: #5433eb;
   color: #ffffff;
   border-top-right-radius: 2px;
 }
@@ -304,7 +304,7 @@
 
 .bubbleHora {
   font-size: 0.6875rem;
-  color: #94a3b8;
+  color: #a5a19f;
   margin-top: 4px;
   padding: 0 2px;
 }
@@ -312,15 +312,15 @@
 .sugerenciaPost {
   margin-top: 10px;
   padding-top: 8px;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid #f2f4f5;
   font-size: 0.75rem;
-  color: #1e3a8a;
+  color: #5433eb;
   font-style: italic;
 }
 
 .tablaWrap {
   margin-top: 10px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #ebebeb;
   border-radius: 0.5rem;
   overflow: hidden;
   font-size: 0.75rem;
@@ -332,20 +332,20 @@
 }
 
 .tabla th {
-  background: #f8fafc;
+  background: #f2f4f5;
   padding: 8px 12px;
   text-align: left;
   font-weight: 600;
-  color: #475569;
+  color: #5a5654;
   font-size: 0.6875rem;
   text-transform: uppercase;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #ebebeb;
 }
 
 .tabla td {
   padding: 8px 12px;
-  border-bottom: 1px solid #f1f5f9;
-  color: #0f172a;
+  border-bottom: 1px solid #f2f4f5;
+  color: #0b0b0c;
 }
 
 .tabla tr:last-child td {
@@ -353,7 +353,7 @@
 }
 
 .tabla tr:hover td {
-  background: #f8fafc;
+  background: #f2f4f5;
 }
 
 .pill {
@@ -373,17 +373,18 @@
   gap: 5px;
   padding: 10px 14px;
   background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  border: 1px solid transparent;
+  border-radius: 28px;
   border-top-left-radius: 2px;
   width: fit-content;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
 }
 
 .dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #94a3b8;
+  background: #a5a19f;
   animation: typing-blink 1.2s infinite;
 }
 
@@ -397,7 +398,7 @@
 
 .suggRow {
   padding: 10px 24px;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid #f2f4f5;
   display: flex;
   gap: 8px;
   justify-content: center;
@@ -411,9 +412,9 @@
   font-size: 0.75rem;
   padding: 6px 14px;
   border-radius: 9999px;
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
-  color: #475569;
+  border: 1px solid #ebebeb;
+  background: #f2f4f5;
+  color: #5a5654;
   cursor: pointer;
   font-family: inherit;
   transition: all 150ms ease;
@@ -421,9 +422,9 @@
 }
 
 .suggBtn:hover {
-  background: #eff6ff;
-  border-color: #bfdbfe;
-  color: #1e3a8a;
+  background: #f3f0fe;
+  border-color: #d9d2fb;
+  color: #5433eb;
 }
 
 .inputRow {
@@ -434,21 +435,21 @@
   justify-content: center;
   flex-shrink: 0;
   background: #ffffff;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid #ebebeb;
   transition: background-color 150ms ease, border-color 150ms ease;
 }
 
 .chatInput {
   flex: 1;
   max-width: 820px;
-  border: 1px solid #cbd5e1;
-  border-radius: 0.75rem;
+  border: 1px solid #dcdcdc;
+  border-radius: 9999px;
   padding: 12px 16px;
   font-size: 0.875rem;
   font-family: inherit;
   resize: none;
-  background: #f8fafc;
-  color: #0f172a;
+  background: #f2f4f5;
+  color: #0b0b0c;
   line-height: 1.5;
   min-height: 46px;
   max-height: 120px;
@@ -458,9 +459,9 @@
 }
 
 .chatInput:focus {
-  border-color: #2563eb;
+  border-color: #5433eb;
   background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  box-shadow: 0 0 0 3px rgba(84, 51, 235, 0.1);
 }
 
 .chatInput:disabled {
@@ -469,14 +470,14 @@
 }
 
 .chatInput::placeholder {
-  color: #94a3b8;
+  color: #a5a19f;
 }
 
 .sendBtn {
   width: 46px;
   height: 46px;
-  border-radius: 0.75rem;
-  background: #1e3a8a;
+  border-radius: 9999px;
+  background: #5433eb;
   border: none;
   cursor: pointer;
   display: flex;
@@ -489,7 +490,7 @@
 }
 
 .sendBtn:hover:not(:disabled) {
-  background: #1d4ed8;
+  background: #4527d6;
 }
 
 .sendBtn:active:not(:disabled) {
@@ -512,8 +513,8 @@
 :global([data-theme="dark"]) .sidebar,
 :global(.dark) .sidebarHeader,
 :global([data-theme="dark"]) .sidebarHeader {
-  background: #0f172a;
-  border-color: #1e293b;
+  background: #0e0e11;
+  border-color: #17171b;
 }
 
 :global(.dark) .sidebarTitulo,
@@ -524,39 +525,39 @@
 :global([data-theme="dark"]) .bubbleAgent,
 :global(.dark) .tabla td,
 :global([data-theme="dark"]) .tabla td {
-  color: #f8fafc;
+  color: #f7f7f9;
 }
 
 :global(.dark) .btnNueva,
 :global([data-theme="dark"]) .btnNueva {
-  background: #1e293b;
-  border-color: #334155;
-  color: #60a5fa;
+  background: #17171b;
+  border-color: #2b2b32;
+  color: #a99aff;
 }
 
 :global(.dark) .btnNueva:hover,
 :global([data-theme="dark"]) .btnNueva:hover {
-  background: #2563eb20;
-  border-color: #3b82f6;
-  color: #93c5fd;
+  background: #6a52f020;
+  border-color: #8b76ff;
+  color: #c0b5f3;
 }
 
 :global(.dark) .histItem:hover,
 :global([data-theme="dark"]) .histItem:hover {
-  background: #1e293b;
-  border-color: #334155;
+  background: #17171b;
+  border-color: #2b2b32;
 }
 
 :global(.dark) .histItemActivo,
 :global([data-theme="dark"]) .histItemActivo {
-  background: #1e293b;
-  border-color: #2563eb;
+  background: #17171b;
+  border-color: #6a52f0;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 :global(.dark) .histLabel,
 :global([data-theme="dark"]) .histLabel {
-  color: #f1f5f9;
+  color: #efeff2;
 }
 
 :global(.dark) .histFecha,
@@ -571,7 +572,7 @@
 :global([data-theme="dark"]) .statusLabel,
 :global(.dark) .bubbleHora,
 :global([data-theme="dark"]) .bubbleHora {
-  color: #94a3b8;
+  color: #a6a3ae;
 }
 
 :global(.dark) .chatTopbar,
@@ -580,23 +581,23 @@
 :global([data-theme="dark"]) .inputRow,
 :global(.dark) .suggRow,
 :global([data-theme="dark"]) .suggRow {
-  background: #0f172a;
-  border-color: #1e293b;
+  background: #0e0e11;
+  border-color: #17171b;
 }
 
 :global(.dark) .agentAvatar,
 :global([data-theme="dark"]) .agentAvatar,
 :global(.dark) .avatarAgent,
 :global([data-theme="dark"]) .avatarAgent {
-  background: #2563eb;
+  background: #6a52f0;
   color: #ffffff;
 }
 
 :global(.dark) .avatarUser,
 :global([data-theme="dark"]) .avatarUser {
-  background: #1e293b;
-  color: #60a5fa;
-  border: 1px solid #334155;
+  background: #17171b;
+  color: #a99aff;
+  border: 1px solid #2b2b32;
 }
 
 :global(.dark) .errorBanner,
@@ -613,28 +614,28 @@
 
 :global(.dark) .chatBody,
 :global([data-theme="dark"]) .chatBody {
-  background: #0b1120;
+  background: #09090b;
 }
 
 :global(.dark) .bubbleAgent,
 :global([data-theme="dark"]) .bubbleAgent,
 :global(.dark) .typing,
 :global([data-theme="dark"]) .typing {
-  background: #1e293b;
-  border-color: #334155;
+  background: #17171b;
+  border-color: #2b2b32;
 }
 
 :global(.dark) .bubbleUser,
 :global([data-theme="dark"]) .bubbleUser,
 :global(.dark) .sendBtn,
 :global([data-theme="dark"]) .sendBtn {
-  background: #2563eb;
+  background: #6a52f0;
   color: #ffffff;
 }
 
 :global(.dark) .sendBtn:hover:not(:disabled),
 :global([data-theme="dark"]) .sendBtn:hover:not(:disabled) {
-  background: #1d4ed8;
+  background: #6a52f0;
 }
 
 :global(.dark) .bubbleError,
@@ -646,30 +647,30 @@
 
 :global(.dark) .sugerenciaPost,
 :global([data-theme="dark"]) .sugerenciaPost {
-  border-color: #334155;
-  color: #93c5fd;
+  border-color: #2b2b32;
+  color: #c0b5f3;
 }
 
 :global(.dark) .tablaWrap,
 :global([data-theme="dark"]) .tablaWrap {
-  border-color: #334155;
+  border-color: #2b2b32;
 }
 
 :global(.dark) .tabla th,
 :global([data-theme="dark"]) .tabla th {
-  background: #0f172a;
-  color: #94a3b8;
-  border-color: #334155;
+  background: #0e0e11;
+  color: #a6a3ae;
+  border-color: #2b2b32;
 }
 
 :global(.dark) .tabla td,
 :global([data-theme="dark"]) .tabla td {
-  border-color: #1e293b;
+  border-color: #17171b;
 }
 
 :global(.dark) .tabla tr:hover td,
 :global([data-theme="dark"]) .tabla tr:hover td {
-  background: #1e293b80;
+  background: #17171b80;
 }
 
 :global(.dark) .pillOk,
@@ -692,35 +693,35 @@
 
 :global(.dark) .suggBtn,
 :global([data-theme="dark"]) .suggBtn {
-  background: #1e293b;
-  border-color: #334155;
-  color: #cbd5e1;
+  background: #17171b;
+  border-color: #2b2b32;
+  color: #c9c7cf;
 }
 
 :global(.dark) .suggBtn:hover,
 :global([data-theme="dark"]) .suggBtn:hover {
-  background: #2563eb25;
-  border-color: #3b82f6;
-  color: #93c5fd;
+  background: #6a52f025;
+  border-color: #8b76ff;
+  color: #c0b5f3;
 }
 
 :global(.dark) .chatInput,
 :global([data-theme="dark"]) .chatInput {
-  background: #1e293b;
-  border-color: #334155;
-  color: #f8fafc;
+  background: #17171b;
+  border-color: #2b2b32;
+  color: #f7f7f9;
 }
 
 :global(.dark) .chatInput:focus,
 :global([data-theme="dark"]) .chatInput:focus {
-  background: #0f172a;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  background: #0e0e11;
+  border-color: #8b76ff;
+  box-shadow: 0 0 0 3px rgba(139, 118, 255, 0.2);
 }
 
 :global(.dark) .chatInput::placeholder,
 :global([data-theme="dark"]) .chatInput::placeholder {
-  color: #64748b;
+  color: #8b8894;
 }
 
 @media (max-width: 1024px) {
@@ -838,45 +839,45 @@
   width: 34px;
   height: 34px;
   border-radius: 9999px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid #dcdcdc;
   background: #fff;
-  color: #1e3a8a;
+  color: #5433eb;
   cursor: pointer;
 }
 
 :global(.dark) .btnNuevaMovil,
 :global([data-theme="dark"]) .btnNuevaMovil {
-  background: #1e293b;
-  border-color: #334155;
-  color: #93c5fd;
+  background: #17171b;
+  border-color: #2b2b32;
+  color: #c0b5f3;
 }
 
 .kpiCard {
-  border: 1px solid rgba(148, 163, 184, 0.35);
+  border: 1px solid rgba(165, 161, 159, 0.35);
   transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background-color 150ms ease;
 }
 
 .kpiCard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px -10px rgba(15, 23, 42, 0.22);
-  border-color: rgba(30, 58, 138, 0.35);
+  box-shadow: 0 6px 16px -10px rgba(11, 11, 12, 0.22);
+  border-color: rgba(84, 51, 235, 0.35);
 }
 
 .btnPrimary {
-  background: linear-gradient(135deg, #1E3A8A, #2563eb);
-  box-shadow: 0 1px 2px rgba(30, 58, 138, 0.35);
+  background: linear-gradient(135deg, #5433eb, #5433eb);
+  box-shadow: 0 1px 2px rgba(84, 51, 235, 0.35);
   transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease, opacity 180ms ease;
 }
 
 .btnPrimary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  background: linear-gradient(135deg, #4527d6, #7b66f0);
   transform: translateY(-1px);
-  box-shadow: 0 10px 20px -10px rgba(30, 58, 138, 0.55);
+  box-shadow: 0 10px 20px -10px rgba(84, 51, 235, 0.55);
 }
 
 .btnPrimary:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 0 1px 2px rgba(30, 58, 138, 0.3);
+  box-shadow: 0 1px 2px rgba(84, 51, 235, 0.3);
 }
 
 .btnSecondary {
@@ -885,7 +886,7 @@
 
 .btnSecondary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 10px -6px rgba(15, 23, 42, 0.2);
+  box-shadow: 0 4px 10px -6px rgba(11, 11, 12, 0.2);
 }
 
 .btnSecondary:active {
@@ -941,7 +942,7 @@
 .filterSelect:focus,
 .fieldInput:focus,
 .fieldSelect:focus {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 0 0 3px rgba(123, 102, 240, 0.15);
 }
 
 @media (min-width: 769px) {
@@ -950,11 +951,11 @@
   }
 
   .table tr:hover td:first-child {
-    box-shadow: inset 3px 0 0 0 #1E3A8A;
+    box-shadow: inset 3px 0 0 0 #5433eb;
   }
 
   .table tr:active td {
-    background: #eff6ff;
+    background: #f3f0fe;
   }
 }
 
@@ -994,36 +995,36 @@
 
 :global(.dark) .kpiCard,
 :global([data-theme="dark"]) .kpiCard {
-  border-color: rgba(51, 65, 85, 0.8);
+  border-color: rgba(43, 43, 50, 0.8);
 }
 
 :global(.dark) .kpiCard:hover,
 :global([data-theme="dark"]) .kpiCard:hover {
   box-shadow: 0 6px 16px -10px rgba(0, 0, 0, 0.5);
-  border-color: rgba(59, 130, 246, 0.4);
+  border-color: rgba(139, 118, 255, 0.4);
 }
 
 :global(.dark) .btnPrimary,
 :global([data-theme="dark"]) .btnPrimary {
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
-  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.35);
+  background: linear-gradient(135deg, #6a52f0, #8b76ff);
+  box-shadow: 0 1px 2px rgba(106, 82, 240, 0.35);
 }
 
 :global(.dark) .btnPrimary:hover:not(:disabled),
 :global([data-theme="dark"]) .btnPrimary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #3b82f6, #60a5fa);
-  box-shadow: 0 10px 20px -10px rgba(59, 130, 246, 0.5);
+  background: linear-gradient(135deg, #8b76ff, #a99aff);
+  box-shadow: 0 10px 20px -10px rgba(139, 118, 255, 0.5);
 }
 
 @media (min-width: 769px) {
   :global(.dark) .table tr:hover td:first-child,
   :global([data-theme="dark"]) .table tr:hover td:first-child {
-    box-shadow: inset 3px 0 0 0 #3b82f6;
+    box-shadow: inset 3px 0 0 0 #8b76ff;
   }
 
   :global(.dark) .table tr:active td,
   :global([data-theme="dark"]) .table tr:active td {
-    background: rgba(59, 130, 246, 0.12);
+    background: rgba(139, 118, 255, 0.12);
   }
 }
 
@@ -1037,7 +1038,7 @@
 
 .kpiValue {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.02em;
 }
 
@@ -1049,9 +1050,9 @@
   width: 40px;
   height: 40px;
   border-radius: 9999px;
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
-  color: #475569;
+  border: 1px solid #ebebeb;
+  background: #f2f4f5;
+  color: #5a5654;
   cursor: pointer;
   transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
 }
@@ -1091,11 +1092,12 @@
   gap: 10px;
   margin-top: 10px;
   padding: 12px;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 28px;
   background: #fff;
-  color: #0f172a;
+  color: #0b0b0c;
   min-width: min(100%, 340px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
 }
 
 .borradorOk {
@@ -1105,8 +1107,8 @@
 }
 
 .borradorGris {
-  background: #f8fafc;
-  color: #64748b;
+  background: #f2f4f5;
+  color: #787574;
 }
 
 .borradorEstado {
@@ -1129,7 +1131,7 @@
   flex-direction: column;
   gap: 3px;
   font-size: 0.6875rem;
-  color: #64748b;
+  color: #787574;
   min-width: 0;
 }
 
@@ -1137,10 +1139,10 @@
 .borradorOpcion {
   width: 100%;
   padding: 6px 8px;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.375rem;
+  border: 1px solid #ebebeb;
+  border-radius: 9999px;
   background: #fff;
-  color: #0f172a;
+  color: #0b0b0c;
   font-size: 0.8125rem;
   font-family: inherit;
 }
@@ -1156,9 +1158,9 @@
 
 .borradorItems li {
   padding: 8px;
-  border: 1px solid #f1f5f9;
+  border: 1px solid #f2f4f5;
   border-radius: 0.5rem;
-  background: #f8fafc;
+  background: #f2f4f5;
 }
 
 .borradorItemPendiente {
@@ -1194,10 +1196,10 @@
   justify-content: center;
   width: 24px;
   height: 24px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #ebebeb;
   border-radius: 0.375rem;
   background: #fff;
-  color: #334155;
+  color: #3a3736;
   cursor: pointer;
 }
 
@@ -1265,12 +1267,12 @@
 
 .borradorDescartar {
   background: #fff;
-  color: #475569;
-  border: 1px solid #e2e8f0;
+  color: #5a5654;
+  border: 1px solid #ebebeb;
 }
 
 .borradorConfirmar {
-  background: linear-gradient(135deg, #1E3A8A, #2563eb);
+  background: linear-gradient(135deg, #5433eb, #5433eb);
   color: #fff;
   border: none;
 }
@@ -1283,15 +1285,15 @@
 
 :global(.dark) .borrador,
 :global([data-theme="dark"]) .borrador {
-  background: #0f172a;
-  border-color: #334155;
-  color: #f8fafc;
+  background: #0e0e11;
+  border-color: #2b2b32;
+  color: #f7f7f9;
 }
 
 :global(.dark) .borradorItems li,
 :global([data-theme="dark"]) .borradorItems li {
-  background: #1e293b;
-  border-color: #334155;
+  background: #17171b;
+  border-color: #2b2b32;
 }
 
 :global(.dark) .borradorCampo select,
@@ -1300,9 +1302,9 @@
 :global([data-theme="dark"]) .borradorCant button,
 :global(.dark) .borradorDescartar,
 :global([data-theme="dark"]) .borradorDescartar {
-  background: #1e293b;
-  border-color: #334155;
-  color: #f8fafc;
+  background: #17171b;
+  border-color: #2b2b32;
+  color: #f7f7f9;
 }
 
 .borradorOrigen {
@@ -1328,7 +1330,7 @@
   flex-wrap: wrap;
   gap: 6px;
   font-size: 0.75rem;
-  color: #64748b;
+  color: #787574;
 }
 
 .borradorSugerencias button {
@@ -1392,10 +1394,10 @@
   align-items: center;
   gap: 4px;
   padding: 5px 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #ebebeb;
   border-radius: 9999px;
   background: #fff;
-  color: #334155;
+  color: #3a3736;
   font-size: 0.75rem;
   font-family: inherit;
   cursor: pointer;
@@ -1403,21 +1405,21 @@
 }
 
 .seguimientoBtn:hover {
-  background: #eff6ff;
-  border-color: #93c5fd;
+  background: #f3f0fe;
+  border-color: #b9aef7;
   transform: translateY(-1px);
 }
 
 :global(.dark) .seguimientoBtn,
 :global([data-theme="dark"]) .seguimientoBtn {
-  background: #1e293b;
-  border-color: #334155;
-  color: #f8fafc;
+  background: #17171b;
+  border-color: #2b2b32;
+  color: #f7f7f9;
 }
 
 :global(.dark) .borradorSugerencias button,
 :global([data-theme="dark"]) .borradorSugerencias button {
-  background: #1e293b;
+  background: #17171b;
   border-color: #6d28d9;
   color: #ddd6fe;
 }
@@ -1428,10 +1430,10 @@
   padding: 6px;
   max-height: 260px;
   overflow-y: auto;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 28px;
   background: #fff;
-  box-shadow: 0 10px 24px -12px rgba(15, 23, 42, 0.25);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
 }
 
 .comandoItem {
@@ -1443,7 +1445,7 @@
   border: none;
   border-radius: 0.5rem;
   background: transparent;
-  color: #334155;
+  color: #3a3736;
   font-family: inherit;
   font-size: 0.8125rem;
   text-align: left;
@@ -1453,39 +1455,39 @@
 .comandoItem strong {
   flex-shrink: 0;
   min-width: 96px;
-  color: #1e3a8a;
+  color: #5433eb;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.78125rem;
 }
 
 .comandoItem span {
   min-width: 0;
-  color: #64748b;
+  color: #787574;
 }
 
 .comandoItemActivo {
-  background: #eff6ff;
+  background: #f3f0fe;
 }
 
 :global(.dark) .comandosMenu,
 :global([data-theme="dark"]) .comandosMenu {
-  background: #0f172a;
-  border-color: #334155;
+  background: #0e0e11;
+  border-color: #2b2b32;
 }
 
 :global(.dark) .comandoItem,
 :global([data-theme="dark"]) .comandoItem {
-  color: #e2e8f0;
+  color: #ececf0;
 }
 
 :global(.dark) .comandoItem strong,
 :global([data-theme="dark"]) .comandoItem strong {
-  color: #93c5fd;
+  color: #c0b5f3;
 }
 
 :global(.dark) .comandoItemActivo,
 :global([data-theme="dark"]) .comandoItemActivo {
-  background: #1e293b;
+  background: #17171b;
 }
 
 .fabAgente {
@@ -1500,17 +1502,17 @@
   justify-content: center;
   border: none;
   border-radius: 9999px;
-  background: linear-gradient(135deg, #1e3a8a, #2563eb);
+  background: linear-gradient(135deg, #5433eb, #5433eb);
   color: #fff;
   cursor: pointer;
-  box-shadow: 0 10px 24px -8px rgba(30, 58, 138, 0.6), 0 2px 6px rgba(15, 23, 42, 0.25);
+  box-shadow: 0 10px 24px -8px rgba(84, 51, 235, 0.6), 0 2px 6px rgba(11, 11, 12, 0.25);
   transition: transform 180ms ease, box-shadow 180ms ease;
   animation: fabEntrada 320ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
 .fabAgente:hover {
   transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 14px 28px -8px rgba(30, 58, 138, 0.7), 0 2px 6px rgba(15, 23, 42, 0.25);
+  box-shadow: 0 14px 28px -8px rgba(84, 51, 235, 0.7), 0 2px 6px rgba(11, 11, 12, 0.25);
 }
 
 .fabAgente:active {
@@ -1540,9 +1542,9 @@
   z-index: 46;
   width: 400px;
   height: min(640px, calc(100vh - 40px));
-  border: 1px solid #e2e8f0;
+  border: 1px solid #ebebeb;
   border-radius: 1rem;
-  box-shadow: 0 24px 48px -16px rgba(15, 23, 42, 0.4), 0 4px 12px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 24px 48px -16px rgba(11, 11, 12, 0.4), 0 4px 12px rgba(11, 11, 12, 0.12);
   animation: flotanteEntrada 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -1558,7 +1560,7 @@
   gap: 8px;
   flex-shrink: 0;
   padding: 10px 12px 10px 14px;
-  background: linear-gradient(135deg, #1e3a8a, #2563eb);
+  background: linear-gradient(135deg, #5433eb, #5433eb);
   color: #fff;
 }
 
@@ -1671,7 +1673,7 @@
 
 :global(.dark) .flotante,
 :global([data-theme="dark"]) .flotante {
-  border-color: #334155;
+  border-color: #2b2b32;
 }
 
 @media (max-width: 768px) {
@@ -1703,17 +1705,18 @@
 .grafico {
   margin: 10px 0 0;
   padding: 10px;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 28px;
   background: #fff;
   min-width: min(100%, 300px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
 }
 
 .graficoTitulo {
   margin-bottom: 6px;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #475569;
+  color: #5a5654;
 }
 
 .graficoLienzo {
@@ -1736,9 +1739,9 @@
   flex-direction: column;
   gap: 6px;
   padding: 8px 10px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #ebebeb;
   border-radius: 0.5rem;
-  background: #f8fafc;
+  background: #f2f4f5;
 }
 
 .analisisTexto {
@@ -1750,7 +1753,7 @@
 
 .analisisTexto span {
   font-size: 0.75rem;
-  color: #64748b;
+  color: #787574;
 }
 
 .analisisBotones,
@@ -1767,7 +1770,7 @@
 .explicacion {
   margin-top: 8px;
   padding-top: 6px;
-  border-top: 1px dashed #e2e8f0;
+  border-top: 1px dashed #ebebeb;
 }
 
 .explicacionBtn {
@@ -1777,24 +1780,24 @@
   padding: 2px 0;
   border: none;
   background: transparent;
-  color: #64748b;
+  color: #787574;
   font-size: 0.6875rem;
   font-family: inherit;
   cursor: pointer;
 }
 
 .explicacionBtn:hover {
-  color: #1e3a8a;
+  color: #5433eb;
 }
 
 .explicacionCuerpo {
   margin-top: 6px;
   padding: 8px 10px;
   border-radius: 0.5rem;
-  background: #f1f5f9;
+  background: #f2f4f5;
   font-size: 0.75rem;
   line-height: 1.45;
-  color: #334155;
+  color: #3a3736;
 }
 
 .explicacionCuerpo p {
@@ -1806,7 +1809,7 @@
   font-size: 0.6875rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #64748b;
+  color: #787574;
 }
 
 .explicacionCuerpo ul {
@@ -1822,30 +1825,30 @@
 
 :global(.dark) .grafico,
 :global([data-theme="dark"]) .grafico {
-  background: #0f172a;
-  border-color: #334155;
+  background: #0e0e11;
+  border-color: #2b2b32;
 }
 
 :global(.dark) .graficoTitulo,
 :global([data-theme="dark"]) .graficoTitulo {
-  color: #cbd5e1;
+  color: #c9c7cf;
 }
 
 :global(.dark) .analisisFila,
 :global([data-theme="dark"]) .analisisFila {
-  background: #0f172a;
-  border-color: #334155;
+  background: #0e0e11;
+  border-color: #2b2b32;
 }
 
 :global(.dark) .explicacion,
 :global([data-theme="dark"]) .explicacion {
-  border-color: #334155;
+  border-color: #2b2b32;
 }
 
 :global(.dark) .explicacionCuerpo,
 :global([data-theme="dark"]) .explicacionCuerpo {
-  background: #0f172a;
-  color: #cbd5e1;
+  background: #0e0e11;
+  color: #c9c7cf;
 }
 
 .fabInsignia {
@@ -1863,7 +1866,7 @@
   background: #dc2626;
   color: #fff;
   font-size: 0.6875rem;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1;
 }
 
@@ -1877,10 +1880,10 @@
   gap: 2px;
   max-width: min(280px, calc(100vw - 40px));
   padding: 10px 8px 10px 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #ebebeb;
   border-radius: 0.875rem 0.875rem 0.25rem 0.875rem;
   background: #fff;
-  box-shadow: 0 12px 28px -12px rgba(15, 23, 42, 0.35);
+  box-shadow: 0 12px 28px -12px rgba(11, 11, 12, 0.35);
   animation: flotanteEntrada 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -1894,13 +1897,13 @@
   text-align: left;
   font-family: inherit;
   font-size: 0.8125rem;
-  color: #0f172a;
+  color: #0b0b0c;
   cursor: pointer;
 }
 
 .fabGloboTexto span {
   font-size: 0.6875rem;
-  color: #64748b;
+  color: #787574;
 }
 
 .fabGloboCerrar {
@@ -1912,13 +1915,13 @@
   border: none;
   border-radius: 9999px;
   background: transparent;
-  color: #94a3b8;
+  color: #a5a19f;
   cursor: pointer;
 }
 
 .fabGloboCerrar:hover {
-  background: #f1f5f9;
-  color: #475569;
+  background: #f2f4f5;
+  color: #5a5654;
 }
 
 .avisos {
@@ -1930,10 +1933,10 @@
 .avisosTitulo {
   margin: 0 0 6px;
   font-size: 0.6875rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #94a3b8;
+  color: #a5a19f;
 }
 
 .avisosLista {
@@ -1952,8 +1955,8 @@
   flex-wrap: wrap;
   gap: 6px 10px;
   padding: 8px 10px 8px 12px;
-  border: 1px solid #e2e8f0;
-  border-left: 3px solid #94a3b8;
+  border: 1px solid #ebebeb;
+  border-left: 3px solid #a5a19f;
   border-radius: 0.5rem;
   background: #fff;
 }
@@ -1967,7 +1970,7 @@
 }
 
 .aviso_info {
-  border-left-color: #3b82f6;
+  border-left-color: #7b66f0;
 }
 
 .avisoTexto {
@@ -1976,12 +1979,12 @@
   gap: 1px;
   min-width: 0;
   font-size: 0.8125rem;
-  color: #0f172a;
+  color: #0b0b0c;
 }
 
 .avisoTexto span {
   font-size: 0.75rem;
-  color: #64748b;
+  color: #787574;
 }
 
 .avisoAcciones {
@@ -1995,17 +1998,17 @@
   align-items: center;
   gap: 4px;
   padding: 4px 10px;
-  border: 1px solid #bfdbfe;
+  border: 1px solid #d9d2fb;
   border-radius: 9999px;
-  background: #eff6ff;
-  color: #1e3a8a;
+  background: #f3f0fe;
+  color: #5433eb;
   font-size: 0.75rem;
   font-family: inherit;
   cursor: pointer;
 }
 
 .avisoBtn:hover {
-  background: #dbeafe;
+  background: #e9e5fd;
 }
 
 .avisoCerrar {
@@ -2017,21 +2020,21 @@
   border: none;
   border-radius: 9999px;
   background: transparent;
-  color: #94a3b8;
+  color: #a5a19f;
   cursor: pointer;
 }
 
 .avisoCerrar:hover {
-  background: #f1f5f9;
-  color: #475569;
+  background: #f2f4f5;
+  color: #5a5654;
 }
 
 :global(.dark) .fabGlobo,
 :global([data-theme="dark"]) .fabGlobo,
 :global(.dark) .aviso,
 :global([data-theme="dark"]) .aviso {
-  background: #1e293b;
-  border-color: #334155;
+  background: #17171b;
+  border-color: #2b2b32;
 }
 
 :global(.dark) .aviso_alta,
@@ -2046,21 +2049,21 @@
 
 :global(.dark) .aviso_info,
 :global([data-theme="dark"]) .aviso_info {
-  border-left-color: #3b82f6;
+  border-left-color: #8b76ff;
 }
 
 :global(.dark) .fabGloboTexto,
 :global([data-theme="dark"]) .fabGloboTexto,
 :global(.dark) .avisoTexto,
 :global([data-theme="dark"]) .avisoTexto {
-  color: #f8fafc;
+  color: #f7f7f9;
 }
 
 :global(.dark) .avisoBtn,
 :global([data-theme="dark"]) .avisoBtn {
-  background: #1e3a8a55;
-  border-color: #3b82f6;
-  color: #bfdbfe;
+  background: #5433eb55;
+  border-color: #8b76ff;
+  color: #d4ccff;
 }
 
 @media (max-width: 768px) {
@@ -2079,7 +2082,7 @@
 
 .accionEstadoFila span {
   font-size: 0.75rem;
-  color: #64748b;
+  color: #787574;
 }
 
 .accionEstadoCambio {
@@ -2088,7 +2091,7 @@
   gap: 8px;
   margin: 0;
   font-size: 0.8125rem;
-  color: #475569;
+  color: #5a5654;
 }
 
 .graficoAcciones {
@@ -2135,19 +2138,19 @@
   border: none;
   border-radius: 9999px;
   background: transparent;
-  color: #94a3b8;
+  color: #a5a19f;
   cursor: pointer;
   transition: background-color 150ms ease, color 150ms ease;
 }
 
 .bubbleVoz:hover {
-  background: #e2e8f0;
-  color: #1e3a8a;
+  background: #ebebeb;
+  color: #5433eb;
 }
 
 .bubbleVozActiva {
-  background: #dbeafe;
-  color: #1e3a8a;
+  background: #e9e5fd;
+  color: #5433eb;
 }
 
 .opcionesChat {
@@ -2160,10 +2163,10 @@
 .opcionBtn {
   max-width: 100%;
   padding: 6px 12px;
-  border: 1px solid #bfdbfe;
+  border: 1px solid #d9d2fb;
   border-radius: 9999px;
-  background: #eff6ff;
-  color: #1e3a8a;
+  background: #f3f0fe;
+  color: #5433eb;
   font-size: 0.75rem;
   font-family: inherit;
   text-align: left;
@@ -2172,7 +2175,7 @@
 }
 
 .opcionBtn:hover:not(:disabled) {
-  background: #dbeafe;
+  background: #e9e5fd;
   transform: translateY(-1px);
 }
 
@@ -2182,8 +2185,8 @@
 }
 
 .opcionBtnElegida {
-  background: #1e3a8a;
-  border-color: #1e3a8a;
+  background: #5433eb;
+  border-color: #5433eb;
   color: #fff;
   opacity: 1 !important;
 }
@@ -2193,19 +2196,19 @@
   align-items: center;
   gap: 5px;
   padding: 5px 10px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid #dcdcdc;
   border-radius: 9999px;
   background: #fff;
-  color: #64748b;
+  color: #787574;
   font-size: 0.75rem;
   font-family: inherit;
   cursor: pointer;
 }
 
 .btnVozAutoActivo {
-  border-color: #93c5fd;
-  background: #eff6ff;
-  color: #1e3a8a;
+  border-color: #b9aef7;
+  background: #f3f0fe;
+  color: #5433eb;
 }
 
 @media (max-width: 768px) {
@@ -2222,29 +2225,29 @@
 
 :global(.dark) .bubbleVoz:hover,
 :global([data-theme="dark"]) .bubbleVoz:hover {
-  background: #334155;
-  color: #93c5fd;
+  background: #2b2b32;
+  color: #c0b5f3;
 }
 
 :global(.dark) .bubbleVozActiva,
 :global([data-theme="dark"]) .bubbleVozActiva {
-  background: #1e3a8a;
-  color: #bfdbfe;
+  background: #5433eb;
+  color: #d4ccff;
 }
 
 :global(.dark) .opcionBtn,
 :global([data-theme="dark"]) .opcionBtn,
 :global(.dark) .btnVozAuto,
 :global([data-theme="dark"]) .btnVozAuto {
-  background: #1e293b;
-  border-color: #334155;
-  color: #bfdbfe;
+  background: #17171b;
+  border-color: #2b2b32;
+  color: #d4ccff;
 }
 
 :global(.dark) .btnVozAutoActivo,
 :global([data-theme="dark"]) .btnVozAutoActivo {
-  background: #1e3a8a55;
-  border-color: #3b82f6;
+  background: #5433eb55;
+  border-color: #8b76ff;
 }
 
 .histUl {
@@ -2265,7 +2268,7 @@
 
 .histFila:hover {
   background: #ffffff;
-  border-color: #e2e8f0;
+  border-color: #ebebeb;
 }
 
 .histSeleccionar {
@@ -2290,7 +2293,7 @@
   border: none;
   border-radius: 0.375rem;
   background: transparent;
-  color: #94a3b8;
+  color: #a5a19f;
   cursor: pointer;
   opacity: 0.55;
   transition: opacity 150ms ease, background-color 150ms ease, color 150ms ease;
@@ -2343,15 +2346,15 @@
 }
 
 .histBtnNo {
-  border: 1px solid #e2e8f0;
+  border: 1px solid #ebebeb;
   background: #fff;
-  color: #475569;
+  color: #5a5654;
 }
 
 .histPie {
   flex-shrink: 0;
   padding: 8px;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid #ebebeb;
 }
 
 .histBorrarTodo {
@@ -2364,7 +2367,7 @@
   border: none;
   border-radius: 0.5rem;
   background: transparent;
-  color: #94a3b8;
+  color: #a5a19f;
   font-size: 0.75rem;
   font-family: inherit;
   cursor: pointer;
@@ -2380,7 +2383,7 @@
   flex-direction: column;
   flex: 1;
   min-height: 0;
-  background: #f8fafc;
+  background: #f2f4f5;
 }
 
 .flotanteHistorialCab {
@@ -2390,7 +2393,7 @@
   gap: 8px;
   flex-shrink: 0;
   padding: 10px 12px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #ebebeb;
   background: #fff;
 }
 
@@ -2409,12 +2412,12 @@
 .flotanteVolver {
   border: none;
   background: transparent;
-  color: #475569;
+  color: #5a5654;
 }
 
 .flotanteNueva {
-  border: 1px solid #1e3a8a;
-  background: #1e3a8a;
+  border: 1px solid #5433eb;
+  background: #5433eb;
   color: #fff;
 }
 
@@ -2438,7 +2441,7 @@
   border: none;
   border-radius: 9999px;
   background: transparent;
-  color: #475569;
+  color: #5a5654;
   cursor: pointer;
 }
 
@@ -2451,7 +2454,7 @@
     flex-direction: column;
     gap: 10px;
     padding: 14px;
-    background: #f8fafc;
+    background: #f2f4f5;
   }
   .historialMovilCab {
     display: flex;
@@ -2467,8 +2470,8 @@
 
 :global(.dark) .histFila:hover,
 :global([data-theme="dark"]) .histFila:hover {
-  background: #1e293b;
-  border-color: #334155;
+  background: #17171b;
+  border-color: #2b2b32;
 }
 
 :global(.dark) .histEliminar:hover,
@@ -2486,17 +2489,17 @@
 
 :global(.dark) .histBtnNo,
 :global([data-theme="dark"]) .histBtnNo {
-  background: #1e293b;
-  border-color: #334155;
-  color: #cbd5e1;
+  background: #17171b;
+  border-color: #2b2b32;
+  color: #c9c7cf;
 }
 
 :global(.dark) .histPie,
 :global([data-theme="dark"]) .histPie,
 :global(.dark) .flotanteHistorialCab,
 :global([data-theme="dark"]) .flotanteHistorialCab {
-  background: #0f172a;
-  border-color: #1e293b;
+  background: #0e0e11;
+  border-color: #17171b;
 }
 
 :global(.dark) .flotanteHistorial,
@@ -2510,16 +2513,16 @@
 :global([data-theme="dark"]) .flotanteVolver,
 :global(.dark) .flotanteBtnOscuro,
 :global([data-theme="dark"]) .flotanteBtnOscuro {
-  color: #cbd5e1;
+  color: #c9c7cf;
 }
 
 .borradorEntrada {
   width: 100%;
   padding: 6px 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #ebebeb;
   border-radius: 0.375rem;
   background: #fff;
-  color: #0f172a;
+  color: #0b0b0c;
   font-size: 0.8125rem;
   font-family: inherit;
   box-sizing: border-box;
@@ -2527,15 +2530,15 @@
 
 .borradorEntrada:focus {
   outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  border-color: #5433eb;
+  box-shadow: 0 0 0 3px rgba(84, 51, 235, 0.12);
 }
 
 :global(.dark) .borradorEntrada,
 :global([data-theme="dark"]) .borradorEntrada {
-  background: #1e293b;
-  border-color: #334155;
-  color: #f8fafc;
+  background: #17171b;
+  border-color: #2b2b32;
+  color: #f7f7f9;
 }
 
 .chipContexto {
@@ -2544,9 +2547,9 @@
   gap: 6px;
   flex-shrink: 0;
   padding: 5px 12px;
-  border-top: 1px solid #f1f5f9;
-  background: #eff6ff;
-  color: #1e3a8a;
+  border-top: 1px solid #f2f4f5;
+  background: #f3f0fe;
+  color: #5433eb;
   font-size: 0.75rem;
 }
 
@@ -2560,38 +2563,38 @@
 
 .chipContexto button {
   padding: 2px 8px;
-  border: 1px solid #bfdbfe;
+  border: 1px solid #d9d2fb;
   border-radius: 9999px;
   background: #fff;
-  color: #1e3a8a;
+  color: #5433eb;
   font-size: 0.6875rem;
   font-family: inherit;
   cursor: pointer;
 }
 
 .chipContextoApagado {
-  background: #f8fafc;
-  color: #94a3b8;
+  background: #f2f4f5;
+  color: #a5a19f;
 }
 
 :global(.dark) .chipContexto,
 :global([data-theme="dark"]) .chipContexto {
-  background: #172554;
-  border-color: #1e293b;
-  color: #bfdbfe;
+  background: #2c1a8f;
+  border-color: #17171b;
+  color: #d4ccff;
 }
 
 :global(.dark) .chipContextoApagado,
 :global([data-theme="dark"]) .chipContextoApagado {
-  background: #0f172a;
-  color: #64748b;
+  background: #0e0e11;
+  color: #8b8894;
 }
 
 :global(.dark) .chipContexto button,
 :global([data-theme="dark"]) .chipContexto button {
-  background: #1e293b;
-  border-color: #334155;
-  color: #bfdbfe;
+  background: #17171b;
+  border-color: #2b2b32;
+  color: #d4ccff;
 }
 
 .borradorPeligro {
@@ -2614,19 +2617,72 @@
   flex-wrap: wrap;
   gap: 4px 10px;
   padding: 6px 8px;
-  border: 1px solid #f1f5f9;
+  border: 1px solid #f2f4f5;
   border-radius: 0.5rem;
-  background: #f8fafc;
+  background: #f2f4f5;
   font-size: 0.8125rem;
 }
 
 .cambioEtiqueta {
   font-size: 0.75rem;
-  color: #64748b;
+  color: #787574;
 }
 
 :global(.dark) .cambiosLista li,
 :global([data-theme="dark"]) .cambiosLista li {
-  background: #1e293b;
-  border-color: #334155;
+  background: #17171b;
+  border-color: #2b2b32;
+}
+
+.planChat {
+  margin-top: 10px;
+  padding: 8px 10px;
+  border: 1px dashed #d9d2fb;
+  border-radius: 0.625rem;
+  background: #f8fbff;
+}
+
+.planTitulo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0 0 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #5433eb;
+}
+
+.planLista {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.78125rem;
+  color: #3a3736;
+}
+
+.planPaso button {
+  margin: 0;
+}
+
+.planNota {
+  color: #787574;
+  font-style: normal;
+}
+
+:global(.dark) .planChat,
+:global([data-theme="dark"]) .planChat {
+  background: #0e0e11;
+  border-color: #5433eb;
+}
+
+:global(.dark) .planTitulo,
+:global([data-theme="dark"]) .planTitulo {
+  color: #d4ccff;
+}
+
+:global(.dark) .planLista,
+:global([data-theme="dark"]) .planLista {
+  color: #c9c7cf;
 }

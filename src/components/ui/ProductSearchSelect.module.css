@@ -7,9 +7,9 @@
   padding: 4px;
   list-style: none;
   background: #ffffff;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #ebebeb;
   border-radius: 0.5rem;
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15);
+  box-shadow: 0 10px 25px rgba(11, 11, 12, 0.15);
 }
 
 .opcion {
@@ -20,13 +20,13 @@
   padding: 7px 10px;
   border-radius: 0.375rem;
   font-size: 0.75rem;
-  color: #0f172a;
+  color: #0b0b0c;
   cursor: pointer;
 }
 
 .opcionActiva {
-  background: #eff6ff;
-  color: #1e3a8a;
+  background: #f3f0fe;
+  color: #5433eb;
 }
 
 .nombre {
@@ -39,35 +39,35 @@
 .stock {
   flex-shrink: 0;
   font-size: 0.6875rem;
-  color: #64748b;
+  color: #787574;
 }
 
 .vacio {
   padding: 10px;
   font-size: 0.75rem;
-  color: #64748b;
+  color: #787574;
 }
 
 :global(.dark) .lista,
 :global([data-theme="dark"]) .lista {
-  background: #1e293b;
-  border-color: #334155;
+  background: #17171b;
+  border-color: #2b2b32;
 }
 
 :global(.dark) .opcion,
 :global([data-theme="dark"]) .opcion {
-  color: #f8fafc;
+  color: #f7f7f9;
 }
 
 :global(.dark) .opcionActiva,
 :global([data-theme="dark"]) .opcionActiva {
-  background: #334155;
-  color: #f8fafc;
+  background: #2b2b32;
+  color: #f7f7f9;
 }
 
 :global(.dark) .stock,
 :global([data-theme="dark"]) .stock,
 :global(.dark) .vacio,
 :global([data-theme="dark"]) .vacio {
-  color: #94a3b8;
+  color: #a6a3ae;
 }

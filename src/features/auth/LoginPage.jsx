@@ -4,6 +4,7 @@ import { Eye, EyeOff, User, Lock } from 'lucide-react';
 import { useLogin } from './useLogin';
 import Button from '../../components/ui/Button';
 import logo from '../../assets/logo.png';
+import FondoLogin from './FondoLogin';
 import styles from './auth.module.css';
 
 export default function LoginPage() {
@@ -14,15 +15,18 @@ export default function LoginPage() {
     <div className={styles.wrapper}>
       <div className={styles.branding}>
         <div className={styles.brandingContent}>
+          <div className={styles.brandingCard}>
           <h1 className={styles.brandTitle}>EL PRÍNCIPE</h1>
           <p className={styles.brandSubtitle}>Sistema de Gestión Comercial</p>
           <p className={styles.brandCaption}>
             Plataforma integral para asesores y administración de ventas de productos de limpieza.
           </p>
+          </div>
         </div>
       </div>
 
       <div className={styles.formPanel}>
+        <FondoLogin cargando={loading} />
         <h1 className={styles.mobileTitle}>
           EP <span className={styles.mobileTitleAccent}>Agent</span>
         </h1>

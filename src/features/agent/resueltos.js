@@ -18,6 +18,12 @@ export function guardarResuelto(id, valor) {
 
 export const EVENTO_DATOS_ACTUALIZADOS = 'datos-comerciales-actualizados';
 
+export const EVENTO_PASO_COMPLETADO = 'agente-paso-completado';
+
+export function avisarPasoCompletado(detalle) {
+  window.dispatchEvent(new CustomEvent(EVENTO_PASO_COMPLETADO, { detail: detalle }));
+}
+
 export function avisarDatosActualizados() {
   window.dispatchEvent(new CustomEvent(EVENTO_DATOS_ACTUALIZADOS));
 }

@@ -124,7 +124,7 @@ function DetallePanel({ cliente, onCerrar, onEditar, onPreguntar }) {
         )}
         <div className={styles.detalleItem}>
           <dt>Compras totales</dt>
-          <dd style={{ color: '#1E3A8A', fontWeight: 600 }}>
+          <dd style={{ color: '#5433eb', fontWeight: 600 }}>
             S/ {cliente.comprasTotal.toLocaleString('es-PE')}
           </dd>
         </div>
@@ -307,7 +307,7 @@ export default function CustomersPage() {
 
         <section className={styles.kpiGrid} aria-label="Resumen de cartera">
           <KPICard label="Total clientes" value={kpis.total} note="en cartera" />
-          <KPICard label="Activos" value={kpis.activos} note="en sistema" color="#1E3A8A" />
+          <KPICard label="Activos" value={kpis.activos} note="en sistema" color="#5433eb" />
           <KPICard label="VIP" value={kpis.vip} note="alto volumen" color="#7e22ce" />
           <KPICard
             label="Compras totales"
@@ -408,7 +408,7 @@ export default function CustomersPage() {
                         aria-label={c.activo ? 'Desactivar' : 'Activar'}
                       >
                         {c.activo
-                          ? <ToggleRight size={20} style={{ color: '#1E3A8A' }} />
+                          ? <ToggleRight size={20} style={{ color: '#5433eb' }} />
                           : <ToggleLeft size={20} style={{ color: '#94a3b8' }} />
                         }
                       </button>

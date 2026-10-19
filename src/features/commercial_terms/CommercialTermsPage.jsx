@@ -70,7 +70,7 @@ function DetallePanel({ condicion, onCerrar, onEditar, onEliminar }) {
 
       <div className={styles.detalleTop}>
         <div className={styles.detalleIconWrap}>
-          <Tag size={18} style={{ color: '#1E3A8A' }} aria-hidden="true" />
+          <Tag size={18} style={{ color: '#5433eb' }} aria-hidden="true" />
         </div>
         <div>
           <p className={styles.detalleNombre}>{(CONFIG_TIPO[condicion.tipo] ?? { label: condicion.tipo.replace('_', ' ') }).label}</p>
@@ -88,7 +88,7 @@ function DetallePanel({ condicion, onCerrar, onEditar, onEliminar }) {
       <dl className={styles.detalleGrid}>
         <div className={styles.detalleItem}>
           <dt>Valor pactado</dt>
-          <dd style={{ color: '#1E3A8A', fontWeight: 600, fontSize: '1.25rem' }}>
+          <dd style={{ color: '#5433eb', fontWeight: 600, fontSize: '1.25rem' }}>
             {condicion.valorLabel}
           </dd>
         </div>
@@ -354,7 +354,7 @@ export default function CommercialTermsPage() {
         <header className={styles.pageHeader}>
           <div>
             <h1 className={styles.pageTitle}>Condiciones Comerciales</h1>
-            <p className={styles.pageSub}>Catálogo de plazos, descuentos y formas de pago pactadas por cliente — {EMPRESA.NOMBRE}</p>
+            <p className={styles.pageSub}>Catálogo de plazos, descuentos y formas de pago </p>
           </div>
           <button onClick={abrirCrear} className={styles.btnPrimary}>
             <Plus size={15} aria-hidden="true" /> Nueva condición
@@ -363,7 +363,7 @@ export default function CommercialTermsPage() {
 
         <section className={styles.kpiGrid} aria-label="Resumen de condiciones">
           <KPICard label="Total condiciones" value={kpis.total} note="políticas vigentes" />
-          <KPICard label="Con crédito" value={kpis.conCredito} note="10, 15 o 30 días" color="#1E3A8A" />
+          <KPICard label="Con crédito" value={kpis.conCredito} note="10, 15 o 30 días" color="#5433eb" />
           <KPICard label="Forma de pago pactada" value={kpis.conFormaPago} note="Contado, Tarjeta u Otro" color="#15803d" />
           <KPICard label="Descuento máximo" value={`${kpis.maxDesc}%`} note="en catálogo" color="#854f0b" />
         </section>
@@ -427,7 +427,7 @@ export default function CommercialTermsPage() {
                       <span className={styles.condNombre}>{c.cliente}</span>
                     </td>
                     <td data-label="Tipo de Condición"><PillTipo tipo={c.tipo} /></td>
-                    <td data-label="Valor Pactado" style={{ fontWeight: 600, color: '#1E3A8A' }}>{c.valorLabel}</td>
+                    <td data-label="Valor Pactado" style={{ fontWeight: 600, color: '#5433eb' }}>{c.valorLabel}</td>
                     <td data-label="Fecha de Registro" className={styles.tdSecundario}>{formatearFecha(c.fechaRegistro)}</td>
                     <td data-label="Acciones" onClick={(e) => e.stopPropagation()}>
                       <div className={styles.acciones}>

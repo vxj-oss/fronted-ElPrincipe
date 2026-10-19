@@ -194,7 +194,7 @@ function EventoDetalleModal({ abierto, evento, cargando, config, onCerrar, calcu
                 {evento.detalle?.entidad && (
                   <div className={styles.detalleItem}>
                     <dt>Entidad afectada</dt>
-                    <dd className={styles.mono} style={{ fontWeight: 600, color: '#1e3a8a' }}>
+                    <dd className={styles.mono} style={{ fontWeight: 600, color: '#5433eb' }}>
                       {evento.modulo === 'Pedidos' ? `Pedido ${evento.detalle.entidad}` : evento.detalle.entidad}
                     </dd>
                   </div>
@@ -368,7 +368,7 @@ export default function HistoryPage() {
         <div>
           <h1 className={styles.pageTitle}>Historial de Auditoría</h1>
           <p className={styles.pageSub}>
-            Registro de todas las acciones del sistema — EL PRÍNCIPE
+            Registro de todas las acciones del sistema 
           </p>
         </div>
         {esAdmin && (

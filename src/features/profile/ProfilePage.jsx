@@ -82,7 +82,7 @@ export default function ProfilePage() {
         </div>
 
         <div className={styles.statsGrid}>
-          <StatCard valor={stats?.pedidosHoy ?? '0'} label="Pedidos hoy" color="#1E3A8A" />
+          <StatCard valor={stats?.pedidosHoy ?? '0'} label="Pedidos hoy" color="#5433eb" />
           <StatCard valor={vHoy} label="Ventas hoy" />
           <StatCard valor={stats?.clientesHoy ?? '0'} label="Clientes" />
         </div>
