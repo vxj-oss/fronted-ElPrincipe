@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Plus, X, Sparkles, ShieldCheck, ShieldAlert } from 'lucide-react';
 import { EMPRESA, LABELS_TIPO_CONDICION } from '../../constants/appConstants';
 import { valorPactadoTexto } from './ordersService';
+import ClienteSearchSelect from '../../components/ui/ClienteSearchSelect';
 import styles from './orders.module.css';
 
 function etiquetaValorPactado(condicion) {
@@ -133,22 +134,15 @@ export default function OrderForm({
 
         <div className={styles.field}>
           <label htmlFor="f-cliente" className={styles.fieldLabel}>Cliente</label>
-          <select
-            id="f-cliente"
-            name="cliente_id"
-            value={form.cliente_id || ''}
-            onChange={onChange}
-            disabled={Boolean(form.solicitud_id)}
-            className={`${styles.fieldInput} ${formErrors.cliente_id ? styles.fieldInputError : ''}`}
-            style={form.solicitud_id ? { cursor: 'not-allowed', opacity: 0.8 } : undefined}
-          >
-            <option value="">Seleccionar cliente...</option>
-            {clientesCatalogo.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.nombre || c.razon_social} {c.ruc ? `(${c.ruc})` : ''}
-              </option>
-            ))}
-          </select>
+          <ClienteSearchSelect
+              id="f-cliente"
+              clientes={clientesCatalogo}
+              clienteId={form.cliente_id}
+              onChange={(valor) => onChange({ target: { name: 'cliente_id', value: valor } })}
+              inputClassName={`${styles.fieldInput} ${formErrors.cliente_id ? styles.fieldInputError : ''}`}
+              disabled={Boolean(form.solicitud_id)}
+              style={form.solicitud_id ? { cursor: 'not-allowed', opacity: 0.8 } : undefined}
+            />
           {formErrors.cliente_id && (
             <p className={styles.fieldError} role="alert">{formErrors.cliente_id}</p>
           )}

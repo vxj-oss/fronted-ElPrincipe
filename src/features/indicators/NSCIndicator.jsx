@@ -186,8 +186,8 @@ export function GraficoLinea({ titulo, labels = [], data = [], color = '#5433eb'
             legend: { display: false },
             tooltip: {
               backgroundColor: isDark ? '#020617' : '#1e293b',
-              titleColor: 'var(--ind-head-bg)',
-              bodyColor: 'var(--ind-head-bg)',
+              titleColor: '#f8fafc',
+              bodyColor: '#f8fafc',
               bodyFont: { size: 12, weight: '600' },
               padding: 10,
               cornerRadius: 8,
@@ -286,8 +286,8 @@ export function GraficoBarras({ titulo, labels = [], data = [], color = '#5433eb
             legend: { display: false },
             tooltip: {
               backgroundColor: isDark ? '#020617' : '#1e293b',
-              titleColor: 'var(--ind-head-bg)',
-              bodyColor: 'var(--ind-head-bg)',
+              titleColor: '#f8fafc',
+              bodyColor: '#f8fafc',
               bodyFont: { size: 12, weight: '600' },
               padding: 10,
               cornerRadius: 8,

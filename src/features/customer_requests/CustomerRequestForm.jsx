@@ -2,6 +2,7 @@ import React from 'react';
 import { AlertTriangle, History, Loader2, Mic, Minus, Plus, Sparkles, Square, X } from 'lucide-react';
 import ProductSearchSelect from '../../components/ui/ProductSearchSelect';
 import { useDictado } from '../../hooks/useDictado';
+import ClienteSearchSelect from '../../components/ui/ClienteSearchSelect';
 import styles from './customerRequests.module.css';
 
 const subtotalDeItem = (it) => (parseFloat(it.precioEsperado) || 0) * (parseInt(it.cant, 10) || 0);
@@ -40,20 +41,13 @@ export default function CustomerRequestForm({
       <div className={styles.modalBody}>
         <div className={styles.field}>
           <label htmlFor="f-cli" className={styles.fieldLabel}>Cliente</label>
-          <select
-            id="f-cli"
-            name="cliente_id"
-            value={form.cliente_id}
-            onChange={onChange}
-            className={`${styles.fieldInput} ${formErrors.cliente_id ? styles.fieldInputError : ''}`}
-          >
-            <option value="">Seleccionar cliente...</option>
-            {clientes.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.nombre} {c.ruc ? `(${c.ruc})` : ''}
-              </option>
-            ))}
-          </select>
+          <ClienteSearchSelect
+              id="f-cli"
+              clientes={clientes}
+              clienteId={form.cliente_id}
+              onChange={(valor) => onChange({ target: { name: 'cliente_id', value: valor } })}
+              inputClassName={`${styles.fieldInput} ${formErrors.cliente_id ? styles.fieldInputError : ''}`}
+            />
           {formErrors.cliente_id && (
             <p className={styles.fieldError} role="alert">{formErrors.cliente_id}</p>
           )}
