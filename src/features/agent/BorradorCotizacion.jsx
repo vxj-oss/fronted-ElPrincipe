@@ -5,6 +5,7 @@ import { fetchClientes } from '../customers/customersService';
 import { crearSolicitud, descargarCotizacionPdf, CANALES_RECEPCION } from '../customer_requests/customerRequestsService';
 import { EMPRESA } from '../../constants/appConstants';
 import { useAgentContext } from './AgentContext';
+import ClienteSearchSelect from '../../components/ui/ClienteSearchSelect';
 import { avisarDatosActualizados, avisarPasoCompletado, guardarResuelto, leerResueltos } from './resueltos';
 import styles from './agent.module.css';
 
@@ -311,15 +312,12 @@ export default function BorradorCotizacion({ mensajeId, datos, inicioAtencion })
       <div className={styles.borradorCampos}>
         <label className={styles.borradorCampo}>
           <span>Cliente</span>
-          <select value={clienteId} onChange={(e) => setClienteId(e.target.value)}>
-            <option value="">Seleccionar cliente…</option>
-            {clientes.map((c) => (
-              <option key={c.id} value={c.id}>{c.nombre || c.razon_social}</option>
-            ))}
-            {datos.cliente && !clientes.some((c) => c.id === datos.cliente.id) && (
-              <option value={datos.cliente.id}>{datos.cliente.nombre}</option>
-            )}
-          </select>
+          <ClienteSearchSelect
+            clientes={clientes}
+            clienteId={clienteId}
+            nombreExtra={datos.cliente?.nombre || ''}
+            onChange={setClienteId}
+          />
         </label>
         <label className={styles.borradorCampo}>
           <span>Canal</span>

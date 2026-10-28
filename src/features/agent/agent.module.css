@@ -1136,6 +1136,7 @@
 }
 
 .borradorCampo select,
+.borradorCampo input,
 .borradorOpcion {
   width: 100%;
   padding: 6px 8px;
@@ -1296,7 +1297,9 @@
   border-color: #2b2b32;
 }
 
+:global(.dark) .borradorCampo input,
 :global(.dark) .borradorCampo select,
+:global([data-theme="dark"]) .borradorCampo input,
 :global([data-theme="dark"]) .borradorCampo select,
 :global(.dark) .borradorCant button,
 :global([data-theme="dark"]) .borradorCant button,
@@ -2685,4 +2688,23 @@
 :global(.dark) .planLista,
 :global([data-theme="dark"]) .planLista {
   color: #c9c7cf;
+}
+
+.codigoCopiable {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 8px;
+  margin: 0 1px;
+  border: none;
+  border-radius: 9999px;
+  background: rgba(84, 51, 235, 0.12);
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.codigoCopiable:hover {
+  background: rgba(84, 51, 235, 0.22);
 }

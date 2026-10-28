@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Send, Bot, AlertCircle, Sparkles, Mic, Square, Volume2, Eye, EyeOff } from 'lucide-react';
+import { Send, Bot, Copy, Check, AlertCircle, Sparkles, Mic, Square, Volume2, Eye, EyeOff } from 'lucide-react';
 import { useAgentContext } from './AgentContext';
 import { useAuth } from '../../context/AuthContext';
 import BorradorCotizacion from './BorradorCotizacion';
@@ -19,6 +19,37 @@ import AccionEntidad from './AccionEntidad';
 import BorradorCliente from './BorradorCliente';
 import PlanChat from './PlanChat';
 import styles from './agent.module.css';
+
+const PATRON_CODIGO = /((?:COT|PED)-[A-Z0-9]{4,})/g;
+
+function CodigoCopiable({ codigo }) {
+  const [copiado, setCopiado] = useState(false);
+  const copiar = async () => {
+    try {
+      await navigator.clipboard.writeText(codigo);
+    } catch {
+      const area = document.createElement('textarea');
+      area.value = codigo;
+      document.body.appendChild(area);
+      area.select();
+      document.execCommand('copy');
+      area.remove();
+    }
+    setCopiado(true);
+    setTimeout(() => setCopiado(false), 1500);
+  };
+  return (
+    <button type="button" className={styles.codigoCopiable} onClick={copiar} title="Copiar código" aria-label={`Copiar ${codigo}`}>
+      {codigo}
+      {copiado ? <Check size={11} aria-hidden="true" /> : <Copy size={11} aria-hidden="true" />}
+    </button>
+  );
+}
+
+function conCodigos(texto) {
+  const partes = texto.split(PATRON_CODIGO);
+  return partes.map((parte, i) => (i % 2 === 1 ? <CodigoCopiable key={i} codigo={parte} /> : parte));
+}
 
 function TextoRespuesta({ texto, animar, onTermina }) {
   const { chatBodyRef } = useAgentContext();
@@ -48,7 +79,7 @@ function TextoRespuesta({ texto, animar, onTermina }) {
 
   return (
     <p className={styles.bubbleTexto} style={{ whiteSpace: 'pre-line' }}>
-      {animar ? piezas.slice(0, visibles).join('') : texto}
+      {conCodigos(animar ? piezas.slice(0, visibles).join('') : texto)}
     </p>
   );
 }

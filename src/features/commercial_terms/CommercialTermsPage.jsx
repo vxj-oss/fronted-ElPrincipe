@@ -17,6 +17,7 @@ import { formatearFecha } from './commercialTermsService';
 import { usePagination } from '../../hooks/usePagination';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import Pagination from '../../components/ui/Pagination';
+import ClienteSearchSelect from '../../components/ui/ClienteSearchSelect';
 import styles from './commercialTerms.module.css';
 
 const CONFIG_TIPO = {
@@ -176,20 +177,13 @@ function CondicionModal({
         <div className={styles.modalBody}>
           <div className={`${styles.field} ${styles.fieldFull}`}>
             <label htmlFor="f-cliente" className={styles.fieldLabel}>Cliente</label>
-            <select
+            <ClienteSearchSelect
               id="f-cliente"
-              name="cliente_id"
-              value={form.cliente_id}
-              onChange={onChange}
-              className={`${styles.fieldInput} ${formErrors.cliente_id ? styles.fieldInputError : ''}`}
-            >
-              <option value="">Seleccionar cliente...</option>
-              {clientes.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.nombre || c.razon_social} {c.ruc ? `(${c.ruc})` : ''}
-                </option>
-              ))}
-            </select>
+              clientes={clientes}
+              clienteId={form.cliente_id}
+              onChange={(valor) => onChange({ target: { name: 'cliente_id', value: valor } })}
+              inputClassName={`${styles.fieldInput} ${formErrors.cliente_id ? styles.fieldInputError : ''}`}
+            />
             {formErrors.cliente_id && <p className={styles.fieldError} role="alert">{formErrors.cliente_id}</p>}
           </div>
 
