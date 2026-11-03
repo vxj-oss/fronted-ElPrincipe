@@ -146,3 +146,6 @@ export async function toggleActivoCliente(id, estadoActualBooleano) {
   });
   return normalizeCustomerFromBackend(response);
 }
+export async function consultarDocumento(numero) {
+  return apiRequest(`/customers/consulta-documento?numero=${encodeURIComponent(numero)}`);
+}

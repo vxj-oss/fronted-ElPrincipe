@@ -1,0 +1,37 @@
+.btn {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1px solid #ebebeb;
+  border-radius: 9999px;
+  background: #ffffff;
+  color: #0b0b0c;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.2;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btnPrimario {
+  background: #5433eb;
+  border-color: #5433eb;
+  color: #ffffff;
+}
+
+.btn svg {
+  flex-shrink: 0;
+}
+
+:global(.dark) .btn:not(.btnPrimario) {
+  background: #17171b;
+  border-color: #2b2b32;
+  color: #f7f7f9;
+}

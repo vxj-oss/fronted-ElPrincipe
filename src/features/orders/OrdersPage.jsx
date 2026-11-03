@@ -10,12 +10,13 @@ import { useAgentContext } from '../agent/AgentContext';
 import { useContextoAgente } from '../agent/useContextoAgente';
 import { calcularTotal, formatearFecha } from './ordersService';
 import { EMPRESA } from '../../constants/appConstants';
-import { descargarArchivo, compartirArchivo, puedeCompartirArchivos } from '../../utils/descargas';
+import { descargarArchivo, compartirArchivo, obtenerBlob, puedeCompartirArchivos } from '../../utils/descargas';
 import { usePagination } from '../../hooks/usePagination';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import Pagination from '../../components/ui/Pagination';
 import SnackbarDeshacer from '../../components/ui/SnackbarDeshacer';
 import Modal from '../../components/ui/Modal';
+import VistaTicketModal from '../../components/ui/VistaTicketModal';
 import Button from '../../components/ui/Button';
 import OrderForm from './OrderForm';
 import styles from './orders.module.css';
@@ -90,6 +91,7 @@ const descargarPedidoPdf = (pedido) =>
   descargarArchivo(`/orders/${pedido.id}/pdf`, `${pedido.numero}.pdf`).catch(() => {});
 
 function DetallePanel({ pedido, onCerrar, onEditar, onConfirmar, onPreguntar }) {
+  const [verTicket, setVerTicket] = React.useState(false);
   if (!pedido) return null;
   const total = calcularTotal(pedido.items);
   const cond = pedido.condicionComercial;
@@ -105,14 +107,22 @@ function DetallePanel({ pedido, onCerrar, onEditar, onConfirmar, onPreguntar }) 
         </button>
       </div>
 
+      <VistaTicketModal
+        open={verTicket}
+        onClose={() => setVerTicket(false)}
+        titulo={`Ticket ${pedido.numero}`}
+        obtenerBlob={() => obtenerBlob(`/orders/${pedido.id}/ticket`)}
+        nombreArchivo={`${pedido.numero}-ticket.pdf`}
+      />
+
       <div className={styles.detalleAcciones}>
         <button onClick={() => descargarPedidoPdf(pedido)} className={styles.btnPdf}>
           <FileDown size={13} aria-hidden="true" /> PDF
         </button>
         <button
-          onClick={() => descargarArchivo(`/orders/${pedido.id}/ticket`, `${pedido.numero}-ticket.pdf`).catch(() => {})}
+          onClick={() => setVerTicket(true)}
           className={styles.btnPdf}
-          title="Ticket de 80 mm para impresora térmica"
+          title="Ver el ticket de 80 mm antes de imprimir"
         >
           <Receipt size={13} aria-hidden="true" /> Ticket
         </button>

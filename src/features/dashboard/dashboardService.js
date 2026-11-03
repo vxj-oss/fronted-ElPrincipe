@@ -197,3 +197,50 @@ export async function descargarCierreDia() {
   document.body.removeChild(enlace);
   URL.revokeObjectURL(url);
 }
+
+const baseApi = () => import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+
+export async function fetchResumenCierre(fecha) {
+  const respuesta = await fetch(`${baseApi()}/reports/cierre-dia/resumen?fecha=${encodeURIComponent(fecha)}`, {
+    credentials: 'include',
+  });
+  if (!respuesta.ok) throw new Error('No se pudo cargar el resumen de ventas del día.');
+  return respuesta.json();
+}
+
+export async function obtenerTicketCierre(fecha, lineas) {
+  const opciones = lineas
+    ? {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fecha, lineas }),
+      }
+    : { credentials: 'include' };
+  const url = lineas
+    ? `${baseApi()}/reports/cierre-dia/ticket`
+    : `${baseApi()}/reports/cierre-dia/ticket?fecha=${encodeURIComponent(fecha)}`;
+  const respuesta = await fetch(url, opciones);
+  if (!respuesta.ok) throw new Error('No se pudo generar el ticket de cierre.');
+  return respuesta.blob();
+}
+
+export function imprimirBlobPdf(blob) {
+  const url = URL.createObjectURL(blob);
+  const marco = document.createElement('iframe');
+  marco.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;';
+  marco.src = url;
+  marco.onload = () => {
+    try {
+      marco.contentWindow.focus();
+      marco.contentWindow.print();
+    } catch {
+      window.open(url, '_blank');
+    }
+    setTimeout(() => {
+      marco.remove();
+      URL.revokeObjectURL(url);
+    }, 60000);
+  };
+  document.body.appendChild(marco);
+}
