@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AlertTriangle, CheckCircle2, FileDown, X } from 'lucide-react';
 import { crearPedido } from '../orders/ordersService';
-import { descargarArchivo } from '../../utils/descargas';
+import { descargarArchivo, obtenerBlob } from '../../utils/descargas';
+import VistaTicketModal from '../../components/ui/VistaTicketModal';
 import { useAgentContext } from './AgentContext';
 import { avisarDatosActualizados, guardarResuelto, leerResueltos, avisarPasoCompletado } from './resueltos';
 import styles from './agent.module.css';
@@ -18,6 +19,7 @@ export default function BorradorPedido({ mensajeId, datos, inicioAtencion }) {
   const resuelto = useMemo(() => leerResueltos()[mensajeId] || null, [mensajeId]);
   const [estado, setEstado] = useState(resuelto?.estado || 'borrador');
   const [registro, setRegistro] = useState(resuelto);
+  const [verTicket, setVerTicket] = useState(false);
   const [pagoIdx, setPagoIdx] = useState(0);
   const [error, setError] = useState(null);
 
@@ -102,6 +104,13 @@ export default function BorradorPedido({ mensajeId, datos, inicioAtencion }) {
             <AlertTriangle size={12} aria-hidden="true" /> Stock bajo: {registro.alertasStock.join(', ')}
           </p>
         )}
+        <VistaTicketModal
+          open={verTicket}
+          onClose={() => setVerTicket(false)}
+          titulo={`Ticket ${registro.numero}`}
+          obtenerBlob={() => obtenerBlob(`/orders/${registro.id}/ticket`)}
+          nombreArchivo={`${registro.numero}-ticket.pdf`}
+        />
         <div className={styles.borradorAcciones}>
           <button
             type="button"
@@ -113,7 +122,7 @@ export default function BorradorPedido({ mensajeId, datos, inicioAtencion }) {
           <button
             type="button"
             className={styles.borradorCopiar}
-            onClick={() => descargarArchivo(`/orders/${registro.id}/ticket`, `${registro.numero}-ticket.pdf`).catch(() => {})}
+            onClick={() => setVerTicket(true)}
           >
             <FileDown size={13} aria-hidden="true" /> Ticket
           </button>

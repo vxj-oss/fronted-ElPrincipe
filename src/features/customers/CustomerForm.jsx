@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Search } from 'lucide-react';
+import { consultarDocumento } from './customersService';
 import styles from './customers.module.css';
 
 export default function CustomerForm({
@@ -13,6 +15,43 @@ export default function CustomerForm({
     onGuardar,
     onCancelar,
 }) {
+    const [buscando, setBuscando] = useState(false);
+    const [avisoConsulta, setAvisoConsulta] = useState(null);
+
+    const poner = (name, value) => onChange({ target: { name, value } });
+    const sinTildes = (t) => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
+    const buscarDocumento = async () => {
+        setAvisoConsulta(null);
+        setBuscando(true);
+        try {
+            const datos = await consultarDocumento(form.ruc.trim());
+            if (datos.nombre) poner('nombre', datos.nombre);
+            const distrito = DISTRITOS_TRUJILLO.find((d) => sinTildes(d) === sinTildes(datos.distrito || ''));
+            if (distrito) poner('distrito', distrito);
+            const direccion = [datos.direccion, !distrito && datos.distrito].filter(Boolean).join(', ');
+            if (direccion) poner('direccion', direccion);
+            const extra = datos.estado && datos.estado !== 'ACTIVO' ? ` · Estado SUNAT: ${datos.estado}` : '';
+            setAvisoConsulta({ tipo: 'ok', texto: `Datos cargados (${datos.tipo}). Revísalos antes de guardar.${extra}` });
+        } catch (e) {
+            setAvisoConsulta({ tipo: 'error', texto: e.message || 'No se pudo consultar el documento.' });
+        } finally {
+            setBuscando(false);
+        }
+    };
+
+    const longitudValida = /^(\d{8}|\d{11})$/.test(form.ruc.trim());
+
+    const ultimoAuto = useRef('');
+    const buscarRef = useRef(buscarDocumento);
+    buscarRef.current = buscarDocumento;
+    useEffect(() => {
+        const numero = form.ruc.trim();
+        if (editandoId || !/^(\d{8}|\d{11})$/.test(numero) || ultimoAuto.current === numero) return;
+        ultimoAuto.current = numero;
+        buscarRef.current();
+    }, [form.ruc, editandoId]);
+
     return (
         <form onSubmit={(e) => { e.preventDefault(); onGuardar(); }}>
             <div className={styles.modalBody}>
@@ -35,15 +74,37 @@ export default function CustomerForm({
 
                 <div className={styles.field}>
                     <label htmlFor="f-ruc" className={styles.fieldLabel}>RUC / DNI (opcional)</label>
-                    <input
-                        id="f-ruc"
-                        name="ruc"
-                        value={form.ruc}
-                        onChange={onChange}
-                        placeholder="20481234567"
-                        maxLength={11}
-                        className={`${styles.fieldInput} ${styles.mono} ${formErrors.ruc ? styles.fieldInputError : ''}`}
-                    />
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'stretch' }}>
+                        <input
+                            id="f-ruc"
+                            name="ruc"
+                            value={form.ruc}
+                            onChange={onChange}
+                            placeholder="20481234567"
+                            maxLength={11}
+                            style={{ flex: '1 1 0', minWidth: 0, width: 'auto' }}
+                            className={`${styles.fieldInput} ${styles.mono} ${formErrors.ruc ? styles.fieldInputError : ''}`}
+                        />
+                        <button
+                            type="button"
+                            onClick={buscarDocumento}
+                            disabled={buscando || !longitudValida}
+                            className={styles.btnSecondary}
+                            style={{ display: 'inline-flex', flex: '0 0 auto', alignItems: 'center', justifyContent: 'center', gap: 6, whiteSpace: 'nowrap', padding: '0 14px', fontSize: '0.8125rem' }}
+                            title="Buscar los datos del RUC o DNI"
+                        >
+                            <Search size={14} aria-hidden="true" /> {buscando ? 'Buscando…' : 'Buscar'}
+                        </button>
+                    </div>
+                    {avisoConsulta && (
+                        <p
+                            className={avisoConsulta.tipo === 'error' ? styles.fieldError : styles.fieldLabel}
+                            role="status"
+                            style={avisoConsulta.tipo === 'ok' ? { marginTop: 4, fontWeight: 400 } : undefined}
+                        >
+                            {avisoConsulta.texto}
+                        </p>
+                    )}
                     {formErrors.ruc && (
                         <p className={styles.fieldError} role="alert">{formErrors.ruc}</p>
                     )}

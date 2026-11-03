@@ -1,6 +1,7 @@
 ﻿import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   TrendingUp,
+  Printer,
   AlertCircle,
   Clock,
   CheckCircle,
@@ -25,6 +26,7 @@ import { useAgentContext } from '../agent/AgentContext';
 import { fetchLecturaDashboard } from '../agent/agentService';
 import { useDashboard } from './useDashboard';
 import { descargarCierreDia } from './dashboardService';
+import CierreDiaModal from './CierreDiaModal';
 import { descargarArchivo } from '../../utils/descargas';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -474,6 +476,7 @@ function GraficaVentas({ data, periodo, periodos, onCambiarPeriodo }) {
 export default function DashboardPage() {
   const { user } = useAuth();
   const [descargandoCierre, setDescargandoCierre] = useState(false);
+  const [cierreAbierto, setCierreAbierto] = useState(false);
 
   const cerrarDia = async () => {
     setDescargandoCierre(true);
@@ -526,6 +529,7 @@ export default function DashboardPage() {
 
   return (
     <div className={styles.page}>
+      <CierreDiaModal open={cierreAbierto} onClose={() => setCierreAbierto(false)} />
       <header className={styles.topbar}>
         <div>
           <h1 className={styles.greeting}>
@@ -539,6 +543,10 @@ export default function DashboardPage() {
           <button type="button" className={styles.btnCierre} onClick={cerrarDia} disabled={descargandoCierre}>
             <FileDown size={14} aria-hidden="true" />
             {descargandoCierre ? 'Generando…' : 'Cierre del día (PDF)'}
+          </button>
+          <button type="button" className={styles.btnCierre} onClick={() => setCierreAbierto(true)}>
+            <Printer size={14} aria-hidden="true" />
+            Ticket de cierre
           </button>
           <span className={styles.dateBadge}>{fechaHoy}</span>
         </div>

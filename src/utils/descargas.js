@@ -1,4 +1,4 @@
-async function obtenerBlob(endpoint) {
+export async function obtenerBlob(endpoint) {
   const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
   const respuesta = await fetch(`${baseUrl}${endpoint}`, { credentials: 'include' });
   if (!respuesta.ok) throw new Error('No se pudo generar el archivo.');
