@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { limpiarTelefono } from '../../utils/validaciones';
 import { useAuth } from '../../context/AuthContext';
 import {
   fetchPerfil,
@@ -112,7 +113,8 @@ export function useProfile() {
   }, [actividad]);
 
   const handlePerfilChange = useCallback((e) => {
-    const { name, value } = e.target;
+    const { name } = e.target;
+    const value = name === 'telefono' ? limpiarTelefono(e.target.value).slice(0, 20) : e.target.value;
     setFormPerfil((prev) => ({ ...prev, [name]: value }));
     setFormPerfilErrors((prev) => ({ ...prev, [name]: undefined }));
   }, []);
@@ -129,12 +131,14 @@ export function useProfile() {
     const errs = validarPerfil({
       nombre_completo: `${formPerfil.nombre} ${formPerfil.apellido}`,
       correo: formPerfil.email,
+      telefono: formPerfil.telefono,
     });
     if (Object.keys(errs).length) {
       setFormPerfilErrors({
         nombre: errs.nombre_completo ? 'Nombre requerido' : undefined,
         apellido: errs.nombre_completo ? 'Apellido requerido' : undefined,
         email: errs.correo,
+        telefono: errs.telefono,
       });
       return;
     }

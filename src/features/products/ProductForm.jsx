@@ -70,6 +70,8 @@ export default function ProductForm({
             name="precio"
             type="number"
             step="0.01"
+            min="0"
+            inputMode="decimal"
             value={form.precio}
             onChange={onChange}
             placeholder="0.00"
@@ -85,11 +87,14 @@ export default function ProductForm({
             name="costo"
             type="number"
             step="0.01"
+            min="0"
+            inputMode="decimal"
             value={form.costo}
             onChange={onChange}
             placeholder="0.00"
-            className={styles.fieldInput}
+            className={`${styles.fieldInput} ${formErrors.costo ? styles.fieldInputError : ''}`}
           />
+          {formErrors.costo && <p className={styles.fieldError}>{formErrors.costo}</p>}
         </div>
 
         <div className={styles.field}>
@@ -98,6 +103,9 @@ export default function ProductForm({
             id="f-stock"
             name="stock"
             type="number"
+            min="0"
+            step="1"
+            inputMode="numeric"
             value={form.stock}
             onChange={onChange}
             placeholder="0"
@@ -112,11 +120,15 @@ export default function ProductForm({
             id="f-minimo"
             name="minimo"
             type="number"
+            min="0"
+            step="1"
+            inputMode="numeric"
             value={form.minimo}
             onChange={onChange}
             placeholder="5"
-            className={styles.fieldInput}
+            className={`${styles.fieldInput} ${formErrors.minimo ? styles.fieldInputError : ''}`}
           />
+          {formErrors.minimo && <p className={styles.fieldError}>{formErrors.minimo}</p>}
         </div>
 
         <div className={styles.field}>

@@ -23,12 +23,12 @@ function StatCard({ valor, label, color }) {
   );
 }
 
-function FormField({ id, label, name, value, onChange, type = 'text', error, disabled, placeholder, autoComplete, sufijo }) {
+function FormField({ id, label, name, value, onChange, type = 'text', error, disabled, placeholder, autoComplete, sufijo, inputMode, maxLength }) {
   return (
     <div className={styles.field}>
       <label htmlFor={id} className={styles.fieldLabel}>{label}</label>
       <div className={styles.fieldInputWrap}>
-        <input id={id} name={name} type={type} value={value} onChange={onChange} disabled={disabled} placeholder={placeholder} autoComplete={autoComplete} className={`${styles.fieldInput} ${error ? styles.fieldInputError : ''} ${disabled ? styles.fieldInputDisabled : ''}`} />
+        <input id={id} name={name} type={type} value={value} onChange={onChange} disabled={disabled} placeholder={placeholder} autoComplete={autoComplete} inputMode={inputMode} maxLength={maxLength} className={`${styles.fieldInput} ${error ? styles.fieldInputError : ''} ${disabled ? styles.fieldInputDisabled : ''}`} />
         {sufijo}
       </div>
       {error && <p className={styles.fieldError} role="alert">{error}</p>}
@@ -94,7 +94,7 @@ export default function ProfilePage() {
 
         <dl className={styles.infoList}>
           <div className={styles.infoItem}><dt>Correo</dt><dd>{perfil.email}</dd></div>
-          <div className={styles.infoItem}><dt>Teléfono</dt><dd>{perfil.telefono}</dd></div>
+          <div className={styles.infoItem}><dt>Teléfono</dt><dd>{perfil.telefono || '—'}</dd></div>
           <div className={styles.infoItem}><dt>Sede</dt><dd>{perfil.sede}</dd></div>
           <div className={styles.infoItem}><dt>En el sistema desde</dt><dd>{infoFechas?.desde}</dd></div>
           <div className={styles.infoItem}><dt>Último acceso</dt><dd>{infoFechas?.ultimoAcceso}</dd></div>
@@ -108,7 +108,7 @@ export default function ProfilePage() {
             <FormField id="f-nombre" label="Nombre" name="nombre" value={formPerfil?.nombre ?? ''} onChange={handlePerfilChange} error={formPerfilErrors.nombre} autoComplete="given-name" />
             <FormField id="f-apellido" label="Apellido" name="apellido" value={formPerfil?.apellido ?? ''} onChange={handlePerfilChange} error={formPerfilErrors.apellido} autoComplete="family-name" />
             <FormField id="f-email" label="Correo electrónico" name="email" type="email" value={formPerfil?.email ?? ''} onChange={handlePerfilChange} error={formPerfilErrors.email} autoComplete="email" />
-            <FormField id="f-telefono" label="Teléfono" name="telefono" type="tel" value={formPerfil?.telefono ?? ''} onChange={handlePerfilChange} placeholder="+51 000 000 000" autoComplete="tel" />
+            <FormField id="f-telefono" label="Teléfono" name="telefono" type="tel" value={formPerfil?.telefono ?? ''} onChange={handlePerfilChange} error={formPerfilErrors.telefono} placeholder="+51 000 000 000" autoComplete="tel" inputMode="tel" maxLength={20} />
             <FormField id="f-cargo" label="Cargo" value={perfil.cargo} disabled />
             <FormField id="f-sede" label="Sede" value={perfil.sede} disabled />
             <div className={`${styles.field} ${styles.fieldFull}`}><label className={styles.fieldLabel}>Empresa</label><input value={perfil.empresa} disabled className={`${styles.fieldInput} ${styles.fieldInputDisabled}`} /></div>

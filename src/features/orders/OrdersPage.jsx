@@ -466,11 +466,6 @@ export default function OrdersPage() {
           <KPICard label="Total pedidos" value={kpis.total} note="este mes" />
           <KPICard label="Pendientes" value={kpis.pendientes} note="por confirmar" color="#c2410c" />
           <KPICard label="Con error" value={kpis.conError} note="detectados por IA" color="#b91c1c" />
-          <KPICard
-            label="Monto total"
-            value={`${EMPRESA.MONEDA_SIMBOLO} ${kpis.montoTotal.toLocaleString('es-PE', { minimumFractionDigits: 2 })}`}
-            note="acumulado mes"
-          />
         </section>
 
         <div className={styles.toolbar} role="search">

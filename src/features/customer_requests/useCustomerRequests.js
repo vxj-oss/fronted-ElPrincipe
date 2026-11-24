@@ -34,7 +34,8 @@ function validarForm(form, items) {
   if (!form.cliente_id) errs.cliente_id = 'Selecciona un cliente.';
   if (!items || items.length === 0) errs.items = 'Agrega al menos un producto solicitado.';
   if (items.some((it) => !it.nombre.trim())) errs.items = 'Todos los ítems deben tener un nombre o producto.';
-  if (items.some((it) => it.cant <= 0)) errs.items = 'Las cantidades deben ser mayores a 0.';
+  if (items.some((it) => !Number.isInteger(Number(it.cant)) || Number(it.cant) <= 0)) errs.items = 'Las cantidades deben ser números enteros mayores a 0.';
+  if (items.some((it) => Number(it.cant) > 100000)) errs.items = 'Una cantidad supera el máximo permitido (100,000).';
   if (items.some((it) => it.opciones?.length)) errs.items = 'Elige el producto en las filas marcadas.';
   return errs;
 }

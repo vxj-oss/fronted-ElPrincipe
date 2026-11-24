@@ -1,4 +1,5 @@
 import { EMPRESA, METAS_COMERCIALES } from '../../constants/appConstants';
+import { telefonoValido } from '../../utils/validaciones';
 import { validarPasswordComplejidad } from '../../utils/passwordValidation';
 import { apiRequest } from '../../utils/api';
 
@@ -49,6 +50,9 @@ export function validarPerfil(datos) {
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(datos.correo)) {
     errs.correo = 'Ingresa un correo válido.';
   }
+  if (!telefonoValido(datos.telefono)) {
+    errs.telefono = 'Usa solo números, espacios y + - ( ) /, con al menos 6 dígitos.';
+  }
   return errs;
 }
 
@@ -88,7 +92,7 @@ export async function fetchPerfil() {
     apellido,
     correo: data.correo,
     email: data.correo,
-    telefono: '+51 987 654 321',
+    telefono: data.telefono || '',
     cargo: data.rol === 'administrador' ? 'Administrador General' : 'Asesor Comercial',
     rol: data.rol,
     sede: EMPRESA.CIUDAD,
@@ -211,6 +215,7 @@ export async function actualizarPerfil(datos) {
   const payload = {
     nombre_completo: `${datos.nombre.trim()} ${datos.apellido.trim()}`.trim(),
     correo: datos.email.trim(),
+    telefono: (datos.telefono || '').trim(),
   };
 
   const res = await fetch(`${BASE_URL}/users/me`, {

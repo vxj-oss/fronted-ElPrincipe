@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Bot, X, Maximize2, Plus, Volume2, VolumeX, History, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAgentContext } from './AgentContext';
+import { useArrastrable } from '../../hooks/useArrastrable';
 import ChatVista from './ChatVista';
 import ListaConversaciones from './ListaConversaciones';
 import { EMPRESA } from '../../constants/appConstants';
@@ -29,6 +30,16 @@ export default function AgentFlotante() {
     eliminarUna,
   } = useAgentContext();
   const [verHistorial, setVerHistorial] = useState(false);
+  const fab = useArrastrable(58, 58);
+  const estiloFab = fab.pos ? { left: fab.pos.x, top: fab.pos.y, right: 'auto', bottom: 'auto' } : undefined;
+  const globoArriba = !fab.pos || fab.pos.y > 140;
+  const estiloGlobo = fab.pos
+    ? {
+        right: 'auto',
+        left: Math.min(Math.max(fab.pos.x + 58 - 280, 8), Math.max(8, window.innerWidth - 288)),
+        ...(globoArriba ? { bottom: window.innerHeight - fab.pos.y + 10, top: 'auto' } : { top: fab.pos.y + 68, bottom: 'auto' }),
+      }
+    : undefined;
 
   useEffect(() => {
     if (!panelAbierto) return undefined;
@@ -54,7 +65,7 @@ export default function AgentFlotante() {
   return (
     <>
       {!panelAbierto && avisosNuevos.length > 0 && !globoOculto && (
-        <div className={styles.fabGlobo} role="status">
+        <div className={styles.fabGlobo} role="status" style={estiloGlobo}>
           <button type="button" className={styles.fabGloboTexto} onClick={abrirPanel}>
             <strong>{avisosNuevos[0].titulo}</strong>
             <span>Toca para ver los avisos</span>
@@ -69,13 +80,15 @@ export default function AgentFlotante() {
         <button
           type="button"
           className={styles.fabAgente}
-          onClick={abrirPanel}
+          style={estiloFab}
+          {...fab.props}
+          onClick={fab.alClic(abrirPanel)}
           aria-label={
             avisosNuevos.length > 0
               ? `Abrir el agente comercial, ${avisosNuevos.length} avisos nuevos`
               : 'Abrir el agente comercial'
           }
-          title="Agente comercial IA"
+          title="Agente comercial IA · arrástralo para moverlo"
         >
           <Bot size={26} aria-hidden="true" />
           {avisosNuevos.length > 0 ? (

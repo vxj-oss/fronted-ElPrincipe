@@ -53,7 +53,8 @@ function validarForm(form, items, esEdicion = false) {
   if (!form.fecha) errs.fecha = 'La fecha es requerida.';
   if (items.length === 0) errs.items = 'Agrega al menos una línea de pedido.';
   if (items.some((i) => !i.producto_id)) errs.items = 'Todos los ítems deben tener un producto válido.';
-  if (items.some((i) => i.cant <= 0)) errs.items = 'Las cantidades deben ser mayores a cero.';
+  if (items.some((i) => !Number.isInteger(Number(i.cant)) || Number(i.cant) <= 0)) errs.items = 'Las cantidades deben ser números enteros mayores a cero.';
+  if (items.some((i) => Number(i.cant) > 100000)) errs.items = 'Una cantidad supera el máximo permitido (100,000).';
   if (items.some((i) => !(parseFloat(i.precio) > 0))) errs.items = 'Todos los ítems deben tener un precio mayor a cero.';
   return errs;
 }
@@ -216,7 +217,6 @@ export function useOrders() {
         (p) => p.estado?.toLowerCase() === 'pendiente'
       ).length,
       conError: pedidosFiltrados.filter((p) => p.tieneError).length,
-      montoTotal: pedidosFiltrados.reduce((a, p) => a + calcularTotal(p.items), 0),
     }),
     [pedidosFiltrados]
   );
