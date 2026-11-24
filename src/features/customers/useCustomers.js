@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { documentoValido, limpiarTelefono, soloDigitos, telefonoValido } from '../../utils/validaciones';
 import { useSearchParams } from 'react-router-dom';
 import {
   fetchClientes,
@@ -24,7 +25,7 @@ const FORM_INICIAL = {
 };
 
 function validarRucDni(valor) {
-  return /^\d{8}$/.test(valor) || /^\d{11}$/.test(valor);
+  return documentoValido(valor);
 }
 
 function validarEmail(valor) {
@@ -35,7 +36,14 @@ function validarEmail(valor) {
 function validarForm(form) {
   const errs = {};
   if (!form.nombre?.trim()) errs.nombre = 'La razón social o nombre es requerido.';
-  if (form.ruc?.trim() && !validarRucDni(form.ruc.trim())) errs.ruc = 'RUC debe tener 11 dígitos, DNI 8 dígitos.';
+  if (form.nombre?.trim() && form.nombre.trim().length < 2) errs.nombre = 'Escribe al menos 2 caracteres.';
+  if (form.ruc?.trim()) {
+    const doc = form.ruc.trim();
+    if (!/^\d+$/.test(doc)) errs.ruc = 'Solo se permiten números.';
+    else if (doc.length !== 8 && doc.length !== 11) errs.ruc = 'El DNI debe tener 8 dígitos y el RUC 11.';
+    else if (!validarRucDni(doc)) errs.ruc = 'El RUC no es válido: revisa los dígitos.';
+  }
+  if (!telefonoValido(form.telefono)) errs.telefono = 'Usa solo números, espacios y + - ( ) /, con al menos 6 dígitos.';
   if (!form.tipo) errs.tipo = 'Selecciona el tipo de cliente.';
   if (!form.distrito) errs.distrito = 'Selecciona el distrito.';
   if (form.email?.trim() && !validarEmail(form.email.trim())) errs.email = 'Ingresa un correo válido.';
@@ -164,7 +172,10 @@ export function useCustomers() {
   }, []);
 
   const handleFormChange = useCallback((e) => {
-    const { name, value } = e.target;
+    const { name } = e.target;
+    let { value } = e.target;
+    if (name === 'ruc') value = soloDigitos(value).slice(0, 11);
+    if (name === 'telefono') value = limpiarTelefono(value).slice(0, 20);
     setForm((prev) => ({ ...prev, [name]: value }));
     setFormErrors((prev) => ({ ...prev, [name]: undefined }));
   }, []);

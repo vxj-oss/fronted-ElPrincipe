@@ -82,6 +82,8 @@ export default function CustomerForm({
                             onChange={onChange}
                             placeholder="20481234567"
                             maxLength={11}
+                            inputMode="numeric"
+                            autoComplete="off"
                             style={{ flex: '1 1 0', minWidth: 0, width: 'auto' }}
                             className={`${styles.fieldInput} ${styles.mono} ${formErrors.ruc ? styles.fieldInputError : ''}`}
                         />
@@ -151,9 +153,14 @@ export default function CustomerForm({
                         name="telefono"
                         value={form.telefono}
                         onChange={onChange}
-                        placeholder="044-123456 / 987654321"
-                        className={styles.fieldInput}
+                        placeholder="987654321"
+                        inputMode="tel"
+                        maxLength={20}
+                        className={`${styles.fieldInput} ${formErrors.telefono ? styles.fieldInputError : ""}`}
                     />
+                    {formErrors.telefono && (
+                        <p className={styles.fieldError} role="alert">{formErrors.telefono}</p>
+                    )}
                 </div>
 
                 <div className={styles.field}>

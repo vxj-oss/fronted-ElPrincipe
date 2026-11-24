@@ -43,10 +43,18 @@ function validarForm(form) {
   const errs = {}
   if (!form.nombre.trim()) errs.nombre = 'El nombre del producto es requerido.'
   if (!form.categoria_id) errs.categoria_id = 'Selecciona una categoría.'
+  else if (form.nombre.trim().length < 2) errs.nombre = 'Escribe al menos 2 caracteres.'
   if (!form.precio || Number(form.precio) <= 0)
     errs.precio = 'El precio debe ser mayor a 0.'
+  else if (Number(form.precio) > 9999999.99) errs.precio = 'El precio es demasiado alto.'
+  if (form.costo !== '' && form.costo !== undefined && (Number(form.costo) < 0 || Number(form.costo) > 9999999.99))
+    errs.costo = 'El costo debe estar entre 0 y 9,999,999.99.'
   if (form.stock === '' || Number(form.stock) < 0)
     errs.stock = 'El stock no puede ser negativo.'
+  else if (!Number.isInteger(Number(form.stock)) || Number(form.stock) > 1000000)
+    errs.stock = 'El stock debe ser un número entero (máximo 1,000,000).'
+  if (form.minimo !== '' && form.minimo !== undefined && (!Number.isInteger(Number(form.minimo)) || Number(form.minimo) < 0 || Number(form.minimo) > 1000000))
+    errs.minimo = 'El stock mínimo debe ser un entero desde 0.'
   return errs
 }
 
@@ -112,7 +120,6 @@ export function useProducts() {
       total: lista.length,
       criticos: lista.filter(p => p.activo && estadoStock(p) === 'critico').length,
       activos: lista.filter(p => p.activo).length,
-      valorInventario: lista.reduce((acc, p) => acc + (p.activo ? p.costo * p.stock : 0), 0),
     }
   }, [productosFiltrados])
 

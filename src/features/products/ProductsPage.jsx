@@ -253,11 +253,6 @@ export default function ProductsPage() {
         <KPICard label="Total productos" value={kpis.total} note="en catálogo" />
         <KPICard label="Stock crítico" value={kpis.criticos} note="bajo mínimo" colorValue="#dc2626" />
         <KPICard label="Activos" value={kpis.activos} note="en venta" colorValue="#5433eb" />
-        <KPICard
-          label="Valor inventario"
-          value={`S/ ${kpis.valorInventario.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-          note="costo total stock"
-        />
       </section>
 
       <div className={styles.toolbar} role="search">

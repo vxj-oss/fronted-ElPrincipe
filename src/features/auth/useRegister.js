@@ -33,6 +33,8 @@ export function useRegister() {
         }
         if (!formData.nombre_usuario.trim()) {
             errors.nombre_usuario = 'El nombre de usuario es requerido';
+        } else if (!/^[A-Za-z0-9._-]{3,50}$/.test(formData.nombre_usuario.trim())) {
+            errors.nombre_usuario = 'Usa de 3 a 50 caracteres: letras, números, punto, guion o guion bajo';
         }
         if (!formData.email.trim()) {
             errors.email = 'El correo electrónico es requerido';
